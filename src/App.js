@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+// routes
+import Router from './routes';
+// theme
+import ThemeConfig from './theme';
+// components
+import Settings from './components/settings';
+import RtlLayout from './components/RtlLayout';
+import ScrollToTop from './components/ScrollToTop';
+import ThemePrimaryColor from './components/ThemePrimaryColor';
 
-function App() {
+// ----------------------------------------------------------------------
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeConfig>
+      <ThemePrimaryColor>
+        <RtlLayout>
+          <Settings />
+          <ScrollToTop />
+          <Router />
+        </RtlLayout>
+      </ThemePrimaryColor>
+    </ThemeConfig>
   );
 }
-
-export default App;
