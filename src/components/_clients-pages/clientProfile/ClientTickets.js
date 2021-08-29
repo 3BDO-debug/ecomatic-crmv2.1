@@ -1,26 +1,51 @@
 import React from 'react';
 // material
-import {
-  DataGrid,
-  GridToolbar,
-  useGridSlotComponentProps,
-  getGridNumericColumnOperators
-} from '@material-ui/data-grid';
-import { Card } from '@material-ui/core';
-import { useDemoData } from '@material-ui/x-grid-data-generator';
+import { Box, Card } from '@material-ui/core';
 // components
-import DataTable from '../../dataTable/DataTable';
 import DataGridCustom from '../../DataGridCustom';
 
 function ClientTickets() {
-  const { data } = useDemoData({
-    dataSet: 'Commodity',
-    rowLength: 10,
-    maxColumns: 6
-  });
   return (
     <Card>
-      <DataGrid {...data} />
+      <Box height={500} width="100%">
+        <DataGridCustom
+          rows={[
+            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
+            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
+            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
+            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
+            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 }
+          ]}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              width: 120
+            },
+            {
+              field: 'firstName',
+              headerName: 'First name',
+              width: 160,
+              editable: true
+            },
+            {
+              field: 'lastName',
+              headerName: 'Last name',
+              width: 160,
+              editable: true
+            },
+            {
+              field: 'age',
+              headerName: 'Age',
+              type: 'number',
+              width: 120,
+              editable: true,
+              align: 'center',
+              headerAlign: 'center'
+            }
+          ]}
+        />
+      </Box>
     </Card>
   );
 }

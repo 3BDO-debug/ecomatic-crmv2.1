@@ -3301,6 +3301,26 @@
     clsx "^1.0.4"
     lru-cache "^6.0.0"
 
+"@material-ui/x-grid@^4.0.0-alpha.37":
+  version "4.0.0-alpha.37"
+  resolved "https://registry.yarnpkg.com/@material-ui/x-grid/-/x-grid-4.0.0-alpha.37.tgz#6514048d66a9d4b49322ad1f1b03bfa3af05df2f"
+  integrity sha512-X8Vg2l7tOpNdA1lOnPK+U/tTF0QWsftL2cm4L8C4LOmG7pdHCdlPnC8Vdb5D1Tpf57RQdec6dZYtJE8JYcoq/g==
+  dependencies:
+    "@material-ui/utils" "^5.0.0-alpha.14"
+    "@material-ui/x-license" "4.0.0-alpha.37"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+    reselect "^4.0.0"
+
+"@material-ui/x-license@4.0.0-alpha.37":
+  version "4.0.0-alpha.37"
+  resolved "https://registry.yarnpkg.com/@material-ui/x-license/-/x-license-4.0.0-alpha.37.tgz#49ecd287fbd963bfd141f9a61a7911f4f89f4522"
+  integrity sha512-MA4kTjnzxnGCw3qmbSzFsApDeAFgR7/HOp1O/TIz5kp7OUiPcl4CX3QiXBxQ9rtDJZe8r42GeMYz4xrb7gLG1g==
+  dependencies:
+    "@material-ui/utils" "^5.0.0-alpha.14"
+    esm "^3.2.25"
+    yargs "^17.0.1"
+
 "@math.gl/core@3.5.4", "@math.gl/core@^3.5.0", "@math.gl/core@^3.5.1":
   version "3.5.4"
   resolved "https://registry.yarnpkg.com/@math.gl/core/-/core-3.5.4.tgz#dcddb9a774e30e15d30451081e8dbbd84fa882bf"
@@ -7881,6 +7901,11 @@ eslint@^7.32.0:
     table "^6.0.9"
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
+
+esm@^3.2.25:
+  version "3.2.25"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
 
 espree@^7.3.0, espree@^7.3.1:
   version "7.3.1"
@@ -17041,6 +17066,19 @@ yargs@^16.1.1:
   version "16.2.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-16.2.0.tgz#1c82bf0f6b6a66eafce7ef30e376f49a12477f66"
   integrity sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==
+  dependencies:
+    cliui "^7.0.2"
+    escalade "^3.1.1"
+    get-caller-file "^2.0.5"
+    require-directory "^2.1.1"
+    string-width "^4.2.0"
+    y18n "^5.0.5"
+    yargs-parser "^20.2.2"
+
+yargs@^17.0.1:
+  version "17.1.1"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.1.1.tgz#c2a8091564bdb196f7c0a67c1d12e5b85b8067ba"
+  integrity sha512-c2k48R0PwKIqKhPMWjeiF6y2xY/gPMUlro0sgxqXpbOIohWiLNXWslsootttv7E1e73QPAMQSg5FeySbVcpsPQ==
   dependencies:
     cliui "^7.0.2"
     escalade "^3.1.1"

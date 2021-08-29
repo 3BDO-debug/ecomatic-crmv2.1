@@ -12,6 +12,7 @@ import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 // contexts
 import { SettingsProvider } from './contexts/SettingsContext';
 import { CollapseDrawerProvider } from './contexts/CollapseDrawerContext';
+import { AuthProvider } from './contexts/AuthContext';
 //
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -26,7 +27,9 @@ ReactDOM.render(
         <SettingsProvider>
           <CollapseDrawerProvider>
             <BrowserRouter>
-              <App />
+              <AuthProvider>
+                <App />
+              </AuthProvider>
             </BrowserRouter>
           </CollapseDrawerProvider>
         </SettingsProvider>

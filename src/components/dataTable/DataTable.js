@@ -19,10 +19,23 @@ DataTable.propTypes = {
   rowsData: PropTypes.array,
   searchPlaceholder: PropTypes.string,
   rowIsEditable: PropTypes.bool,
-  rowEditUrl: PropTypes.string
+  rowEditUrl: PropTypes.string,
+  onSelectAllDelete: PropTypes.func,
+  identifier: PropTypes.string,
+  rowSelectHandler: PropTypes.func
 };
 
-function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEditable, rowEditUrl }) {
+function DataTable({
+  columnsData,
+  rowsData,
+  filterBy,
+  searchPlaceholder,
+  rowIsEditable,
+  rowEditUrl,
+  onSelectAllDelete,
+  identifier,
+  rowSelectHandler
+}) {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -38,8 +51,11 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rowsData.map((n) => n[filterBy]);
+      const newSelecteds = rowsData.map((n) => n[identifier]);
       setSelected(newSelecteds);
+      if (rowSelectHandler) {
+        rowSelectHandler(selected);
+      }
       return;
     }
     setSelected([]);
@@ -58,6 +74,9 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
+    if (rowSelectHandler) {
+      rowSelectHandler(newSelected);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -82,6 +101,9 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
   const filteredData = applySortFilter(rowsData, getComparator(order, orderBy), filterName, filterBy);
 
   const dataNotFound = filteredData.length === 0;
+  const handleOnSelectAllDelete = () => {
+    onSelectAllDelete(selected);
+  };
   return (
     <>
       <TableListToolbar
@@ -91,6 +113,7 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
         onFilterName={handleFilterByName}
         columnsData={columnsData}
         rowsData={rowsData}
+        onSelectAllDelete={handleOnSelectAllDelete}
       />
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800 }}>
@@ -107,7 +130,7 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
             <TableBody>
               {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                 const cellsData = Object.values(row);
-                const isItemSelected = selected.indexOf(row[filterBy]) !== -1;
+                const isItemSelected = selected.indexOf(row[identifier]) !== -1;
                 return (
                   <TableRow
                     hover
@@ -118,7 +141,7 @@ function DataTable({ columnsData, rowsData, filterBy, searchPlaceholder, rowIsEd
                     aria-checked={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row[filterBy])} />
+                      <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row[identifier])} />
                     </TableCell>
                     {cellsData.map((cell, index) => (
                       <TableCell key={index} component="th" scope="row" padding="none">

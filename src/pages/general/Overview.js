@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { sentenceCase } from 'change-case';
 // material
 import { Container, Grid, Card, Stack, Typography, Avatar, CardHeader } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
+// context
+import { AuthContext } from '../../contexts/AuthContext';
 // components
 import Page from '../../components/Page';
 import AppWelcome from '../../components/_overview-page/AppWelcome';
@@ -16,14 +18,14 @@ import Label from '../../components/Label';
 function Overview() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
-
+  const user = useContext(AuthContext).userState[0];
   return (
     <Page title="Overview">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12} xl={12}>
             <AppWelcome
-              displayName="Abdelrahman"
+              displayName={`${user.first_name} ${user.last_name}`}
               header={translate('overviewPage.appWelcome.welcomeHeader')}
               body={translate('overviewPage.appWelcome.welcomeBody')}
             />

@@ -7,7 +7,6 @@ import {
   useGridSlotComponentProps,
   getGridNumericColumnOperators
 } from '@material-ui/data-grid';
-import { useDemoData } from '@material-ui/x-grid-data-generator';
 // ----------------------------------------------------------------------
 
 function CustomPagination() {
@@ -55,12 +54,7 @@ DataGridCustom.propTypes = {
 };
 
 export default function DataGridCustom({ rows, columns }) {
-  const { data } = useDemoData({
-    dataSet: 'Commodity',
-    rowLength: 10,
-    maxColumns: 6
-  });
-  if (data.columns.length > 0) {
+  if (columns.length > 0) {
     const ratingColumn = columns.find((column) => column.field === 'rating');
     const ratingColIndex = columns.findIndex((col) => col.field === 'rating');
 
@@ -79,7 +73,8 @@ export default function DataGridCustom({ rows, columns }) {
     <DataGrid
       checkboxSelection
       disableSelectionOnClick
-      {...data}
+      rows={rows}
+      columns={columns}
       pagination
       pageSize={10}
       components={{

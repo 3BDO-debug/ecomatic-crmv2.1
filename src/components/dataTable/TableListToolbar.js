@@ -34,18 +34,17 @@ TableListToolbar.propTypes = {
   searchPlaceholder: PropTypes.string,
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
-  onFilterName: PropTypes.func
-  /* rowsData: PropTypes.array,
-  columnsData: PropTypes.array */
+  onFilterName: PropTypes.func,
+  onSelectAllDelete: PropTypes.func
 };
 
 export default function TableListToolbar({
   searchPlaceholder,
   numSelected,
   filterName,
-  onFilterName
-  /* rowsData,
-  columnsData */
+
+  onFilterName,
+  onSelectAllDelete
 }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
@@ -79,7 +78,7 @@ export default function TableListToolbar({
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <Icon icon={trash2Fill} />
+            <Icon onClick={onSelectAllDelete} icon={trash2Fill} />
           </IconButton>
         </Tooltip>
       ) : (

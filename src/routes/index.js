@@ -1,9 +1,19 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, useRoutes, useLocation } from 'react-router-dom';
 // layouts
-import MainLayout from '../layouts/main';
 import DashboardLayout from '../layouts/dashboard';
 import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
+// guards
+import AuthGuard from '../guards/AuthGuard';
+// context
+import {
+  WarehousesProvider,
+  AccountsProvider,
+  ItemsProvider,
+  ConfigurationsProvider,
+  SparepartsProvider,
+  ClientsProvider
+} from '../contexts';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -37,12 +47,36 @@ const Loadable = (Component) => (props) => {
 
 export default function Router() {
   return useRoutes([
+    // Auth Routes
+    {
+      path: 'auth',
+      children: [
+        { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> }
+      ]
+    },
     // Dashboard Routes
     {
       path: 'dashboard',
-      element: <DashboardLayout />,
+      element: (
+        <AuthGuard>
+          <WarehousesProvider>
+            <AccountsProvider>
+              <ItemsProvider>
+                <ConfigurationsProvider>
+                  <SparepartsProvider>
+                    <ClientsProvider>
+                      <DashboardLayout />
+                    </ClientsProvider>
+                  </SparepartsProvider>
+                </ConfigurationsProvider>
+              </ItemsProvider>
+            </AccountsProvider>
+          </WarehousesProvider>
+        </AuthGuard>
+      ),
       children: [
-        { path: '/', element: <Navigate to="/dashboard/one" replace /> },
+        { path: '/', element: <Navigate to="/dashboard/overview" replace /> },
         // GENERAL
 
         { path: 'overview', element: <Overview /> },
@@ -115,23 +149,13 @@ export default function Router() {
             {
               path: 'list-tickets',
               element: <ListTicketsPage />
+            },
+            {
+              path: 'ticket-details/:ticketId',
+              element: <TicketDetailsPage />
             }
           ]
-        },
-        { path: 'one', element: <PageOne /> }
-
-        /*         {
-          path: 'app',
-          children: [
-            {
-              path: '/',
-              element: <Navigate to="/dashboard/app/four" replace />
-            },
-            { path: 'four', element: <PageFour /> },
-            { path: 'five', element: <PageFive /> },
-            { path: 'six', element: <PageSix /> }
-          ]
-        } */
+        }
       ]
     },
 
@@ -146,17 +170,17 @@ export default function Router() {
     },
     {
       path: '/',
-      element: <MainLayout />,
-      children: [{ path: '/', element: <LandingPage /> }]
+      element: <DashboardLayout />,
+      children: [{ path: '/', element: <Overview /> }]
     },
     { path: '*', element: <Navigate to="/404" replace /> }
   ]);
 }
 
 // IMPORT COMPONENTS
-
-// Dashboard
-const PageOne = Loadable(lazy(() => import('../pages/PageOne')));
+// *Auth
+const Login = Loadable(lazy(() => import('../pages/auth/Login')));
+const Register = Loadable(lazy(() => import('../pages/auth/Register')));
 // General Pages
 const Overview = Loadable(lazy(() => import('../pages/general/Overview')));
 // *Storage Pages
@@ -174,6 +198,6 @@ const ListClientsPage = Loadable(lazy(() => import('../pages/customerService/cli
 const ClientProfilePage = Loadable(lazy(() => import('../pages/customerService/clients/ClientProfilePage')));
 // Tickets Pages
 const ListTicketsPage = Loadable(lazy(() => import('../pages/customerService/tickets/ListTicketsPage')));
+const TicketDetailsPage = Loadable(lazy(() => import('../pages/customerService/tickets/TicketDetailsPage')));
+// 404
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
-// Main
-const LandingPage = Loadable(lazy(() => import('../pages/LandingPage')));

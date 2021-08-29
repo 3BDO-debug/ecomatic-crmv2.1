@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
@@ -8,6 +8,8 @@ import { Icon } from '@iconify/react';
 // hooks
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
 import useLocales from '../../hooks/useLocales';
+// context
+import { AuthContext } from '../../contexts/AuthContext';
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
@@ -162,7 +164,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       ]
     }
   ];
-
+  const user = useContext(AuthContext).userState[0];
   const { pathname } = useLocation();
 
   const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } =
@@ -215,10 +217,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               <Avatar alt="My Avatar" src="/static/mock-images/avatars/avatar_default.jpg" />
               <Box sx={{ ml: 2 }}>
                 <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  displayName
+                  {`${user.first_name} ${user.last_name}`}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  role
+                  {user.role}
                 </Typography>
               </Box>
             </AccountStyle>
@@ -233,7 +235,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
           <div>
             <Typography gutterBottom variant="subtitle1">
-              Hi, Abdelrahman
+              Hi, {`${user.first_name} ${user.last_name}`}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Likes what you see ?

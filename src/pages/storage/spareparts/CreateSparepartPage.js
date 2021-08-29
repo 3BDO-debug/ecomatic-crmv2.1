@@ -1,11 +1,19 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useFormik } from 'formik';
+import { useSnackbar } from 'notistack5';
+import closeFill from '@iconify/icons-eva/close-fill';
+import { Icon } from '@iconify/react';
 // material
 import { Card, Container, Box, Grid, Autocomplete, TextField, FormHelperText } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
+// utils
+import { warehousesSelectDataCreator } from '../../../utils/mock-data/storage/warehouses';
+import { sparepartAdder } from '../../../APIs/storage/spareparts';
+// context
+import { WarehousesContext, SparepartsContext } from '../../../contexts';
 // form schema
 import {
   createSparepartFormDefaults,
@@ -18,24 +26,41 @@ import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { UploadSingleFile } from '../../../components/upload';
 import StyledLabel from '../../../components/@material-extend/StyledLabel';
+import { MIconButton } from '../../../components/@material-extend';
 
 function CreateSparepartPage() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const setSpareparts = useContext(SparepartsContext).sparepartsState[1];
+  const warehouses = useContext(WarehousesContext).warehousesState[0];
   const formik = useFormik({
     initialValues: createSparepartFormDefaults,
     validationSchema: createSparepartFormValidationSchema,
     onSubmit: async (values, { resetForm }) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      alert(
-        JSON.stringify(
-          {
-            ...values
-          },
-          null,
-          2
-        )
-      );
+      await sparepartAdder(values)
+        .then((sparepartsData) => {
+          setSpareparts(sparepartsData);
+          enqueueSnackbar('Sparepart added', {
+            variant: 'success',
+            action: (key) => (
+              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} />
+              </MIconButton>
+            )
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar(`Couldnt add sparepart ${error}`, {
+            variant: 'error',
+            action: (key) => (
+              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} />
+              </MIconButton>
+            )
+          });
+        });
+
       resetForm();
     }
   });
@@ -76,11 +101,10 @@ function CreateSparepartPage() {
                 <Autocomplete
                   fullWidth
                   autoFocus
-                  options={[{ label: 'hello', id: 1 }]}
+                  options={warehousesSelectDataCreator(warehouses)}
                   getOptionLabel={(option) => option.label}
-                  {...getFieldProps('warehouse')}
-                  onChange={(event) => {
-                    setFieldValue('warehouse', event.target.value);
+                  onChange={(event, value) => {
+                    setFieldValue('warehouse', value == null ? 'none' : value.id);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -102,6 +126,8 @@ function CreateSparepartPage() {
                   fullWidth
                   label={translate('sparepartsPages.createSparepartPage.createSparepartForm.modelNumber')}
                   {...getFieldProps('modelNumber')}
+                  onChange={(event) => setFieldValue('modelNumber', event.target.value)}
+                  value={values.modelNumber}
                   error={Boolean(touched.modelNumber && errors.modelNumber)}
                   helperText={touched.modelNumber && errors.modelNumber}
                 />
@@ -111,6 +137,8 @@ function CreateSparepartPage() {
                   fullWidth
                   label={translate('sparepartsPages.createSparepartPage.createSparepartForm.pricePerUnit')}
                   {...getFieldProps('pricePerUnit')}
+                  onChange={(event) => setFieldValue('pricePerUnit', event.target.value)}
+                  value={values.pricePerUnit}
                   error={Boolean(touched.pricePerUnit && errors.pricePerUnit)}
                   helperText={touched.pricePerUnit && errors.pricePerUnit}
                 />
@@ -120,6 +148,8 @@ function CreateSparepartPage() {
                   fullWidth
                   label={translate('sparepartsPages.createSparepartPage.createSparepartForm.availableQTY')}
                   {...getFieldProps('availableQTY')}
+                  onChange={(event) => setFieldValue('availableQTY', event.target.value)}
+                  value={values.availableQTY}
                   error={Boolean(touched.availableQTY && errors.availableQTY)}
                   helperText={touched.availableQTY && errors.availableQTY}
                 />

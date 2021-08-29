@@ -38,3 +38,11 @@ export const PATH_DASHBOARD = {
     }
   }
 };
+
+const ROOTS_AUTH = '/auth';
+
+export const PATH_AUTH = {
+  root: ROOTS_AUTH,
+  login: path(ROOTS_AUTH, '/login'),
+  register: path(ROOTS_AUTH, '/register')
+};
