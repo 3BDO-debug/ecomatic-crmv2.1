@@ -26,6 +26,11 @@ export const ticketsDataCreator = (tickets) => {
           {ticket.current_stage}
         </Label>
       ),
+      status: (
+        <Label variant="ghost" color={ticket.is_closed ? 'error' : 'info'}>
+          {ticket.is_closed ? 'Closed' : 'Not yet closed'}
+        </Label>
+      ),
       action: (
         <Button
           component={Link}
@@ -77,17 +82,13 @@ async function ticketDeviceSparepartsServices(deviceId) {
 
 export const ticketDevicesDataCreator = async (
   ticketDevices,
-  ticketDevicesTableRowsState,
-  sparepartsServicesState,
-  triggeredDeviceState,
+  triggerSparepartsServices,
+  setTriggeredDevice,
   triggerDeviceDetails
 ) => {
-  const triggerSparepartsServices = sparepartsServicesState[1];
-  const setTriggeredDevice = triggeredDeviceState[1];
   const ticketDevicesData = [];
-  const setTicketDevicesTableRows = ticketDevicesTableRowsState[1];
-  ticketDevices.map((ticketDevice) =>
-    ticketDeviceSparepartsServices(ticketDevice.id).then((deviceSparepartsServices) => {
+  const mapper = ticketDevices.map((ticketDevice) =>
+    ticketDeviceSparepartsServices(ticketDevice.id).then((deviceSparepartsServices) =>
       ticketDevicesData.push({
         modelNumber: ticketDevice.device_model_number,
         ticketType: (
@@ -132,10 +133,11 @@ export const ticketDevicesDataCreator = async (
           ],
           collapsibleRowsData: deviceSparepartsServices
         }
-      });
-      setTicketDevicesTableRows(ticketDevicesData);
-    })
+      })
+    )
   );
+  await Promise.all(mapper);
+  return ticketDevicesData;
 };
 
 export const ticketDetailsDataCreator = (tickets, ticketId) => {

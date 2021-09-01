@@ -5,7 +5,6 @@ import { Table, Checkbox, TableRow, TableBody, TableCell, TableContainer, TableP
 // components
 import TableListHead from './TableListHead';
 import TableListToolbar from './TableListToolbar';
-import TableMoreMenu from './TableMoreMenu';
 import Scrollbar from '../Scrollbar';
 import SearchNotFound from '../SearchNotFound';
 // utils
@@ -18,8 +17,7 @@ DataTable.propTypes = {
   columnsData: PropTypes.array,
   rowsData: PropTypes.array,
   searchPlaceholder: PropTypes.string,
-  rowIsEditable: PropTypes.bool,
-  rowEditUrl: PropTypes.string,
+
   onSelectAllDelete: PropTypes.func,
   identifier: PropTypes.string,
   rowSelectHandler: PropTypes.func,
@@ -31,8 +29,7 @@ function DataTable({
   rowsData,
   filterBy,
   searchPlaceholder,
-  rowIsEditable,
-  rowEditUrl,
+
   onSelectAllDelete,
   identifier,
   rowSelectHandler,
@@ -92,10 +89,6 @@ function DataTable({
 
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
-  };
-
-  const handleDeleteUser = (userId) => {
-    console.log('user to be deleted', userId);
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rowsData.length) : 0;

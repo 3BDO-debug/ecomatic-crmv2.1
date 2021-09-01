@@ -1,56 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 // material
-import {
-  Box,
-  Card,
-  CardHeader,
-  CardContent,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Grid,
-  TextField,
-  Autocomplete
-} from '@material-ui/core';
-import { LoadingButton } from '@material-ui/lab';
+import { Box, Card, CardHeader, CardContent } from '@material-ui/core';
 // utils
-import { ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
 import { ticketDevicesDataCreator } from '../../../utils/mock-data/customerService/tickets';
 // components
 import CollapsibleTable from '../../collapsible-table';
 import SparepartsServices from './SparepartsServices';
-import Label from '../../Label';
 import DeviceInfo from './DeviceInfo';
 
 AgentStage.propTypes = {
-  ticketId: PropTypes.number,
+  ticketDevicesState: PropTypes.array,
   ticketState: PropTypes.object
 };
 
-function AgentStage({ ticketId, ticketState }) {
-  const ticketDetails = ticketState[0];
-  const [ticketDevices, setTicketDevices] = useState([]);
+function AgentStage({ ticketDevicesState, ticketState }) {
+  const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
   const [sparepartsServices, triggerSparepartsServices] = useState(false);
   const [triggeredDevice, setTriggeredDevice] = useState(0);
   const [deviceDetails, triggerDeviceDetails] = useState(false);
 
   useEffect(() => {
-    ticketDevicesFetcher(ticketId)
-      .then((ticketDevicesData) => {
-        setTicketDevices(ticketDevicesData);
-        ticketDevicesDataCreator(
-          ticketDevicesData,
-          [ticketDevicesTableRows, setTicketDevicesTableRows],
-          [sparepartsServices, triggerSparepartsServices],
-          [triggeredDevice, setTriggeredDevice],
-          triggerDeviceDetails
-        );
-      })
+    ticketDevicesDataCreator(ticketDevices, triggerSparepartsServices, setTriggeredDevice, triggerDeviceDetails)
+      .then((ticketDevicesData) => setTicketDevicesTableRows(ticketDevicesData))
       .catch((error) => console.log(error));
-  }, [ticketId, ticketDetails]);
+  }, [ticketDevices]);
+
   return (
     <Box>
       <Card sx={{ boxShadow: 'none' }}>
@@ -80,6 +56,7 @@ function AgentStage({ ticketId, ticketState }) {
         triggeredDevice={triggeredDevice}
         isTriggered={deviceDetails}
         triggerHandler={() => triggerDeviceDetails(false)}
+        isEditable
       />
     </Box>
   );

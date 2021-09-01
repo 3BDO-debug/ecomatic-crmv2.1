@@ -123,7 +123,7 @@ function ClientInfo({ clientDataState, clientId }) {
               fullWidth
               focused
               options={citiesDataCreator(cities)}
-              defaultValue={citiesDataCreator(cities).find((city) => city.id === values.city)}
+              defaultValue={values.city}
               getOptionLabel={(option) => option.label}
               onChange={(event, value) => {
                 setFieldValue('city', value == null ? 'none' : value.id);

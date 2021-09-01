@@ -1,19 +1,21 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 // material
-import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel, Typography } from '@material-ui/core';
+import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 
 // ----------------------------------------------------------------------
 
 Stepper.propTypes = {
   steps: PropTypes.array,
+  skippedState: PropTypes.array,
   finalStepComponent: PropTypes.element,
   nextHandler: PropTypes.func,
   backHandler: PropTypes.func,
   resetHandler: PropTypes.func,
   showNext: PropTypes.bool,
-  nextIsLoading: PropTypes.bool
+  nextIsLoading: PropTypes.bool,
+  currentStep: PropTypes.any,
+  activeStepState: PropTypes.array
 };
 
 function Stepper({
@@ -28,8 +30,8 @@ function Stepper({
   showNext,
   nextIsLoading
 }) {
-  const [activeStep, setActiveStep] = activeStepState;
-  const [skipped, setSkipped] = skippedState;
+  const activeStep = activeStepState[0];
+  const skipped = skippedState[0];
 
   const isStepSkipped = (step) => skipped.has(step);
 

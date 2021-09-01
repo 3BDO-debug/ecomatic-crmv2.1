@@ -6,17 +6,7 @@ import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 // material
-import {
-  Avatar,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField
-} from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // utils
 import { ticketDeviceServicesAdder, ticketDeviceServicesDeleter } from '../../../APIs/customerService/tickets';
@@ -28,7 +18,7 @@ import { MIconButton } from '../../@material-extend';
 
 Spareparts.propTypes = {
   deviceServicesState: PropTypes.array,
-  triggeredDeviceId: PropTypes.number,
+  triggeredDevice: PropTypes.number,
   ticketState: PropTypes.object
 };
 
@@ -79,47 +69,53 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
   });
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
 
-  const deviceServicesMatcher = (serviceId) => {
-    const deviceService = deviceServices.find(
-      (deviceService) => deviceService.assigned_service === parseInt(serviceId, 10)
-    );
-    return deviceService;
-  };
+  const deviceServicesMatcher = useCallback(
+    (serviceId) => {
+      const deviceService = deviceServices.find(
+        (deviceService) => deviceService.assigned_service === parseInt(serviceId, 10)
+      );
+      return deviceService;
+    },
+    [deviceServices]
+  );
 
-  const deviceServiceAssignHandler = (serviceId) => {
-    if (deviceServicesMatcher(serviceId)) {
-      const data = new FormData();
-      data.append('assignedServiceId', serviceId);
-      ticketDeviceServicesDeleter(triggeredDevice, data)
-        .then((deviceServicesData) => {
-          setDeviceServices(deviceServicesData.ticket_device_services);
-          setTicket(deviceServicesData.ticket_details);
-          enqueueSnackbar('Service unassigned', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
+  const deviceServiceAssignHandler = useCallback(
+    (serviceId) => {
+      if (deviceServicesMatcher(serviceId)) {
+        const data = new FormData();
+        data.append('assignedServiceId', serviceId);
+        ticketDeviceServicesDeleter(triggeredDevice, data)
+          .then((deviceServicesData) => {
+            setDeviceServices(deviceServicesData.ticket_device_services);
+            setTicket(deviceServicesData.ticket_details);
+            enqueueSnackbar('Service unassigned', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+          })
+          .catch((error) => {
+            enqueueSnackbar(`Couldnt unassign service ${error}`, {
+              variant: 'error',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
           });
-        })
-        .catch((error) => {
-          enqueueSnackbar(`Couldnt unassign service ${error}`, {
-            variant: 'error',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-        });
-    } else {
-      setTriggeredService(serviceId);
-      triggerAssignService(true);
-    }
-  };
+      } else {
+        setTriggeredService(serviceId);
+        triggerAssignService(true);
+      }
+    },
+    [closeSnackbar, deviceServicesMatcher, enqueueSnackbar, setDeviceServices, setTicket, triggeredDevice]
+  );
 
-  const servicesDataCreator = () => {
+  const servicesDataCreator = useCallback(() => {
     const servicesData = [];
     services.map((service) =>
       servicesData.push({
@@ -138,11 +134,11 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
       })
     );
     return servicesData;
-  };
+  }, [deviceServiceAssignHandler, deviceServicesMatcher, services]);
 
   useEffect(() => {
     setServicesTableRows(servicesDataCreator());
-  }, [services, deviceServices]);
+  }, [services, deviceServices, servicesDataCreator]);
   return (
     <>
       <DataTable

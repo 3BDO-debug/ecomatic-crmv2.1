@@ -29,8 +29,8 @@ import DataTable from '../../dataTable/DataTable';
 import { MIconButton } from '../../@material-extend';
 
 Spareparts.propTypes = {
-  deviceSpareparts: PropTypes.array,
-  triggeredDeviceId: PropTypes.number,
+  deviceSparepartsState: PropTypes.array,
+  triggeredDevice: PropTypes.number,
   ticketState: PropTypes.object
 };
 
@@ -81,47 +81,53 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
   });
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
 
-  const deviceSparepartsMatcher = (sparepartId) => {
-    const deviceSparepart = deviceSpareparts.find(
-      (deviceSparepart) => deviceSparepart.assigned_sparepart === parseInt(sparepartId, 10)
-    );
-    return deviceSparepart;
-  };
+  const deviceSparepartsMatcher = useCallback(
+    (sparepartId) => {
+      const deviceSparepart = deviceSpareparts.find(
+        (deviceSparepart) => deviceSparepart.assigned_sparepart === parseInt(sparepartId, 10)
+      );
+      return deviceSparepart;
+    },
+    [deviceSpareparts]
+  );
 
-  const deviceSparepartAssignHandler = (sparepartId) => {
-    if (deviceSparepartsMatcher(sparepartId)) {
-      const data = new FormData();
-      data.append('assignedSparepartId', sparepartId);
-      ticketDeviceSparepartsDeleter(triggeredDevice, data)
-        .then((deviceSparepartsData) => {
-          setDeviceSpareparts(deviceSparepartsData.ticket_device_spareparts);
-          setTicket(deviceSparepartsData.ticket_details);
-          enqueueSnackbar('Sparepart unassigned', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
+  const deviceSparepartAssignHandler = useCallback(
+    (sparepartId) => {
+      if (deviceSparepartsMatcher(sparepartId)) {
+        const data = new FormData();
+        data.append('assignedSparepartId', sparepartId);
+        ticketDeviceSparepartsDeleter(triggeredDevice, data)
+          .then((deviceSparepartsData) => {
+            setDeviceSpareparts(deviceSparepartsData.ticket_device_spareparts);
+            setTicket(deviceSparepartsData.ticket_details);
+            enqueueSnackbar('Sparepart unassigned', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+          })
+          .catch((error) => {
+            enqueueSnackbar(`Couldnt unassign sparepart ${error}`, {
+              variant: 'error',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
           });
-        })
-        .catch((error) => {
-          enqueueSnackbar(`Couldnt unassign sparepart ${error}`, {
-            variant: 'error',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-        });
-    } else {
-      setTriggeredSparepart(sparepartId);
-      triggerAssignSparepart(true);
-    }
-  };
+      } else {
+        setTriggeredSparepart(sparepartId);
+        triggerAssignSparepart(true);
+      }
+    },
+    [closeSnackbar, enqueueSnackbar, deviceSparepartsMatcher, setDeviceSpareparts, setTicket, triggeredDevice]
+  );
 
-  const sparepartsDataCreator = () => {
+  const sparepartsDataCreator = useCallback(() => {
     const sparepartsData = [];
     spareparts.map((sparepart) =>
       sparepartsData.push({
@@ -141,11 +147,11 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
       })
     );
     return sparepartsData;
-  };
+  }, [deviceSparepartAssignHandler, deviceSparepartsMatcher, spareparts]);
 
   useEffect(() => {
     setSparepartsTableRows(sparepartsDataCreator());
-  }, [spareparts, deviceSpareparts]);
+  }, [spareparts, deviceSpareparts, sparepartsDataCreator]);
   return (
     <>
       <DataTable

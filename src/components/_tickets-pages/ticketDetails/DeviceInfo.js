@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import * as Yup from 'yup';
@@ -26,6 +26,8 @@ import { ConfigurationsContext } from '../../../contexts';
 import { ticketDeviceUpdater } from '../../../APIs/customerService/tickets';
 // utils
 import { commonDiagnosticsFetcher } from '../../../APIs/configurations';
+// routes
+import { mainUrl } from '../../../APIs/axios';
 // components
 import Label from '../../Label';
 import { MIconButton } from '../../@material-extend';
@@ -35,19 +37,20 @@ DeviceInfo.propTypes = {
   triggeredDevice: PropTypes.number,
   isTriggered: PropTypes.bool,
   triggerHandler: PropTypes.func,
-  ticketState: PropTypes.array
+  ticketState: PropTypes.array,
+  isEditable: PropTypes.bool
 };
 
-function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTriggered, triggerHandler }) {
+function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTriggered, triggerHandler, isEditable }) {
   const ticketDetails = ticketState[0];
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const ticketTypes = useContext(ConfigurationsContext).ticketTypesState[0];
   const [commonDiagnostics, setCommonDiagnostics] = useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const ticketDeviceFinder = () => {
+  const ticketDeviceFinder = useCallback(() => {
     const device = ticketDevices.find((device) => device.id === triggeredDevice);
     return device;
-  };
+  }, [ticketDevices, triggeredDevice]);
   const formik = useFormik({
     initialValues: {
       ticketType: '',
@@ -55,8 +58,7 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
       extraNotes: ticketDeviceFinder() && ticketDeviceFinder().extra_notes
     },
     validationSchema: Yup.object().shape({
-      ticketType: Yup.string().required('Ticket type should be selected'),
-      commonDiagnostics: Yup.string().required('Please choose common diagnostics')
+      ticketType: Yup.string().required('Ticket type should be selected')
     }),
     onSubmit: async (values, { resetForm }) => {
       const data = new FormData();
@@ -98,7 +100,7 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
         .then((commonDiagnosticsData) => setCommonDiagnostics(commonDiagnosticsData))
         .catch((error) => console.log(error));
     }
-  }, [ticketDeviceFinder()]);
+  }, [ticketDeviceFinder]);
   return (
     <>
       {ticketDeviceFinder() && (
@@ -114,7 +116,11 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
                 {ticketDeviceFinder().installed_through_the_company ? 'Installed' : 'Not installed'}
               </Label>
               <Tooltip title="Download invoice">
-                <IconButton sx={{ marginLeft: 'auto', order: 2 }} color="primary">
+                <IconButton
+                  onClick={() => window.open(`${mainUrl}/${ticketDeviceFinder().device_invoice_or_manufacturer_label}`)}
+                  sx={{ marginLeft: 'auto', order: 2 }}
+                  color="primary"
+                >
                   <Icon icon="fe:download" width={20} height={20} />
                 </IconButton>
               </Tooltip>
@@ -130,6 +136,57 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
                     value={ticketDeviceFinder().device_feeding_source}
                   />
                 </Grid>
+                {ticketDeviceFinder().purchasing_date && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      type="date"
+                      value={ticketDeviceFinder().purchasing_date}
+                      label="Purchasing date"
+                      fullWidth
+                    />
+                  </Grid>
+                )}
+                {ticketDeviceFinder().manufacturing_date && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      type="date"
+                      value={ticketDeviceFinder().manufacturing_date}
+                      label="Manufacturing date"
+                      fullWidth
+                    />
+                  </Grid>
+                )}
+
+                {ticketDeviceFinder().expected_warranty_start_date && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      type="date"
+                      value={ticketDeviceFinder().expected_warranty_start_date}
+                      label="Expected warranty start date"
+                      fullWidth
+                    />
+                  </Grid>
+                )}
+                {ticketDeviceFinder().installation_date && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      type="date"
+                      value={ticketDeviceFinder().installation_date}
+                      label="Installation date"
+                      fullWidth
+                    />
+                  </Grid>
+                )}
+                {ticketDeviceFinder().warranty_start_date && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      type="date"
+                      value={ticketDeviceFinder().warranty_start_date}
+                      label="Warranty start date"
+                      fullWidth
+                    />
+                  </Grid>
+                )}
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <Autocomplete
                     fullWidth
@@ -157,6 +214,7 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
                       fullWidth
                       options={commonDiagnostics.map((issue) => ({ label: issue.issue_type, id: issue.id }))}
                       getOptionLabel={(option) => option.label}
+                      defaultValue={{ label: ticketDeviceFinder().common_diagnostics, id: 1 }}
                       onChange={(event, value) => {
                         setFieldValue('commonDiagnostics', value == null ? 'none' : value.label);
                       }}
@@ -177,11 +235,22 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
                     multiline
                     rows={5}
                     label="Extra notes"
-                    value={values.extraNotes}
+                    value={values.extraNotes !== '' ? ticketDeviceFinder().extra_notes : values.extraNotes}
                     onChange={(event) => setFieldValue('extraNotes', event.target.value)}
                     fullWidth
                   />
                 </Grid>
+                {ticketDeviceFinder().not_completed_notes && (
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField
+                      multiline
+                      rows={3}
+                      label="Not completed notes"
+                      value={ticketDeviceFinder().not_completed_notes}
+                      fullWidth
+                    />
+                  </Grid>
+                )}
               </Grid>
             </Box>
           </DialogContent>
@@ -189,16 +258,18 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
             <Button variant="outlined" color="secondary" onClick={triggerHandler}>
               Cancel
             </Button>
-            <LoadingButton
-              size="medium"
-              type="submit"
-              variant="contained"
-              loading={isSubmitting}
-              disabled={!dirty}
-              onClick={handleSubmit}
-            >
-              Update
-            </LoadingButton>
+            {isEditable && (
+              <LoadingButton
+                size="medium"
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+                disabled={!dirty}
+                onClick={handleSubmit}
+              >
+                Update
+              </LoadingButton>
+            )}
           </DialogActions>
         </Dialog>
       )}

@@ -10,7 +10,11 @@ import { Box, Card, CardContent, CardHeader, FormHelperText, Grid, TextField } f
 import Rating from '@material-ui/lab/Rating';
 import { LoadingButton } from '@material-ui/lab';
 // utils
-import { ticketFollowBackCallAdder, ticketFollowBackCallFetcher } from '../../../APIs/customerService/tickets';
+import {
+  ticketFollowBackCallAdder,
+  ticketFollowBackCallFetcher,
+  ticketUpdater
+} from '../../../APIs/customerService/tickets';
 // components
 import { MIconButton } from '../../@material-extend';
 
@@ -22,6 +26,33 @@ function FollowBackCall({ ticketDetailsState }) {
   const [ticketFollowBackCall, setTicketFollowBackCall] = useState({});
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
+  const updateTicketStageHandler = () => {
+    const data = new FormData();
+    data.append('currentStage', 'customer-service-stage');
+    data.append('isClosed', true);
+    ticketUpdater(ticketDetails.id, data)
+      .then((ticketDetailsData) => {
+        setTicketDetails(ticketDetailsData);
+        enqueueSnackbar('Ticket proceeded to final stage', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+      })
+      .catch((error) => {
+        enqueueSnackbar(`Couldnt proceed ticket to the final stage ${error}`, {
+          variant: 'error',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+      });
+  };
   const formik = useFormik({
     initialValues: {
       notes: ticketFollowBackCall.notes,
@@ -31,13 +62,14 @@ function FollowBackCall({ ticketDetailsState }) {
       notes: Yup.string().required('Notes is required'),
       rating: Yup.number().required('Rating is required')
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       const data = new FormData();
       data.append('notes', values.notes);
       data.append('rating', values.rating);
       await ticketFollowBackCallAdder(ticketDetails.id, data)
         .then((followBackCallData) => {
-          setTicketDetails(ticketDetails);
+          setTicketFollowBackCall(followBackCallData);
+          updateTicketStageHandler();
           enqueueSnackbar('Followback call created', {
             variant: 'success',
             action: (key) => (
@@ -74,37 +106,49 @@ function FollowBackCall({ ticketDetailsState }) {
         <CardContent>
           <Grid container spacing={3} justifyContent="center" alignItems="center">
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <TextField
-                multiline
-                rows={3}
-                label="Notes"
-                fullWidth
-                value={values.notes}
-                onChange={(event) => setFieldValue('notes', event.target.value)}
-                {...getFieldProps('notes')}
-                error={Boolean(touched.notes && errors.notes)}
-                helperText={touched.notes && errors.notes}
-              />
+              {ticketDetails.current_stage === 'customer-service-stage' ? (
+                <TextField label="Notes" value={ticketFollowBackCall.notes} multiline rows={3} fullWidth focused />
+              ) : (
+                <TextField
+                  multiline
+                  rows={3}
+                  label="Notes"
+                  fullWidth
+                  value={values.notes}
+                  onChange={(event) => setFieldValue('notes', event.target.value)}
+                  {...getFieldProps('notes')}
+                  error={Boolean(touched.notes && errors.notes)}
+                  helperText={touched.notes && errors.notes}
+                />
+              )}
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <Rating value={values.rating} onChange={(event, newValue) => setFieldValue('rating', newValue)} />
-              <FormHelperText sx={{ px: 2 }} error>
-                {errors.rating}
-              </FormHelperText>
+              {ticketDetails.current_stage === 'customer-service-stage' ? (
+                <Rating name="rating" value={parseInt(ticketFollowBackCall.rating, 10)} readOnly />
+              ) : (
+                <>
+                  <Rating value={values.rating} onChange={(event, newValue) => setFieldValue('rating', newValue)} />
+                  <FormHelperText sx={{ px: 2 }} error>
+                    {errors.rating}
+                  </FormHelperText>
+                </>
+              )}
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-              <LoadingButton
-                sx={{ float: 'right' }}
-                size="medium"
-                type="submit"
-                variant="contained"
-                loading={isSubmitting}
-                disabled={!dirty}
-                onClick={handleSubmit}
-              >
-                Save
-              </LoadingButton>
-            </Grid>
+            {ticketDetails.current_stage !== 'customer-service-stage' && (
+              <Grid item xs={12} sm={12} md={12} lg={12}>
+                <LoadingButton
+                  sx={{ float: 'right' }}
+                  size="medium"
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                  disabled={!dirty}
+                  onClick={handleSubmit}
+                >
+                  Save
+                </LoadingButton>
+              </Grid>
+            )}
           </Grid>
         </CardContent>
       </Card>

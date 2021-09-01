@@ -77,6 +77,7 @@ function ListTicketsPage() {
               { id: 'technicianName', label: 'Technician name' },
               { id: 'intializedAt', label: 'Intialized at' },
               { id: 'currentStage', label: 'Current stage' },
+              { id: 'status', label: 'Status' },
               { id: 'action', label: 'Action' },
               { id: '' }
             ]}

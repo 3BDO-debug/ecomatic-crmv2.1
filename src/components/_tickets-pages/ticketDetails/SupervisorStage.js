@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -27,41 +27,44 @@ function SupervisorStage({ ticketDetailsState }) {
   const [techniciansTableRows, setTechnicianTableRows] = useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const assignTechnicianHandler = (technicianId) => {
-    const data = new FormData();
-    data.append('currentStage', 'supervisor-stage');
-    data.append('technicianId', technicianId);
-    ticketUpdater(ticketDetails.id, data)
-      .then((ticketDetailsData) => {
-        setTicketDetails(ticketDetailsData);
-        enqueueSnackbar('Technician assigned', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
+  const assignTechnicianHandler = useCallback(
+    (technicianId) => {
+      const data = new FormData();
+      data.append('currentStage', 'supervisor-stage');
+      data.append('technicianId', technicianId);
+      ticketUpdater(ticketDetails.id, data)
+        .then((ticketDetailsData) => {
+          setTicketDetails(ticketDetailsData);
+          enqueueSnackbar('Technician assigned', {
+            variant: 'success',
+            action: (key) => (
+              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} />
+              </MIconButton>
+            )
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar(`Couldnt assign technicain ${error}`, {
+            variant: 'error',
+            action: (key) => (
+              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                <Icon icon={closeFill} />
+              </MIconButton>
+            )
+          });
         });
-      })
-      .catch((error) => {
-        enqueueSnackbar(`Couldnt assign technicain ${error}`, {
-          variant: 'error',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
-      });
-  };
+    },
+    [closeSnackbar, enqueueSnackbar, setTicketDetails, ticketDetails.id]
+  );
 
-  const assignedTechnicianFinder = () => {
+  const assignedTechnicianFinder = useCallback(() => {
     const assignedTechnician = accounts.find((account) => account.id === ticketDetails.related_technician);
     console.log('xxx', assignedTechnician);
     return assignedTechnician;
-  };
+  }, [accounts, ticketDetails.related_technician]);
 
-  const techniciansDataCreator = () => {
+  const techniciansDataCreator = useCallback(() => {
     const techniciansData = [];
     if (accounts.map) {
       accounts.map((account) =>
@@ -86,11 +89,11 @@ function SupervisorStage({ ticketDetailsState }) {
       );
     }
     return techniciansData;
-  };
+  }, [accounts, assignTechnicianHandler, assignedTechnicianFinder]);
   useEffect(() => {
     setRequiredRole('Technicians');
     setTechnicianTableRows(techniciansDataCreator());
-  }, [accounts, ticketDetails]);
+  }, [accounts, ticketDetails, setRequiredRole, techniciansDataCreator]);
   return (
     <Card sx={{ boxShadow: 'none' }}>
       <CardHeader title="Pick a technician" />
@@ -106,6 +109,7 @@ function SupervisorStage({ ticketDetailsState }) {
           rowsData={techniciansTableRows}
           searchPlaceholder="Search technicains.."
           filterBy="name"
+          disableCheckbox
         />
       </CardContent>
     </Card>

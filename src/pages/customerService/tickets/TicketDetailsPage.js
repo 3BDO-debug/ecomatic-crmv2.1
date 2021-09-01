@@ -1,16 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Icon } from '@iconify/react';
 import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Container, Card, Box, Stack, Tabs, Tab } from '@material-ui/core';
+import {
+  Container,
+  Card,
+  Box,
+  Stack,
+  Tabs,
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  DialogActions,
+  Button
+} from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 // utils
 import { ticketDetailsDataCreator } from '../../../utils/mock-data/customerService/tickets';
-import { ticketUpdater } from '../../../APIs/customerService/tickets';
+import { ticketUpdater, ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
+import { closeTicketValidation } from '../../../utils/closeTicketValidation';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // context
@@ -25,6 +39,7 @@ import TechnicianStage from '../../../components/_tickets-pages/ticketDetails/Te
 import FollowBackCall from '../../../components/_tickets-pages/ticketDetails/FollowBackCall';
 import TicketInfo from '../../../components/_tickets-pages/ticketDetails/TicketInfo';
 import { MIconButton } from '../../../components/@material-extend';
+import Label from '../../../components/Label';
 
 function TicketDetailsPage() {
   const { themeStretch } = useSettings();
@@ -32,8 +47,10 @@ function TicketDetailsPage() {
 
   const [currentTab, setCurrentTab] = useState('timeline');
   const { ticketId } = useParams();
-  const [tickets, setTickets] = useContext(TicketsContext).ticketsState;
+  const tickets = useContext(TicketsContext).ticketsState[0];
   const [ticketDetails, setTicketDetails] = useState({});
+  const [ticketDevices, setTicketDevices] = useState([]);
+  const [ticketCloseAlert, triggerTicketCloseAlert] = useState(false);
 
   const [activeStep, setActiveStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -42,8 +59,14 @@ function TicketDetailsPage() {
   const [nextIsLoading, setNextIsLoading] = useState(false);
 
   const nextHandler = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    stageChecker();
+    if (stageChecker()) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+    /* alert(stageChecker());
+    
+
+    /*     stageChecker();
+     */
   };
 
   const backHandler = () => {
@@ -54,13 +77,13 @@ function TicketDetailsPage() {
     setActiveStep(0);
   };
 
-  const showNextHandler = () => {
+  const showNextHandler = useCallback(() => {
     if (currentStep >= activeStep) {
       setShowNext(true);
     } else {
       setShowNext(false);
     }
-  };
+  }, [activeStep, currentStep]);
 
   const ticketStageUpdater = () => {
     setNextIsLoading(true);
@@ -89,14 +112,26 @@ function TicketDetailsPage() {
   };
 
   const stageChecker = () => {
-    if (activeStep === currentStep) {
-      ticketStageUpdater();
-    }
     showNextHandler();
+    let proceed;
+
+    if (activeStep === currentStep && ticketDetails.current_stage !== 'technician-stage') {
+      ticketStageUpdater();
+      proceed = true;
+      alert(proceed);
+    } else if (ticketDetails.current_stage === 'technician-stage' && activeStep === 2) {
+      closeTicketValidation(ticketDevices).then((proceed) => !proceed && triggerTicketCloseAlert(true));
+      if (ticketCloseAlert) {
+        proceed = false;
+      } else {
+        proceed = true;
+      }
+    }
+    return proceed;
   };
   useEffect(() => {
     showNextHandler();
-  }, [activeStep]);
+  }, [activeStep, showNextHandler]);
 
   useEffect(() => {
     if (ticketDetails) {
@@ -115,8 +150,15 @@ function TicketDetailsPage() {
       }
       showNextHandler();
     }
-  }, [ticketDetails]);
+  }, [ticketDetails, showNextHandler]);
 
+  useEffect(() => {
+    ticketDevicesFetcher(ticketId)
+      .then((ticketDevicesData) => {
+        setTicketDevices(ticketDevicesData);
+      })
+      .catch((error) => console.log(error));
+  }, [ticketId, ticketDetails]);
   const TABS = [
     {
       value: 'timeline',
@@ -135,7 +177,13 @@ function TicketDetailsPage() {
             {
               title: 'Agent Stage',
               id: 1,
-              content: <AgentStage ticketId={ticketId} ticketState={[ticketDetails, setTicketDetails]} />
+              content: (
+                <AgentStage
+                  ticketDevicesState={[ticketDevices, setTicketDevices]}
+                  ticketId={ticketId}
+                  ticketState={[ticketDetails, setTicketDetails]}
+                />
+              )
             },
             {
               title: 'Supervisor Stage',
@@ -170,7 +218,16 @@ function TicketDetailsPage() {
     <Page title="Tickets | Ticket Details">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading={`Ticket Details | ${ticketDetails && ticketDetails.id}`}
+          heading={
+            <>
+              {`Ticket Details | ${ticketDetails && ticketDetails.id} `}
+              {ticketDetails && ticketDetails.is_closed && (
+                <Label style={{ marginLeft: '10px' }} variant="ghost" color="error">
+                  Closed
+                </Label>
+              )}
+            </>
+          }
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Tickets', href: PATH_DASHBOARD.customerService.tickets.root },
@@ -194,10 +251,29 @@ function TicketDetailsPage() {
               {TABS.map((tab) => {
                 const isMatched = tab.value === currentTab;
                 return isMatched && <Box key={tab.value}>{tab.component}</Box>;
-              })}{' '}
+              })}
             </Stack>
           </Box>
         </Card>
+        {/* Ticket close alert */}
+        <Dialog open={ticketCloseAlert} onClose={() => triggerTicketCloseAlert(false)}>
+          <DialogTitle>
+            <Button color="error" startIcon={<Icon icon="eva:alert-triangle-outline" width={30} height={30} />}>
+              Alert
+            </Button>
+          </DialogTitle>
+          <DialogContent>
+            <Box marginTop="30px">
+              <Typography variant="body2">
+                You can't close the ticket since there's devices still in progress please wait till technicain to
+                proceed them then try again
+              </Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => triggerTicketCloseAlert(false)}>Understood</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Page>
   );
