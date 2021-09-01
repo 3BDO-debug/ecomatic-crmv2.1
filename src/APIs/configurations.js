@@ -23,3 +23,12 @@ export const distributorsFetcher = async () =>
 
 export const servicesFetcher = async () =>
   axiosInstance.get(`${mainUrl}/Configurations/Ticket-Services`).then((response) => response.data);
+
+export const ticketTypesFetcher = async () =>
+  axiosInstance.get(`${mainUrl}/Configurations/Ticket-Types`).then((response) => response.data);
+
+export const ticektStatusesFetcher = async () =>
+  axiosInstance.get(`${mainUrl}/Configurations/Ticket-Status`).then((response) => response.data);
+
+export const commonDiagnosticsFetcher = async (categoryName) =>
+  axiosInstance.get(`${mainUrl}/Configurations/Common-Diagnostics/${categoryName}`).then((response) => response.data);

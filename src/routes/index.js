@@ -12,7 +12,8 @@ import {
   ItemsProvider,
   ConfigurationsProvider,
   SparepartsProvider,
-  ClientsProvider
+  ClientsProvider,
+  TicketsProvider
 } from '../contexts';
 // components
 import LoadingScreen from '../components/LoadingScreen';
@@ -66,7 +67,9 @@ export default function Router() {
                 <ConfigurationsProvider>
                   <SparepartsProvider>
                     <ClientsProvider>
-                      <DashboardLayout />
+                      <TicketsProvider>
+                        <DashboardLayout />
+                      </TicketsProvider>
                     </ClientsProvider>
                   </SparepartsProvider>
                 </ConfigurationsProvider>

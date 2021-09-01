@@ -53,6 +53,40 @@ export const clientDevicessDataCreator = (clientDevices) => {
   return clientDevicesData;
 };
 
+export const clientTicketsDataCreator = (tickets, clientId) => {
+  const ticketsData = [];
+  tickets.map(
+    (ticket) =>
+      ticket.related_client === parseInt(clientId, 10) &&
+      ticketsData.push({
+        id: ticket.id,
+        clientName: ticket.client_name,
+        technicianName:
+          ticket.technician_name !== 'Technician Not Selected Yet' ? (
+            ticket.technician_name
+          ) : (
+            <Label variant="ghost" color="error">
+              Technician not yet selected
+            </Label>
+          ),
+        intializedAt: ticket.created_at,
+        currentStage: (
+          <Label variant="ghost" color="info">
+            {ticket.current_stage}
+          </Label>
+        ),
+        action: (
+          <Button
+            component={Link}
+            to={`/dashboard/tickets/ticket-details/${ticket.id}`}
+            startIcon={<Icon icon="akar-icons:eye" />}
+          />
+        )
+      })
+  );
+  return ticketsData;
+};
+
 export const feedingSourcesDataCreator = (deviceCategory) => {
   const feedingSourcesData = [];
   const nonHoodFeedingSources = ['Natural Gas', 'Gas Cylinder'];

@@ -5,3 +5,4 @@ export { ItemsContext, ItemsProvider } from './storage/ItemsContext';
 export { ConfigurationsContext, ConfigurationsProvider } from './ConfigurationsContext';
 export { SparepartsContext, SparepartsProvider } from './storage/SparepartsContext';
 export { ClientsContext, ClientsProvider } from './customerService/ClientsContext';
+export { TicketsContext, TicketsProvider } from './customerService/TicketsContext';

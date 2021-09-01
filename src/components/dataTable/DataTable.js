@@ -22,7 +22,8 @@ DataTable.propTypes = {
   rowEditUrl: PropTypes.string,
   onSelectAllDelete: PropTypes.func,
   identifier: PropTypes.string,
-  rowSelectHandler: PropTypes.func
+  rowSelectHandler: PropTypes.func,
+  disableCheckbox: PropTypes.bool
 };
 
 function DataTable({
@@ -34,7 +35,8 @@ function DataTable({
   rowEditUrl,
   onSelectAllDelete,
   identifier,
-  rowSelectHandler
+  rowSelectHandler,
+  disableCheckbox
 }) {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -126,6 +128,7 @@ function DataTable({
               numSelected={selected.length}
               onRequestSort={handleRequestSort}
               onSelectAllClick={handleSelectAllClick}
+              disableCheckbox={disableCheckbox}
             />
             <TableBody>
               {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
@@ -140,21 +143,16 @@ function DataTable({
                     selected={isItemSelected}
                     aria-checked={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row[identifier])} />
-                    </TableCell>
+                    {!disableCheckbox && (
+                      <TableCell padding="checkbox">
+                        <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row[identifier])} />
+                      </TableCell>
+                    )}
                     {cellsData.map((cell, index) => (
-                      <TableCell key={index} component="th" scope="row" padding="none">
+                      <TableCell key={index} component="th" scope="row" padding="normal">
                         {cell}
                       </TableCell>
                     ))}
-                    <TableCell align="right">
-                      <TableMoreMenu
-                        isEditable={rowIsEditable}
-                        onDelete={() => handleDeleteUser(row[filterBy])}
-                        editUrl={`${rowEditUrl}/${row[filterBy]}`}
-                      />
-                    </TableCell>
                   </TableRow>
                 );
               })}

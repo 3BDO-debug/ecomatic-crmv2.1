@@ -51,7 +51,11 @@ function ClientProfilePage() {
       icon: <Icon icon="carbon:block-storage-alt" width={20} height={20} />,
       component: <ClientDevices clientId={clientId} clientDevicesState={[clientDevices, setClientDevices]} />
     },
-    { value: 'tickets', icon: <Icon icon="akar-icons:ticket" width={20} height={20} />, component: <ClientTickets /> },
+    {
+      value: 'tickets',
+      icon: <Icon icon="akar-icons:ticket" width={20} height={20} />,
+      component: <ClientTickets clientId={clientId} />
+    },
     { value: 'logs', icon: <Icon icon="cil:history" width={20} height={20} />, component: <>logs</> }
   ];
 

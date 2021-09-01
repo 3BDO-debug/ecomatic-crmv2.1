@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -11,6 +11,8 @@ import DataTable from '../../dataTable/DataTable';
 import { clientDevicessDataCreator } from '../../../utils/mock-data/customerService/clients';
 import { clientDevicesDeleter } from '../../../APIs/customerService/clients';
 import { ticketIntializer as ticketIntializerAPI } from '../../../APIs/customerService/tickets';
+// context
+import { TicketsContext } from '../../../contexts';
 // components
 import { MIconButton } from '../../@material-extend';
 
@@ -21,6 +23,7 @@ ClientDevices.propTypes = {
 
 function ClientDevices({ clientId, clientDevicesState }) {
   const [clientDevices, setClientDevices] = clientDevicesState;
+  const [tickets, setTickets] = useContext(TicketsContext).ticketsState;
   const [clientDevicesTableRows, setClientDevicesTableRows] = useState([]);
   const [ticketIntializerButton, triggerTicketIntializerButton] = useState(false);
   const [selectedDevices, setSelectedDevices] = useState([]);
@@ -52,6 +55,7 @@ function ClientDevices({ clientId, clientDevicesState }) {
     });
     ticketIntializerAPI(data)
       .then((response) => {
+        setTickets([...tickets, response]);
         navigate(`/dashboard/tickets/ticket-details/${response.id}`);
         enqueueSnackbar('Ticket intialized sucessfully', {
           variant: 'success',
