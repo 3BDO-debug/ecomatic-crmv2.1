@@ -3,16 +3,17 @@ import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
 import { alpha, styled } from '@material-ui/core/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@material-ui/core';
+import { Box, Stack, AppBar, Toolbar, IconButton, Tooltip } from '@material-ui/core';
 // hooks
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
+import useSettings from '../../hooks/useSettings';
 // components
 import { MHidden } from '../../components/@material-extend';
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
-import NotificationsPopover from './NotificationsPopover';
-
+/* import NotificationsPopover from './NotificationsPopover';
+ */
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -47,7 +48,14 @@ DashboardNavbar.propTypes = {
 
 export default function DashboardNavbar({ onOpenSidebar }) {
   const { isCollapse } = useCollapseDrawer();
-
+  const { themeMode, onChangeMode } = useSettings();
+  const handleModeChange = () => {
+    if (themeMode === 'light') {
+      onChangeMode('dark');
+    } else {
+      onChangeMode('light');
+    }
+  };
   return (
     <RootStyle
       sx={{
@@ -68,7 +76,12 @@ export default function DashboardNavbar({ onOpenSidebar }) {
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />
-          <NotificationsPopover />
+          <Tooltip title="Light/Dark Mode">
+            <IconButton onClick={handleModeChange}>
+              <Icon icon={themeMode === 'light' ? 'ic:baseline-dark-mode' : 'ic:baseline-light-mode'} />
+            </IconButton>
+          </Tooltip>
+
           <AccountPopover />
         </Stack>
       </ToolbarStyle>
