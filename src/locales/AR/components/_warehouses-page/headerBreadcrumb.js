@@ -1,11 +1,11 @@
 const headerBreadcrumbTranslation = {
-  header: 'قائمة المستودع',
+  header: 'عرض المستودعات',
   links: {
-    root: 'الصفحة الرئيسية',
-    main: 'المستودع',
-    current: 'قائمه المستودع'
+    root: 'لوحة التحكم',
+    main: 'المستودعات',
+    current: 'عرض المستودعات'
   },
-  actionButton: 'اضف مستودع'
+  actionButton: 'اضافة مستودع'
 };
 
 export default headerBreadcrumbTranslation;

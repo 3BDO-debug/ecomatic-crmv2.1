@@ -15,6 +15,8 @@ import {
   ticketFollowBackCallFetcher,
   ticketUpdater
 } from '../../../APIs/customerService/tickets';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { MIconButton } from '../../@material-extend';
 
@@ -23,7 +25,8 @@ FollowBackCall.propTypes = {
 };
 
 function FollowBackCall({ ticketDetailsState }) {
-  const [ticketFollowBackCall, setTicketFollowBackCall] = useState({});
+  const { translate } = useLocales();
+  const [ticketFollowBackCall, setTicketFollowBackCall] = useState(null);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
   const updateTicketStageHandler = () => {
@@ -55,8 +58,8 @@ function FollowBackCall({ ticketDetailsState }) {
   };
   const formik = useFormik({
     initialValues: {
-      notes: ticketFollowBackCall.notes,
-      rating: ticketFollowBackCall.rating
+      notes: ticketFollowBackCall ? ticketFollowBackCall.notes : '',
+      rating: ticketFollowBackCall ? ticketFollowBackCall.rating : 0
     },
     validationSchema: Yup.object().shape({
       notes: Yup.string().required('Notes is required'),
@@ -102,17 +105,24 @@ function FollowBackCall({ ticketDetailsState }) {
   return (
     <Box component="form">
       <Card sx={{ boxShadow: 'none' }} variant="outlined">
-        <CardHeader title="Followback call" />
+        <CardHeader title={translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.title')} />
         <CardContent>
           <Grid container spacing={3} justifyContent="center" alignItems="center">
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              {ticketDetails.current_stage === 'customer-service-stage' ? (
-                <TextField label="Notes" value={ticketFollowBackCall.notes} multiline rows={3} fullWidth focused />
+              {ticketFollowBackCall ? (
+                <TextField
+                  label={translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.notes')}
+                  value={ticketFollowBackCall.notes}
+                  multiline
+                  rows={3}
+                  fullWidth
+                  focused
+                />
               ) : (
                 <TextField
                   multiline
                   rows={3}
-                  label="Notes"
+                  label={translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.notes')}
                   fullWidth
                   value={values.notes}
                   onChange={(event) => setFieldValue('notes', event.target.value)}
@@ -123,7 +133,7 @@ function FollowBackCall({ ticketDetailsState }) {
               )}
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              {ticketDetails.current_stage === 'customer-service-stage' ? (
+              {ticketFollowBackCall ? (
                 <Rating name="rating" value={parseInt(ticketFollowBackCall.rating, 10)} readOnly />
               ) : (
                 <>
@@ -134,7 +144,7 @@ function FollowBackCall({ ticketDetailsState }) {
                 </>
               )}
             </Grid>
-            {ticketDetails.current_stage !== 'customer-service-stage' && (
+            {!ticketFollowBackCall && (
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <LoadingButton
                   sx={{ float: 'right' }}
@@ -145,7 +155,7 @@ function FollowBackCall({ ticketDetailsState }) {
                   disabled={!dirty}
                   onClick={handleSubmit}
                 >
-                  Save
+                  {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.actionButton')}
                 </LoadingButton>
               </Grid>
             )}

@@ -7,6 +7,8 @@ import { Icon } from '@iconify/react';
 import { Card, CardHeader, CardContent, Avatar, Button } from '@material-ui/core';
 // context
 import { AccountsContext } from '../../../contexts';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketUpdater } from '../../../APIs/customerService/tickets';
 // routes
@@ -21,6 +23,7 @@ SupervisorStage.propTypes = {
 };
 
 function SupervisorStage({ ticketDetailsState }) {
+  const { translate } = useLocales();
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
   const accounts = useContext(AccountsContext).accountsState[0];
   const setRequiredRole = useContext(AccountsContext).requiredRoleState[1];
@@ -100,14 +103,30 @@ function SupervisorStage({ ticketDetailsState }) {
       <CardContent>
         <DataTable
           columnsData={[
-            { id: 'name', label: 'Full name' },
-            { id: 'photo', label: 'Photo' },
-            { id: 'role', label: 'Role' },
-            { id: 'action', label: 'Action' },
+            {
+              id: 'name',
+              label: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.techniciansTable.tableColumns.fullname'
+              )
+            },
+            {
+              id: 'photo',
+              label: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.techniciansTable.tableColumns.photo')
+            },
+            {
+              id: 'role',
+              label: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.techniciansTable.tableColumns.role')
+            },
+            {
+              id: 'action',
+              label: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.techniciansTable.tableColumns.action')
+            },
             { id: '' }
           ]}
           rowsData={techniciansTableRows}
-          searchPlaceholder="Search technicains.."
+          searchPlaceholder={translate(
+            'ticketDetailsPage.ticketTimelineTab.ticketStepper.techniciansTable.searchPlaceholder'
+          )}
           filterBy="name"
           disableCheckbox
         />

@@ -11,23 +11,29 @@ const sidebarTranslation = {
       warehouses: 'Warehouses',
       items: {
         label: 'Items',
-        children: { createItem: 'Create Item', listItems: 'List Items' }
+        children: { createItem: 'Create item', listItems: 'List items' }
       },
       spareparts: {
-        createSparepart: 'Create Sparepart',
-        listSpareparts: 'List Spareparts'
+        label: 'Spareparts',
+        children: { createSparepart: 'Add sparepart', listSpareparts: 'List spareparts' }
       }
     }
   },
   customerService: {
-    label: 'Customer Service',
+    label: 'Customer service',
     children: {
       clients: {
-        createClient: 'Create Client',
-        listClients: 'List Clients'
+        label: 'Clients',
+        children: {
+          createClient: 'Add client',
+          listClients: 'List clients'
+        }
       },
       tickets: {
-        listTickets: 'List Tickets'
+        label: 'Tickets',
+        children: {
+          listTickets: 'List tickets'
+        }
       }
     }
   }

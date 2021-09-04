@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router';
 // material
 import { Card, Fab, Slide, Tooltip, Badge } from '@material-ui/core';
 import DataTable from '../../dataTable/DataTable';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // utils
 import { clientDevicessDataCreator } from '../../../utils/mock-data/customerService/clients';
 import { clientDevicesDeleter } from '../../../APIs/customerService/clients';
@@ -15,6 +17,7 @@ import { ticketIntializer as ticketIntializerAPI } from '../../../APIs/customerS
 import { TicketsContext } from '../../../contexts';
 // components
 import { MIconButton } from '../../@material-extend';
+import ClientDeviceDetails from './ClientDeviceDetails';
 
 ClientDevices.propTypes = {
   clientId: PropTypes.number,
@@ -22,11 +25,15 @@ ClientDevices.propTypes = {
 };
 
 function ClientDevices({ clientId, clientDevicesState }) {
+  const { translate } = useLocales();
   const [clientDevices, setClientDevices] = clientDevicesState;
   const [tickets, setTickets] = useContext(TicketsContext).ticketsState;
   const [clientDevicesTableRows, setClientDevicesTableRows] = useState([]);
   const [ticketIntializerButton, triggerTicketIntializerButton] = useState(false);
   const [selectedDevices, setSelectedDevices] = useState([]);
+  const [triggeredDevice, setTriggeredDevice] = useState({});
+  const [deviceDetails, triggerDeviceDetails] = useState(false);
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const ticketIntializerHandler = (selectedRows) => {
@@ -38,7 +45,7 @@ function ClientDevices({ clientId, clientDevicesState }) {
     }
   };
   useEffect(() => {
-    setClientDevicesTableRows(clientDevicessDataCreator(clientDevices));
+    setClientDevicesTableRows(clientDevicessDataCreator(clientDevices, triggerDeviceDetails, setTriggeredDevice));
   }, [clientDevices]);
 
   const ticketIntializer = () => {
@@ -81,19 +88,43 @@ function ClientDevices({ clientId, clientDevicesState }) {
     <Card>
       <DataTable
         columnsData={[
-          { id: 'id', label: 'ID' },
-          { id: 'modelNumber', label: 'Model Number' },
-          { id: 'purchasingDate', label: 'Purchasing Data' },
-          { id: 'manufacturingDate', label: 'Manufacturing Date' },
-          { id: 'installationDate', label: 'Installation Date' },
-          { id: 'warrantyStartDate', label: 'Warranty Start Date' },
-          { id: 'warrantyStatus', label: 'Warranty Status' },
-          { id: 'action', label: 'Action' },
+          {
+            id: 'id',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.id')
+          },
+          {
+            id: 'modelNumber',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.modelNumber')
+          },
+          {
+            id: 'purchasingDate',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.purchasingDate')
+          },
+          {
+            id: 'manufacturingDate',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.manufacturingDate')
+          },
+          {
+            id: 'installationDate',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.installationDate')
+          },
+          {
+            id: 'warrantyStartDate',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.warrantyStartDate')
+          },
+          {
+            id: 'warrantyStatus',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.warrantyStatus')
+          },
+          {
+            id: 'action',
+            label: translate('clientProfilePage.clientDevicesTab.clientDevicesTable.tableColumns.action')
+          },
           { id: '' }
         ]}
         rowsData={clientDevicesTableRows}
         filterBy="modelNumber"
-        searchPlaceholder="Search Client Devices.."
+        searchPlaceholder={translate('clientProfilePage.clientDevicesTab.clientDevicesTable.searchPlaceholder')}
         onSelectAllDelete={(selectedRows) => {
           const data = new FormData();
           data.append('clientDevicesToBeDeleted', JSON.stringify(selectedRows));
@@ -123,10 +154,16 @@ function ClientDevices({ clientId, clientDevicesState }) {
         identifier="id"
         rowSelectHandler={ticketIntializerHandler}
       />
+      {/* Device details */}
+      <ClientDeviceDetails
+        deviceDetails={triggeredDevice}
+        isTriggered={deviceDetails}
+        triggerHandler={() => triggerDeviceDetails(false)}
+      />
       {/* Ticket intializer */}
       <Slide direction="up" in={ticketIntializerButton}>
         <Tooltip title="Intialize ticket" placement="top">
-          <Badge badgeContent={selectedDevices.length} color="primary">
+          <Badge sx={{ float: 'right', marginRight: '20px' }} badgeContent={selectedDevices.length} color="primary">
             <Fab onClick={ticketIntializer} sx={{ float: 'right' }}>
               <Icon icon="akar-icons:ticket" width={20} height={20} />
             </Fab>

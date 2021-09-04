@@ -1,39 +1,34 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 // material
-import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel } from '@material-ui/core';
-import { LoadingButton } from '@material-ui/lab';
+import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel, Typography } from '@material-ui/core';
 
 // ----------------------------------------------------------------------
 
 Stepper.propTypes = {
   steps: PropTypes.array,
-  skippedState: PropTypes.array,
+  activeStepState: PropTypes.array,
   finalStepComponent: PropTypes.element,
   nextHandler: PropTypes.func,
   backHandler: PropTypes.func,
   resetHandler: PropTypes.func,
-  showNext: PropTypes.bool,
-  nextIsLoading: PropTypes.bool,
-  currentStep: PropTypes.any,
-  activeStepState: PropTypes.array
+  showNext: PropTypes.bool
 };
 
-function Stepper({
-  steps,
-  finalStepComponent,
-  nextHandler,
-  backHandler,
-  resetHandler,
-  activeStepState,
-  skippedState,
-  currentStep,
-  showNext,
-  nextIsLoading
-}) {
-  const activeStep = activeStepState[0];
-  const skipped = skippedState[0];
+function Stepper({ steps, activeStepState, nextHandler, backHandler, resetHandler, finalStepComponent, showNext }) {
+  const [activeStep, setActiveStep] = activeStepState;
+  /*
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
 
-  const isStepSkipped = (step) => skipped.has(step);
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  }; */
 
   const currentStepFinder = () => {
     const currentStep = steps.find((step) => step.id === activeStep + 1);
@@ -42,16 +37,13 @@ function Stepper({
 
   return (
     <>
-      <MaterialStepper activeStep={currentStep}>
+      <MaterialStepper activeStep={activeStep}>
         {steps.map((step, index) => {
           const stepProps = {};
           const labelProps = {};
 
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
-            <Step key={index} {...stepProps}>
+            <Step key={index} {...stepProps} completed={step.active}>
               <StepLabel {...labelProps}>{step.title}</StepLabel>
             </Step>
           );
@@ -75,11 +67,12 @@ function Stepper({
             </Button>
             <Box sx={{ flexGrow: 1 }} />
 
-            {showNext && (
-              <LoadingButton disabled={nextIsLoading} loading={nextIsLoading} variant="contained" onClick={nextHandler}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </LoadingButton>
-            )}
+            <Button variant="text" onClick={nextHandler}>
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+            {/*             <Button variant="contained" onClick={nextStageHandler}>
+              Proceed to next stage
+            </Button> */}
           </Box>
         </>
       )}

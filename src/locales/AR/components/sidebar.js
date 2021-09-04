@@ -1,21 +1,21 @@
 const sidebarTranslation = {
   general: {
-    label: 'عام',
+    label: 'الرئيسية',
     children: {
-      overview: 'ملخص'
+      overview: 'نظرة عامة'
     }
   },
   storage: {
-    label: 'المساحه',
+    label: 'المخزن',
     children: {
-      warehouses: 'مستودع',
+      warehouses: 'المستودعات',
       items: {
-        label: 'عناصر',
-        children: { createItem: 'انشاء عنصر', listItems: 'قائمة العناصر' }
+        label: 'العناصر',
+        children: { createItem: 'اضافة عنصر', listItems: 'عرض العناصر' }
       },
       spareparts: {
-        createSparepart: 'انشاء قطع غيار',
-        listSpareparts: 'قائمة قطع الغيار '
+        label: 'قطع الغيار',
+        children: { createSparepart: 'اضافة قطعة غيار', listSpareparts: 'عرض قطع الغيار' }
       }
     }
   },
@@ -23,11 +23,17 @@ const sidebarTranslation = {
     label: 'خدمة العملاء',
     children: {
       clients: {
-        createClient: 'انشاء عميل',
-        listClients: 'قائمة العملاء'
+        label: 'العملاء',
+        children: {
+          createClient: 'اضافة عميل',
+          listClients: 'عرض العملاء'
+        }
       },
       tickets: {
-        listTickets: 'قائمة التزاكر'
+        label: 'التيكتس',
+        children: {
+          listTickets: 'عرض التيكتس'
+        }
       }
     }
   }

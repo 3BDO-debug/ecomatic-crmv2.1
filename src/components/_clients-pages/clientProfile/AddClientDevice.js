@@ -7,6 +7,8 @@ import { useSnackbar } from 'notistack5';
 // material
 import { Chip } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // utils
 import {
   addClientDeviceFormDefaults,
@@ -27,6 +29,7 @@ AddClientDevice.propTypes = {
 
 function AddClientDevice({ open, closeHandler, clientDevicesState, clientId }) {
   const setClientDevices = clientDevicesState[1];
+  const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: addClientDeviceFormDefaults,
@@ -73,7 +76,7 @@ function AddClientDevice({ open, closeHandler, clientDevicesState, clientId }) {
       }}
       dialogTitle={
         <>
-          Add client device
+          {translate('clientProfilePage.addClientDeviceForm.title')}
           {values.warrantyStatus !== null && (
             <Chip
               sx={{ marginLeft: '10px' }}
@@ -87,7 +90,7 @@ function AddClientDevice({ open, closeHandler, clientDevicesState, clientId }) {
       saveButton
       saveButtonComponent={
         <LoadingButton loading={isSubmitting} disabled={!dirty} onClick={handleSubmit} color="inherit">
-          Save
+          {translate('clientProfilePage.addClientDeviceForm.actionButton')}
         </LoadingButton>
       }
       dialogContent={<AddClientDeviceForm formik={formik} />}

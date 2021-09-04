@@ -1,12 +1,12 @@
 const ticketsOverviewTranslation = {
-  title: 'نظرة عامة على التذاكر',
+  title: 'نظرة عامة علي التيكيتس',
   tableColumns: {
-    id: 'رقم التذكره',
-    technician: 'فني',
+    id: 'الرقم التعريفي',
+    technician: 'الفني',
     clientName: 'اسم العميل',
     currentStage: 'المرحلة الحالية',
-    intializedAt: 'تمت التهيئة في',
-    status: 'الحالة'
+    intializedAt: 'انشئت في',
+    action: 'اجراء'
   },
   searchPlaceholder: 'بحث'
 };

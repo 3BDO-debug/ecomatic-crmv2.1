@@ -30,7 +30,7 @@ export const clientsDataCreator = (clients) => {
   return clientsData;
 };
 
-export const clientDevicessDataCreator = (clientDevices) => {
+export const clientDevicessDataCreator = (clientDevices, triggerDeviceDetails, setTriggeredDevice) => {
   const clientDevicesData = [];
   clientDevices.map((clientDevice) =>
     clientDevicesData.push({
@@ -44,6 +44,10 @@ export const clientDevicessDataCreator = (clientDevices) => {
       action: (
         <Button
           component={Link}
+          onClick={() => {
+            setTriggeredDevice(clientDevice);
+            triggerDeviceDetails(true);
+          }}
           to="/dashboard/clients/client-profile/client-device-data"
           startIcon={<Icon icon="akar-icons:eye" />}
         />
@@ -59,7 +63,7 @@ export const clientTicketsDataCreator = (tickets, clientId) => {
     (ticket) =>
       ticket.related_client === parseInt(clientId, 10) &&
       ticketsData.push({
-        id: ticket.id,
+        id: ticket.ticket_generated_id,
         clientName: ticket.client_name,
         technicianName:
           ticket.technician_name !== 'Technician Not Selected Yet' ? (

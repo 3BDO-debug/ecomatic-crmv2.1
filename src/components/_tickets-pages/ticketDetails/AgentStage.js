@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Box, Card, CardHeader, CardContent } from '@material-ui/core';
 // utils
 import { ticketDevicesDataCreator } from '../../../utils/mock-data/customerService/tickets';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import CollapsibleTable from '../../collapsible-table';
 import SparepartsServices from './SparepartsServices';
@@ -15,6 +17,7 @@ AgentStage.propTypes = {
 };
 
 function AgentStage({ ticketDevicesState, ticketState }) {
+  const { translate } = useLocales();
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
   const [sparepartsServices, triggerSparepartsServices] = useState(false);
@@ -22,7 +25,13 @@ function AgentStage({ ticketDevicesState, ticketState }) {
   const [deviceDetails, triggerDeviceDetails] = useState(false);
 
   useEffect(() => {
-    ticketDevicesDataCreator(ticketDevices, triggerSparepartsServices, setTriggeredDevice, triggerDeviceDetails)
+    ticketDevicesDataCreator(
+      ticketDevices,
+      triggerSparepartsServices,
+      setTriggeredDevice,
+      triggerDeviceDetails,
+      translate
+    )
       .then((ticketDevicesData) => setTicketDevicesTableRows(ticketDevicesData))
       .catch((error) => console.log(error));
   }, [ticketDevices]);
@@ -34,10 +43,30 @@ function AgentStage({ ticketDevicesState, ticketState }) {
         <CardContent>
           <CollapsibleTable
             columnsData={[
-              { id: 'modelNumber', label: 'Model number' },
-              { id: 'ticketType', label: 'Ticket type' },
-              { id: 'ticketStatus', label: 'Ticket status' },
-              { id: 'action', label: 'Actions' }
+              {
+                id: 'modelNumber',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.modelNumber'
+                )
+              },
+              {
+                id: 'ticketType',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketType'
+                )
+              },
+              {
+                id: 'ticketStatus',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketStatus'
+                )
+              },
+              {
+                id: 'action',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.actions'
+                )
+              }
             ]}
             rowsData={ticketDevicesTableRows}
           />

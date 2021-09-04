@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 // material
 import { Grid, Box, TextField, Autocomplete, FormHelperText } from '@material-ui/core';
 import { MobileDatePicker } from '@material-ui/lab';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // utils
 import { expectedWarrantyStartDateCalc, warrantyStatusChecker } from '../../../APIs/helpers';
 import { feedingSourcesDataCreator } from '../../../utils/mock-data/customerService/clients';
@@ -22,6 +24,7 @@ AddClientDeviceForm.propTypes = {
 };
 
 function AddClientDeviceForm({ formik }) {
+  const { translate } = useLocales();
   const { errors, values, touched, handleSubmit, setFieldValue, getFieldProps } = formik;
   const items = useContext(ItemsContext).itemsState[0];
   const branches = useContext(ConfigurationsContext).branchesState[0];
@@ -135,7 +138,7 @@ function AddClientDeviceForm({ formik }) {
                 autoFocus
                 {...params}
                 {...getFieldProps('device')}
-                label="Pick device by model number"
+                label={translate('clientProfilePage.addClientDeviceForm.deviceModelNumber')}
                 margin="none"
                 error={Boolean(touched.device && errors.device)}
                 helperText={touched.device && errors.device}
@@ -157,7 +160,7 @@ function AddClientDeviceForm({ formik }) {
               <TextField
                 {...params}
                 {...getFieldProps('feedingSource')}
-                label="Feeding source"
+                label={translate('clientProfilePage.addClientDeviceForm.feedingSource')}
                 margin="none"
                 error={Boolean(touched.feedingSource && errors.feedingSource)}
                 helperText={touched.feedingSource && errors.feedingSource}
@@ -179,7 +182,7 @@ function AddClientDeviceForm({ formik }) {
                 setFieldValue('purchasingInvoice', true);
                 triggerPurchasingDateSection(true);
               }}
-              quesiton="Is the purchasing invoice is available ?"
+              quesiton={translate('clientProfilePage.addClientDeviceForm.purchasingInvoiceQuestion.question')}
               onNoHandler={() => {
                 triggerPurchasingInvoiceQuestion(true);
                 setFieldValue('purchasingInvoice', false);
@@ -194,7 +197,7 @@ function AddClientDeviceForm({ formik }) {
               {values.purchasingInvoice ? (
                 <MobileDatePicker
                   orientation="portrait"
-                  label="Purchasing Date"
+                  label={translate('clientProfilePage.addClientDeviceForm.purchasingDate')}
                   value={values.purchasingDate}
                   inputFormat="dd/MM/yyyy"
                   onChange={(newValue) => {
@@ -214,7 +217,7 @@ function AddClientDeviceForm({ formik }) {
               ) : (
                 <MobileDatePicker
                   orientation="portrait"
-                  label="Manufacturing Date"
+                  label={translate('clientProfilePage.addClientDeviceForm.manufacturingDate')}
                   value={values.manufacturingDate}
                   inputFormat="dd/MM/yyyy"
                   onChange={(newValue) => {
@@ -225,7 +228,7 @@ function AddClientDeviceForm({ formik }) {
                     <TextField
                       fullWidth
                       {...params}
-                      label="Manufacturing Date"
+                      label={translate('clientProfilePage.addClientDeviceForm.manufacturingDate')}
                       margin="normal"
                       helperText={touched.manufacturingDate && errors.manufacturingDate}
                     />
@@ -238,7 +241,7 @@ function AddClientDeviceForm({ formik }) {
         {deviceInstallationQuestion && (
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Question
-              quesiton="Device is installed ?"
+              quesiton={translate('clientProfilePage.addClientDeviceForm.deviceInstallationQuestion.question')}
               isTriggered={!deviceInstallationQuestion}
               onYesHandler={() => {
                 triggerDeviceInstallationQuestion(!deviceInstallationQuestion);
@@ -253,11 +256,16 @@ function AddClientDeviceForm({ formik }) {
             <AnimatedSection isTriggered={expectedWarrantyStartDateSection}>
               <MobileDatePicker
                 orientation="portrait"
-                label="Expected Warranty Start Date"
+                label={translate('clientProfilePage.addClientDeviceForm.expectedWarrantyStartDate')}
                 inputFormat="dd/MM/yyyy"
                 value={values.expectedWarrantyStartDate}
                 renderInput={(params) => (
-                  <TextField fullWidth {...params} label="Expected Warranty Start Date" margin="normal" />
+                  <TextField
+                    fullWidth
+                    {...params}
+                    label={translate('clientProfilePage.addClientDeviceForm.expectedWarrantyStartDate')}
+                    margin="normal"
+                  />
                 )}
               />
             </AnimatedSection>
@@ -266,7 +274,9 @@ function AddClientDeviceForm({ formik }) {
         {deviceInstallationThroughCompanyQuestion && (
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Question
-              quesiton="But, device is installed through the company ?"
+              quesiton={translate(
+                'clientProfilePage.addClientDeviceForm.deviceIntallationThroughCompanyQuestion.question'
+              )}
               isTriggered={!deviceInstallationThroughCompanyQuestion}
               onYesHandler={() => {
                 triggerDeviceInstallationThroughCompanyQuestion(!deviceInstallationThroughCompanyQuestion);
@@ -288,7 +298,7 @@ function AddClientDeviceForm({ formik }) {
               <AnimatedSection isTriggered={installationDateSection}>
                 <MobileDatePicker
                   orientation="portrait"
-                  label="Instllation Date"
+                  label={translate('clientProfilePage.addClientDeviceForm.installationDate')}
                   inputFormat="dd/MM/yyyy"
                   value={values.installationDate}
                   onChange={installationDateHandler}
@@ -296,7 +306,7 @@ function AddClientDeviceForm({ formik }) {
                     <TextField
                       fullWidth
                       {...params}
-                      label="Installation Date"
+                      label={translate('clientProfilePage.addClientDeviceForm.installationDate')}
                       margin="normal"
                       helperText={touched.installationDate && errors.installationDate}
                     />
@@ -308,14 +318,14 @@ function AddClientDeviceForm({ formik }) {
               <AnimatedSection isTriggered={installationDateSection}>
                 <MobileDatePicker
                   orientation="portrait"
-                  label="Warranty Start Date"
+                  label={translate('clientProfilePage.addClientDeviceForm.warrantyStartDate')}
                   value={values.installationDate}
                   inputFormat="dd/MM/yyyy"
                   renderInput={(params) => (
                     <TextField
                       fullWidth
                       {...params}
-                      label="Warranty Start Date"
+                      label={translate('clientProfilePage.addClientDeviceForm.warrantyStartDate')}
                       margin="normal"
                       helperText={touched.installationDate && errors.installationDate}
                     />
@@ -340,7 +350,7 @@ function AddClientDeviceForm({ formik }) {
                     <TextField
                       {...params}
                       {...getFieldProps('branch')}
-                      label="Select Branch"
+                      label={translate('clientProfilePage.addClientDeviceForm.branch')}
                       margin="none"
                       error={Boolean(touched.branch && errors.branch)}
                       helperText={touched.branch && errors.branch}
@@ -369,7 +379,7 @@ function AddClientDeviceForm({ formik }) {
                       <TextField
                         {...params}
                         {...getFieldProps('distributor')}
-                        label="Select Distributor"
+                        label={translate('clientProfilePage.addClientDeviceForm.distributor')}
                         margin="none"
                         error={Boolean(touched.distributor && errors.distributor)}
                         helperText={touched.distributor && errors.distributor}

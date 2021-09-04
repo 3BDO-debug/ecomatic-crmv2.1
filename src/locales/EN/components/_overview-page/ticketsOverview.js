@@ -6,7 +6,7 @@ const ticketsOverviewTranslation = {
     clientName: 'Client Name',
     currentStage: 'Current Stage',
     intializedAt: 'Intialized At',
-    status: 'Status'
+    action: 'Action'
   },
   searchPlaceholder: 'Search..'
 };

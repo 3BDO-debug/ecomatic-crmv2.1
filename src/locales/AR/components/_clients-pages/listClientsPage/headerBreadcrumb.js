@@ -1,12 +1,9 @@
-const headerBreadcrumbTranslation = {
-    header: 'قائمة العملاء',
-    links: {
-      root: ' الصفحة الرئيسية ',
-      main: 'العملاء',
-      current: 'قائمه العملاء'
-    },
-    actionButton: 'اضافة عميل '
-  };
-  
-  export default headerBreadcrumbTranslation;
-  
+export const headerBreadcrumbTranslation = {
+  header: 'عرض العملاء',
+  links: {
+    root: 'لوحة التحكم',
+    main: 'العملاء',
+    current: 'عرض العملاء'
+  },
+  actionButton: 'اضافة عميل'
+};

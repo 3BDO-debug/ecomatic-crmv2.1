@@ -5,6 +5,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
+import { useNavigate } from 'react-router';
 // material
 import {
   Stack,
@@ -38,7 +39,7 @@ function RegisterForm() {
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
-
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: registerFormDefaults,
     validationSchema: registerFormValidationSchema,
@@ -53,18 +54,11 @@ function RegisterForm() {
             </MIconButton>
           )
         });
-        alert(
-          JSON.stringify(
-            {
-              ...values
-            },
-            null,
-            2
-          )
-        );
+
         if (isMountedRef.current) {
           setSubmitting(false);
         }
+        navigate('/auth/login');
       } catch (error) {
         console.error(error);
         if (isMountedRef.current) {

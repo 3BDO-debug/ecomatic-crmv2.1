@@ -7,6 +7,7 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { Container, Stack, Tab, Tabs, Box, Button } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
+import useLocales from '../../../hooks/useLocales';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // utils
@@ -21,6 +22,7 @@ import ClientTickets from '../../../components/_clients-pages/clientProfile/Clie
 import AddClientDevice from '../../../components/_clients-pages/clientProfile/AddClientDevice';
 
 function ClientProfilePage() {
+  const { translate } = useLocales();
   const { themeStretch } = useSettings();
   const { clientId } = useParams();
   const [currentTab, setCurrentTab] = useState('info');
@@ -42,21 +44,25 @@ function ClientProfilePage() {
 
   const TABS = [
     {
-      value: 'info',
+      value: translate('clientProfilePage.navTabs.info'),
       icon: <Icon icon="akar-icons:info" width={20} height={20} />,
       component: <ClientInfo clientId={clientId} clientDataState={[clientData, setClientData]} />
     },
     {
-      value: 'devices',
+      value: translate('clientProfilePage.navTabs.devices'),
       icon: <Icon icon="carbon:block-storage-alt" width={20} height={20} />,
       component: <ClientDevices clientId={clientId} clientDevicesState={[clientDevices, setClientDevices]} />
     },
     {
-      value: 'tickets',
+      value: translate('clientProfilePage.navTabs.tickets'),
       icon: <Icon icon="akar-icons:ticket" width={20} height={20} />,
       component: <ClientTickets clientId={clientId} />
     },
-    { value: 'logs', icon: <Icon icon="cil:history" width={20} height={20} />, component: <>logs</> }
+    {
+      value: translate('clientProfilePage.navTabs.logs'),
+      icon: <Icon icon="cil:history" width={20} height={20} />,
+      component: <>logs</>
+    }
   ];
 
   return (
@@ -72,9 +78,12 @@ function ClientProfilePage() {
             </>
           }
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Clients', href: PATH_DASHBOARD.customerService.clients.root },
-            { name: 'Client Profile' }
+            { name: translate('clientProfilePage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
+            {
+              name: translate('clientProfilePage.headerBreadcrumb.links.main'),
+              href: PATH_DASHBOARD.customerService.clients.root
+            },
+            { name: translate('clientProfilePage.headerBreadcrumb.links.current') }
           ]}
           action={
             <Button
@@ -82,7 +91,7 @@ function ClientProfilePage() {
               variant="contained"
               onClick={() => triggerAddClientDevice(true)}
             >
-              Add New Device
+              {translate('clientProfilePage.headerBreadcrumb.actionButton')}
             </Button>
           }
         />

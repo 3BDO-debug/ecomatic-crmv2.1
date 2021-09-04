@@ -1,11 +1,7 @@
-import headerBreadcrumbTranslation from '../../components/_client-profile-page/headerBreadcrumb';
-import navTabsTranslation from '../../components/_client-profile-page/navTabs';
-import ticketsTableTranslation from '../../components/_client-profile-page/clientTickets/ticketsTable';
+import clientTicketsTableTranslation from '../../components/_client-profile-page/clientTicketsTable';
 
-const ticketsTablePageTranslation = {
-  headerBreadcrumb: headerBreadcrumbTranslation,
-  navTabs: navTabsTranslation,
-  ticketsTable: ticketsTableTranslation
+const clientTicketsTabTranslation = {
+  clientTickesTable: clientTicketsTableTranslation
 };
 
-export default ticketsTablePageTranslation;
+export default clientTicketsTabTranslation;

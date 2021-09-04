@@ -1,11 +1,11 @@
 const headerBreadcrumbTranslation = {
-  header: 'قائمة قطع الغيار',
+  header: 'عرض قطع الغيار',
   links: {
-    root: 'الصفحة الرئيسية',
-    main: 'قطع غيار',
-    current: 'قائمة قطع الغيار'
+    root: 'لوحة التحكم',
+    main: 'قطع الغيار',
+    current: 'عرض قطع الغيار'
   },
-  actionButton: 'اضف قطع غيار'
+  actionButton: 'اضافة قطعة غيار'
 };
 
 export default headerBreadcrumbTranslation;

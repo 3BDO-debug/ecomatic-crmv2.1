@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, Box, Grid, TextField, DialogActions, Button } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 import { missingDataRequestHandler } from '../../../APIs/systemUpdates';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 
 AddDistributorForm.propTypes = {
   formik: PropTypes.object,
@@ -12,6 +14,7 @@ AddDistributorForm.propTypes = {
 };
 
 function AddDistributorForm({ formik, isTriggered, triggerHandler }) {
+  const { translate } = useLocales();
   const submitHandler = () => {
     const data = new FormData();
     data.append('dataType', 'Distributors');
@@ -28,7 +31,7 @@ function AddDistributorForm({ formik, isTriggered, triggerHandler }) {
   const { touched, errors, setFieldValue, values, getFieldProps, dirty, isSubmitting } = formik;
   return (
     <Dialog open={isTriggered} onClose={triggerHandler} fullWidth maxWidth="sm">
-      <DialogTitle>Please fill out in the box below the distributor name</DialogTitle>
+      <DialogTitle>{translate('clientProfilePage.addClientDeviceForm.addDistributorModal.title')}</DialogTitle>
       <DialogContent>
         <Box marginTop="30px" component="form" onSubmit={submitHandler}>
           <Grid container spacing={3}>
@@ -42,7 +45,7 @@ function AddDistributorForm({ formik, isTriggered, triggerHandler }) {
                   setDistributor(event.target.value);
                 }}
                 value={distributor}
-                label="Distributor Name"
+                label={translate('clientProfilePage.addClientDeviceForm.addDistributorModal.distributorName')}
                 {...getFieldProps('distributor')}
                 error={Boolean(touched.distributor && errors.distributor)}
                 helperText={touched.distributor && errors.distributor}
@@ -53,7 +56,7 @@ function AddDistributorForm({ formik, isTriggered, triggerHandler }) {
       </DialogContent>
       <DialogActions>
         <Button color="inherit" onClick={triggerHandler}>
-          Cancel
+          {translate('clientProfilePage.addClientDeviceForm.addDistributorModal.cancelButton')}
         </Button>
         <LoadingButton
           size="medium"
@@ -63,7 +66,7 @@ function AddDistributorForm({ formik, isTriggered, triggerHandler }) {
           disabled={!dirty}
           onClick={submitHandler}
         >
-          Save
+          {translate('clientProfilePage.addClientDeviceForm.addDistributorModal.actionButton')}
         </LoadingButton>
       </DialogActions>
     </Dialog>

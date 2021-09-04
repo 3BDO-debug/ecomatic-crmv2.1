@@ -118,7 +118,7 @@ function Warehouses() {
             ]}
             rowsData={warehousesTableRows}
             filterBy="warehouseName"
-            searchPlaceholder="Search Warehouses.."
+            searchPlaceholder={translate('warehousesPage.warehousesTable.searchPlaceholder')}
             onSelectAllDelete={(selectedRows) => {
               const data = new FormData();
               data.append('warehousesToBeDeleted', JSON.stringify(selectedRows));
@@ -157,7 +157,7 @@ function Warehouses() {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle>Add Warehouse</DialogTitle>
+          <DialogTitle>{translate('warehousesPage.addWarehouseForm.title')}</DialogTitle>
           <DialogContent>
             <Box
               component="form"
@@ -175,7 +175,7 @@ function Warehouses() {
                     margin="dense"
                     onChange={(event) => setFieldValue('warehouseName', event.target.value)}
                     value={values.warehouseName}
-                    label="Warehouse Name"
+                    label={translate('warehousesPage.addWarehouseForm.warehouseName')}
                     {...getFieldProps('warehouseName')}
                     error={Boolean(touched.warehouseName && errors.warehouseName)}
                     helperText={touched.warehouseName && errors.warehouseName}
@@ -192,7 +192,7 @@ function Warehouses() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Assign to"
+                        label={translate('warehousesPage.addWarehouseForm.assignTo')}
                         margin="none"
                         error={Boolean(touched.assignedTo && errors.assignedTo)}
                         helperText={touched.assignedTo && errors.assignedTo}
@@ -213,7 +213,7 @@ function Warehouses() {
               }}
               color="inherit"
             >
-              Cancel
+              {translate('warehousesPage.addWarehouseForm.cancelButton')}
             </Button>
 
             <LoadingButton
@@ -224,7 +224,7 @@ function Warehouses() {
               disabled={!dirty}
               onClick={handleSubmit}
             >
-              Save
+              {translate('warehousesPage.addWarehouseForm.actionButton')}
             </LoadingButton>
           </DialogActions>
         </Dialog>

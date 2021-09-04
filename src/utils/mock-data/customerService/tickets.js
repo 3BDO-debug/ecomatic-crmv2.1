@@ -10,6 +10,7 @@ export const ticketsDataCreator = (tickets) => {
   const ticketsData = [];
   tickets.map((ticket) =>
     ticketsData.push({
+      ticketNumber: ticket.ticket_generated_id,
       id: ticket.id,
       clientName: ticket.client_name,
       technicianName:
@@ -84,7 +85,8 @@ export const ticketDevicesDataCreator = async (
   ticketDevices,
   triggerSparepartsServices,
   setTriggeredDevice,
-  triggerDeviceDetails
+  triggerDeviceDetails,
+  translate
 ) => {
   const ticketDevicesData = [];
   const mapper = ticketDevices.map((ticketDevice) =>
@@ -126,10 +128,30 @@ export const ticketDevicesDataCreator = async (
         collapsibleContent: {
           title: 'Spareparts & services',
           collapsibleColumnsData: [
-            { id: 'description', label: 'Description' },
-            { id: 'qty', label: 'QTY' },
-            { id: 'price', label: 'Price' },
-            { id: 'sum', label: 'Sum' }
+            {
+              id: 'description',
+              label: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.collapsibleTableColumns.description'
+              )
+            },
+            {
+              id: 'qty',
+              label: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.collapsibleTableColumns.qty'
+              )
+            },
+            {
+              id: 'price',
+              label: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.collapsibleTableColumns.price'
+              )
+            },
+            {
+              id: 'sum',
+              label: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.collapsibleTableColumns.sum'
+              )
+            }
           ],
           collapsibleRowsData: deviceSparepartsServices
         }

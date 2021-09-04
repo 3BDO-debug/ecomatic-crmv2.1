@@ -1,9 +1,9 @@
 const headerBreadcrumbTranslation = {
-  header: 'قم بإنشاء عنصر جديد',
+  header: 'اضافة عنصر',
   links: {
-    root: 'الصفحة الرئيسيه',
+    root: 'لوحة التحكم',
     main: 'العناصر',
-    current: 'إنشاء العناصر'
+    current: 'اضافة عناصر'
   }
 };
 

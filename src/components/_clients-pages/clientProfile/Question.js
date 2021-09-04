@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 // material
 import { Grid, Card, Box, Button, Typography } from '@material-ui/core';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // components
 import { MotionContainer } from '../../animate';
 
@@ -14,6 +16,7 @@ Question.propTypes = {
 };
 
 function Question({ quesiton, isTriggered, onYesHandler, onNoHandler }) {
+  const { translate } = useLocales();
   return (
     <MotionContainer open={isTriggered} initial="initial">
       <Box
@@ -34,10 +37,10 @@ function Question({ quesiton, isTriggered, onYesHandler, onNoHandler }) {
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6}>
                 <Button onClick={onNoHandler} color="secondary" variant="outlined">
-                  No
+                  {translate('clientProfilePage.addClientDeviceForm.noButton')}
                 </Button>
                 <Button onClick={onYesHandler} sx={{ margin: '10px' }} variant="contained">
-                  Yes
+                  {translate('clientProfilePage.addClientDeviceForm.yesButton')}
                 </Button>
               </Grid>
             </Grid>

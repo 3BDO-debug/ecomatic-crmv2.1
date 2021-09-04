@@ -1,11 +1,11 @@
 const createItemFormTranslation = {
-  warehouse: 'مستودع',
-  brand: 'ماركة',
-  category: 'فئة',
-  modelNumber: 'موديل الجهاز',
-  mainDimensions: 'ابعاد الجهاز',
-  cutOffDimensions: 'الابعاد التركيب',
-  warrantyCoverage: 'تغطية الضمان في شهور',
+  warehouse: 'المستودع',
+  brand: 'العلامة التجارية',
+  category: 'التضنيف',
+  modelNumber: 'رقم الموديل',
+  mainDimensions: 'الابعاد الاساسية',
+  cutOffDimensions: 'ابعاد التركيب',
+  warrantyCoverage: 'شهور الضمان',
   image: 'صورة',
   actionButton: 'حفظ'
 };

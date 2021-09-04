@@ -1,15 +1,13 @@
-const clientsTableTranslation = {
-    tableColumns: {
-      fullname: 'الاسم بالكامل',
-      category: 'الفئه',
-      phoneNumber: 'رقم الهاتف',
-      landline: 'رقم الهاتف الارضي',
-      address: 'العنوان',
-      createdAt: 'وقت الاضافة',
-      action: 'اجراء'
-    },
-    searchPlaceholder: 'البحث عن عملاء'
-  };
-  
-  export default cliensTableTranslation;
-  
+export const clientsTableTranslation = {
+  tableColumns: {
+    id: 'الرقم التعريفي',
+    fullname: 'الاسم بالكامل',
+    category: 'التصنيف',
+    phoneNumber: 'رقم الهاتف',
+    landline: 'رقم الارضي',
+    address: 'عنوان',
+    createdAt: 'انشئ في',
+    action: 'اجراء'
+  },
+  searchPlaceholder: 'البحث عن عملاء'
+};

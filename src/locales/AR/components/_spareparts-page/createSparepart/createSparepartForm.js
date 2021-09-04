@@ -1,10 +1,10 @@
 const createSparepartFormTranslation = {
-  warehouse: 'مستودع',
-  modelNumber: 'موديل الجهاز',
-  pricePerUnit: 'السعر لكل وحدة',
-  availableQTY: 'الكميات المتاحة',
+  warehouse: 'المستودع',
+  modelNumber: 'رقم الموديل',
+  pricePerUnit: 'سعر الواحدة',
+  availableQTY: 'الكمية المتاحة',
   image: 'صورة',
-  actionButton: 'حفظ',
+  actionButton: 'حفظ'
 };
 
 export default createSparepartFormTranslation;

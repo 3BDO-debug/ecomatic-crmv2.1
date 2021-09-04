@@ -1,24 +1,36 @@
-import React, { useContext } from 'react';
-import { sentenceCase } from 'change-case';
+import React, { useContext, useEffect, useState } from 'react';
 // material
-import { Container, Grid, Card, Stack, Typography, Avatar, CardHeader } from '@material-ui/core';
+import { Container, Grid, Card, CardHeader } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
 // context
-import { AuthContext } from '../../contexts/AuthContext';
+import { AuthContext } from '../../contexts';
+import { TicketsContext } from '../../contexts/customerService/TicketsContext';
+// utils
+import { ticketsDataCreator } from '../../utils/mock-data/overview';
 // components
 import Page from '../../components/Page';
 import AppWelcome from '../../components/_overview-page/AppWelcome';
 import OverviewCard from '../../components/_overview-page/OverviewCard';
 import DataTable from '../../components/dataTable/DataTable';
-import Label from '../../components/Label';
 // ----------------------------------------------------------------------
 
 function Overview() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
   const user = useContext(AuthContext).userState[0];
+  const tickets = useContext(TicketsContext).ticketsState[0];
+  console.log();
+  const [ticketsTableRows, setTicketsTableRows] = useState([]);
+  useEffect(() => {
+    if (user.role === 'technician') {
+      const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
+      setTicketsTableRows(ticketsDataCreator(userTickets));
+    } else {
+      setTicketsTableRows(ticketsDataCreator(tickets));
+    }
+  }, [user, tickets]);
   return (
     <Page title="Overview">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -44,68 +56,33 @@ function Overview() {
               <CardHeader title={translate('overviewPage.ticketsOverview.title')} />
               <DataTable
                 columnsData={[
-                  { id: 'id', label: translate('overviewPage.ticketsOverview.tableColumns.id'), alignRight: false },
+                  { id: 'id', label: translate('overviewPage.ticketsOverview.tableColumns.id') },
                   {
                     id: 'technician',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.technician'),
-                    alignRight: false
+                    label: translate('overviewPage.ticketsOverview.tableColumns.technician')
                   },
                   {
                     id: 'clientName',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.clientName'),
-                    alignRight: false
+                    label: translate('overviewPage.ticketsOverview.tableColumns.clientName')
                   },
                   {
                     id: 'currentStage',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.currentStage'),
-                    alignRight: false
+                    label: translate('overviewPage.ticketsOverview.tableColumns.currentStage')
                   },
                   {
                     id: 'intializedAt',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.intializedAt'),
-                    alignRight: false
+                    label: translate('overviewPage.ticketsOverview.tableColumns.intializedAt')
                   },
                   {
-                    id: 'status',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.status'),
-                    alignRight: false
+                    id: 'action',
+                    label: translate('overviewPage.ticketsOverview.tableColumns.action')
                   },
                   { id: '' }
                 ]}
-                rowsData={[
-                  {
-                    id: '21b21',
-                    technician: (
-                      <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar alt="Dummy Client" src="" />
-                        <Typography variant="subtitle2" noWrap>
-                          Dummy Technician
-                        </Typography>
-                      </Stack>
-                    ),
-                    clientName: (
-                      <Typography variant="subtitle2" noWrap>
-                        Dummy Client
-                      </Typography>
-                    ),
-                    currentStage: (
-                      <Label variant="ghost" color="info">
-                        {sentenceCase('Supervisor Stage')}
-                      </Label>
-                    ),
-
-                    intializedAt: '21 may, 2021',
-                    status: (
-                      <Label variant="ghost" color="info">
-                        {sentenceCase(' Closed')}
-                      </Label>
-                    )
-                  }
-                ]}
+                rowsData={ticketsTableRows}
                 searchPlaceholder={translate('overviewPage.ticketsOverview.searchPlaceholder')}
                 filterBy="id"
-                rowIsEditable
-                rowEditUrl="/"
+                disableCheckbox
               />
             </Card>
           </Grid>

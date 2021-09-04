@@ -1,10 +1,10 @@
 const sparepartsTableTranslation = {
   tableColumns: {
-    modelNumber: 'موديل الجهاز',
-    image: 'صوره',
-    createdAt: 'وقت الاضافة'
+    modelNumber: 'رقم الموديل',
+    image: 'صورة',
+    createdAt: 'انشئت في'
   },
-  searchPlaceholder: 'البحث في قطع الغيار'
+  searchPlaceholder: 'ابحث عن قطع غيار'
 };
 
 export default sparepartsTableTranslation;

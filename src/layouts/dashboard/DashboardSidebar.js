@@ -132,12 +132,18 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           ]
         },
         {
-          title: 'Spareparts',
+          title: translate('sidebar.storage.children.spareparts.label'),
           path: PATH_DASHBOARD.storage.spareparts.root,
           icon: <Icon icon="eos-icons:rotating-gear" width={24} height={24} />,
           children: [
-            { title: 'Create Sparepart', path: PATH_DASHBOARD.storage.spareparts.createSparepartPage },
-            { title: 'List Spareparts', path: PATH_DASHBOARD.storage.spareparts.listSparepartPage }
+            {
+              title: translate('sidebar.storage.children.spareparts.children.createSparepart'),
+              path: PATH_DASHBOARD.storage.spareparts.createSparepartPage
+            },
+            {
+              title: translate('sidebar.storage.children.spareparts.children.listSpareparts'),
+              path: PATH_DASHBOARD.storage.spareparts.listSparepartPage
+            }
           ]
         }
       ]
@@ -145,19 +151,25 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     // STORAGE
     // ----------------------------------------------------------------------
     {
-      subheader: 'customer service',
+      subheader: translate('sidebar.customerService.label'),
       items: [
         {
-          title: 'Clients',
+          title: translate('sidebar.customerService.children.clients.label'),
           path: PATH_DASHBOARD.customerService.clients.root,
           icon: <Icon icon="fluent:people-audience-24-regular" width={24} height={24} />,
           children: [
-            { title: 'Create Client', path: PATH_DASHBOARD.customerService.clients.createClientPage },
-            { title: 'List Clients', path: PATH_DASHBOARD.customerService.clients.listClientPage }
+            {
+              title: translate('sidebar.customerService.children.clients.children.createClient'),
+              path: PATH_DASHBOARD.customerService.clients.createClientPage
+            },
+            {
+              title: translate('sidebar.customerService.children.clients.children.listClients'),
+              path: PATH_DASHBOARD.customerService.clients.listClientPage
+            }
           ]
         },
         {
-          title: 'Tickets',
+          title: translate('sidebar.customerService.children.tickets.children.listTickets'),
           path: PATH_DASHBOARD.customerService.tickets.listTicketsPage,
           icon: <Icon icon="akar-icons:ticket" width={24} height={24} />
         }

@@ -21,11 +21,12 @@ import {
 } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
+import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketDetailsDataCreator } from '../../../utils/mock-data/customerService/tickets';
 import { ticketUpdater, ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
-import { closeTicketValidation } from '../../../utils/closeTicketValidation';
-// routes
+/* import { closeTicketValidation } from '../../../utils/closeTicketValidation';
+ */ // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // context
 import { TicketsContext } from '../../../contexts';
@@ -43,7 +44,12 @@ import Label from '../../../components/Label';
 
 function TicketDetailsPage() {
   const { themeStretch } = useSettings();
+  const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const [activeStep, setActiveStep] = useState(0);
+
+  const [showNext, setShowNext] = useState(false);
 
   const [currentTab, setCurrentTab] = useState('timeline');
   const { ticketId } = useParams();
@@ -52,41 +58,9 @@ function TicketDetailsPage() {
   const [ticketDevices, setTicketDevices] = useState([]);
   const [ticketCloseAlert, triggerTicketCloseAlert] = useState(false);
 
-  const [activeStep, setActiveStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
-  const [showNext, setShowNext] = useState(false);
-  const [nextIsLoading, setNextIsLoading] = useState(false);
 
-  const nextHandler = () => {
-    if (stageChecker()) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
-    /* alert(stageChecker());
-    
-
-    /*     stageChecker();
-     */
-  };
-
-  const backHandler = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const resetHandler = () => {
-    setActiveStep(0);
-  };
-
-  const showNextHandler = useCallback(() => {
-    if (currentStep >= activeStep) {
-      setShowNext(true);
-    } else {
-      setShowNext(false);
-    }
-  }, [activeStep, currentStep]);
-
-  const ticketStageUpdater = () => {
-    setNextIsLoading(true);
+  const updateStageHandler = () => {
     const data = new FormData();
     if (ticketDetails.current_stage === 'agent-stage') {
       data.append('currentStage', 'supervisor-stage');
@@ -106,33 +80,37 @@ function TicketDetailsPage() {
             </MIconButton>
           )
         });
-        setNextIsLoading(false);
       })
       .catch((error) => console.log(error));
   };
 
-  const stageChecker = () => {
-    showNextHandler();
-    let proceed;
-
-    if (activeStep === currentStep && ticketDetails.current_stage !== 'technician-stage') {
-      ticketStageUpdater();
-      proceed = true;
-      alert(proceed);
-    } else if (ticketDetails.current_stage === 'technician-stage' && activeStep === 2) {
-      closeTicketValidation(ticketDevices).then((proceed) => !proceed && triggerTicketCloseAlert(true));
-      if (ticketCloseAlert) {
-        proceed = false;
-      } else {
-        proceed = true;
-      }
+  const handleNext = () => {
+    if (ticketDetails.current_stage !== 'customer-service-stage') {
+      updateStageHandler();
     }
-    return proceed;
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const showNextHandler = useCallback(() => {
+    if (currentStep >= activeStep) {
+      setShowNext(true);
+    } else {
+      setShowNext(false);
+    }
+  }, [activeStep, currentStep]);
+
   useEffect(() => {
     showNextHandler();
   }, [activeStep, showNextHandler]);
-
+  console.log(showNext);
   useEffect(() => {
     if (ticketDetails) {
       if (ticketDetails.current_stage === 'agent-stage') {
@@ -148,9 +126,8 @@ function TicketDetailsPage() {
         setActiveStep(3);
         setCurrentStep(3);
       }
-      showNextHandler();
     }
-  }, [ticketDetails, showNextHandler]);
+  }, [ticketDetails]);
 
   useEffect(() => {
     ticketDevicesFetcher(ticketId)
@@ -165,14 +142,11 @@ function TicketDetailsPage() {
       icon: <Icon icon="clarity:timeline-line" width={20} height={20} />,
       component: (
         <Stepper
-          showNext={showNext}
           activeStepState={[activeStep, setActiveStep]}
-          skippedState={[skipped, setSkipped]}
-          nextHandler={nextHandler}
-          backHandler={backHandler}
-          resetHandler={resetHandler}
-          currentStep={currentStep}
-          nextIsLoading={nextIsLoading}
+          nextHandler={handleNext}
+          backHandler={handleBack}
+          resetHandler={handleReset}
+          nextStageHandler={updateStageHandler}
           steps={[
             {
               title: 'Agent Stage',
@@ -183,14 +157,17 @@ function TicketDetailsPage() {
                   ticketId={ticketId}
                   ticketState={[ticketDetails, setTicketDetails]}
                 />
-              )
+              ),
+              active: currentStep === 0 && true
             },
             {
+              active: currentStep === 1 && true,
               title: 'Supervisor Stage',
               id: 2,
               content: <SupervisorStage ticketDetailsState={[ticketDetails, setTicketDetails]} />
             },
             {
+              active: currentStep === 2 && true,
               title: 'Technician Stage',
               id: 3,
               content: <TechnicianStage ticketState={[ticketDetails, setTicketDetails]} />
@@ -220,7 +197,7 @@ function TicketDetailsPage() {
         <HeaderBreadcrumbs
           heading={
             <>
-              {`Ticket Details | ${ticketDetails && ticketDetails.id} `}
+              {`${translate('ticketDetailsPage.headerBreadcrumb.header')} | ${ticketDetails && ticketDetails.id} `}
               {ticketDetails && ticketDetails.is_closed && (
                 <Label style={{ marginLeft: '10px' }} variant="ghost" color="error">
                   Closed
@@ -229,9 +206,12 @@ function TicketDetailsPage() {
             </>
           }
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Tickets', href: PATH_DASHBOARD.customerService.tickets.root },
-            { name: 'Ticket Details' }
+            { name: translate('ticketDetailsPage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
+            {
+              name: translate('ticketDetailsPage.headerBreadcrumb.links.main'),
+              href: PATH_DASHBOARD.customerService.tickets.root
+            },
+            { name: translate('ticketDetailsPage.headerBreadcrumb.links.root') }
           ]}
         />
         <Card>

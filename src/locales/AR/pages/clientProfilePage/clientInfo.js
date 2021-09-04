@@ -1,11 +1,7 @@
-import headerBreadcrumbTranslation from '../../components/_client-profile-page/clientInfo/headerBreadcrumb';
-import navTabsTranslation from '../../components/_client-profile-page/navTabs';
-import clientInfoFormTranslation from '../../components/_client-profile-page/clientInfo/clientInfoForm';
+import clientInfoFormTranslation from '../../components/_client-profile-page/clientInfoForm';
 
-const clientInfoFormPageTranslation = {
-  headerBreadcrumb: headerBreadcrumbTranslation,
-  navTabs: navTabsTranslation,
+const clientInfoTabTranslation = {
   clientInfoForm: clientInfoFormTranslation
 };
 
-export default clientInfoFormPageTranslation;
+export default clientInfoTabTranslation;

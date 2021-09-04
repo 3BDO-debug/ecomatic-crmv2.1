@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack5';
 import { Container, Button, Card } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
+import useLocales from '../../../hooks/useLocales';
 // context
 import { ClientsContext } from '../../../contexts';
 // utils
@@ -22,6 +23,7 @@ import { clientsDeleter } from '../../../APIs/customerService/clients';
 import { MIconButton } from '../../../components/@material-extend';
 
 function ListClientsPage() {
+  const { translate } = useLocales();
   const { themeStretch } = useSettings();
   const [clients, setClients] = useContext(ClientsContext).clientsState;
   const [clientsTableRows, setClientsTableRows] = useState([]);
@@ -34,11 +36,17 @@ function ListClientsPage() {
     <Page title="Clients | List Clients">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="List Clients"
+          heading={translate('clientsPages.listClientPage.headerBreadcrumb.header')}
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Clients', href: PATH_DASHBOARD.customerService.clients.root },
-            { name: 'List Clients', href: PATH_DASHBOARD.customerService.clients.listClientPage }
+            { name: translate('clientsPages.listClientPage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
+            {
+              name: translate('clientsPages.listClientPage.headerBreadcrumb.links.main'),
+              href: PATH_DASHBOARD.customerService.clients.root
+            },
+            {
+              name: translate('clientsPages.listClientPage.headerBreadcrumb.links.current'),
+              href: PATH_DASHBOARD.customerService.clients.listClientPage
+            }
           ]}
           action={
             <Button
@@ -47,26 +55,29 @@ function ListClientsPage() {
               to={PATH_DASHBOARD.customerService.clients.createClientPage}
               startIcon={<Icon icon={plusFill} />}
             >
-              Add Client
+              {translate('clientsPages.listClientPage.headerBreadcrumb.actionButton')}
             </Button>
           }
         />
         <Card>
           <DataTable
             columnsData={[
-              { id: 'id', label: 'ID' },
-              { id: 'fullname', label: 'Full Name' },
-              { id: 'category', label: 'Category' },
-              { id: 'phoneNumber', label: 'Phone Number' },
-              { id: 'landline', label: 'Landline' },
-              { id: 'address', label: 'Address' },
-              { id: 'createdAt', label: 'Created At' },
-              { id: 'action', label: 'Action' },
+              { id: 'id', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.id') },
+              { id: 'fullname', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.fullname') },
+              { id: 'category', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.category') },
+              {
+                id: 'phoneNumber',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber')
+              },
+              { id: 'landline', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.landline') },
+              { id: 'address', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.address') },
+              { id: 'createdAt', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.createdAt') },
+              { id: 'action', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.action') },
               { id: '' }
             ]}
             rowsData={clientsTableRows}
             filterBy="phoneNumber"
-            searchPlaceholder="Search clients.."
+            searchPlaceholder={translate('clientsPages.listClientPage.clientsTable.searchPlaceholder')}
             onSelectAllDelete={(selectedRows) => {
               const data = new FormData();
               data.append('clientsToBeDeleted', JSON.stringify(selectedRows));

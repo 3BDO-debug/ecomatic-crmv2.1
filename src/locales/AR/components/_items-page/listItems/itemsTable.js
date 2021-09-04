@@ -1,12 +1,12 @@
 const itemsTableTranslation = {
   tableColumns: {
-    modelNumber: 'موديل الجهاز',
+    modelNumber: 'رقم الموديل',
     image: 'صورة',
-    brand: 'الماركة',
-    category: 'الفئة',
-    createdAt: ' وقت الاضافة',
+    brand: 'العلامة التجارية',
+    category: 'التصنيف',
+    createdAt: 'انشئ في'
   },
-  searchPlaceholder: 'البحث عن عناصر'
+  searchPlaceholder: 'ابحث عن عناصر'
 };
 
 export default itemsTableTranslation;

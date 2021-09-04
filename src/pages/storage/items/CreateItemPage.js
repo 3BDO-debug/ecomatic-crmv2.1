@@ -1,8 +1,10 @@
 import React, { useCallback, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
+import MaskedInput from 'react-text-mask';
 // material
 import { Container, Box, Card, Grid, TextField, Autocomplete, FormHelperText, Stack } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
@@ -29,6 +31,23 @@ import StyledLabel from '../../../components/@material-extend/StyledLabel';
 import { UploadSingleFile } from '../../../components/upload';
 import { MIconButton } from '../../../components/@material-extend';
 
+// ----------------------------------------------------------------------
+
+function TextMaskCustom(props) {
+  const { ...other } = props;
+
+  return <MaskedInput {...other} mask={[/\d/, /\d/, /\d/, 'x', /\d/, /\d/, /\d/, 'x', /\d/, /\d/, /\d/]} showMask />;
+}
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired
+};
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+};
 // ----------------------------------------------------------------------
 
 function CreateItemPage() {
@@ -194,6 +213,10 @@ function CreateItemPage() {
                   value={values.mainDimensions}
                   error={Boolean(touched.mainDimensions && errors.mainDimensions)}
                   helperText={touched.mainDimensions && errors.mainDimensions}
+                  InputProps={{
+                    inputComponent: TextMaskCustom
+                  }}
+                  focused
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -205,6 +228,10 @@ function CreateItemPage() {
                   value={values.cutOffDimensions}
                   error={Boolean(touched.cutOffDimensions && errors.cutOffDimensions)}
                   helperText={touched.cutOffDimensions && errors.cutOffDimensions}
+                  InputProps={{
+                    inputComponent: TextMaskCustom
+                  }}
+                  focused
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>

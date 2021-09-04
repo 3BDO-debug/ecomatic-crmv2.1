@@ -1,8 +1,5 @@
-const navTabsTranslation = {
-    timeline: "تايم لاين",
-    info: "معلومات",
-    logs: "السجلات",
- 
+export const navTabsTranslation = {
+  timeline: 'timeline',
+  info: 'info',
+  logs: 'logs'
 };
-
-export default navTabsTranslation;

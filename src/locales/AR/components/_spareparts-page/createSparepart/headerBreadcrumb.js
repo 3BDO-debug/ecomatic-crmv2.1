@@ -1,9 +1,9 @@
 const headerBreadcrumbTranslation = {
-  header: 'قم بإنشاء قطع غيار جديدة',
+  header: 'اضافة قطع غيار',
   links: {
-    root: 'الصفحة الرئيسية',
+    root: 'لوحة التحكم',
     main: 'قطع غيار',
-    current: 'انشاء قطع غيار'
+    current: 'اضافة قطعة غيار'
   }
 };
 

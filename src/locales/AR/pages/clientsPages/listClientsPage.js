@@ -1,9 +1,7 @@
-import headerBreadcrumbTranslation from '../../components/_clientsitems-page/listClients/headerBreadcrumb';
-import clientsTableTranslation from '../../components/_clients-page/listClients/clientsTable';
+import { headerBreadcrumbTranslation } from '../../components/_clients-pages/listClientsPage/headerBreadcrumb';
+import { clientsTableTranslation } from '../../components/_clients-pages/listClientsPage/clientsTable';
 
-const listClientsPageTranslation = {
+export const listClientsPageTranslation = {
   headerBreadcrumb: headerBreadcrumbTranslation,
   clientsTable: clientsTableTranslation
 };
-
-export default listClientsPageTranslation;

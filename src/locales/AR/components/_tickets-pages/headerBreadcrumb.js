@@ -1,9 +1,9 @@
 const headerBreadcrumbTranslation = {
-  header: 'قائمة التزاكر ',
+  header: 'عرض التيكتس',
   links: {
-    root: 'الصفحه الرئيسية',
-    main: 'التزاكر',
-    current: 'قائمه التزاكر ',
+    root: 'لوحة التحكم',
+    main: 'التيكتس',
+    current: 'عرض التيكتس'
   }
 };
 

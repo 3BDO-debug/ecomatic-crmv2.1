@@ -1,11 +1,9 @@
-import headerBreadcrumbTranslation from '../../components/_client-profile-page/clientDevices/headerBreadcrumb';
-import navTabsTranslation from '../../components/_client-profile-page/navTabs';
-import devicesTableTranslation from '../../components/_clients-page/createClient/devicesTableForm';
+import clientDevicesTableTranslation from '../../components/_client-profile-page/clientDevicesTable';
+import { clientDeviceDetailsTranslation } from '../../components/_client-profile-page/clientDeviceDetails';
 
-const devicesTablePageTranslation = {
-  headerBreadcrumb: headerBreadcrumbTranslation,
-  navTabs: navTabsTranslation,
-  devicesTable: devicesTableTranslation
+const clientDevicesTabTranslation = {
+  clientDevicesTable: clientDevicesTableTranslation,
+  clientDeviceDetails: clientDeviceDetailsTranslation
 };
 
-export default devicesTablePageTranslation;
+export default clientDevicesTabTranslation;

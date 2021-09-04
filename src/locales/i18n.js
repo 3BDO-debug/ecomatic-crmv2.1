@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 //
 import appENTranslation from './EN/en';
+import appARTranslation from './AR/ar';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +13,7 @@ i18n
   .init({
     resources: {
       en: { translations: appENTranslation },
-      ar: { translations: appENTranslation }
+      ar: { translations: appARTranslation }
     },
     lng: localStorage.getItem('i18nextLng') || 'en',
     fallbackLng: 'en',

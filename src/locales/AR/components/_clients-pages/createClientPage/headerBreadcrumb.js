@@ -1,10 +1,10 @@
 const headerBreadcrumbTranslation = {
-    header: 'قم بإنشاء عميل جديد',
-    links: {
-      root: 'الصفحة الرئيسية',
-      main: 'العملاء',
-      current: 'إنشاء عميل'
-    }
-  };
-  
-  export default headerBreadcrumbTranslation;
+  header: 'اضافة عميل جديد',
+  links: {
+    root: 'لوحة التحكم',
+    main: 'العملاء',
+    current: 'اضافة عميل'
+  }
+};
+
+export default headerBreadcrumbTranslation;

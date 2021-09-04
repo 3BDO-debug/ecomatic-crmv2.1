@@ -8,6 +8,8 @@ import { Card } from '@material-ui/core';
 // utils
 import { clientTicketsDataCreator } from '../../../utils/mock-data/customerService/clients';
 import { ticketsDeleter } from '../../../APIs/customerService/tickets';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // context
 import { TicketsContext } from '../../../contexts';
 // components
@@ -19,6 +21,7 @@ ClientTickets.propTypes = {
 };
 
 function ClientTickets({ clientId }) {
+  const { translate } = useLocales();
   const [tickets, setTickets] = useContext(TicketsContext).ticketsState;
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -56,12 +59,27 @@ function ClientTickets({ clientId }) {
     <Card>
       <DataTable
         columnsData={[
-          { id: 'id', label: 'ID' },
-          { id: 'clientName', label: 'Client name' },
-          { id: 'technicianName', label: 'Technician name' },
-          { id: 'intializedAt', label: 'Intialized at' },
-          { id: 'currentStage', label: 'Current stage' },
-          { id: 'action', label: 'Action' },
+          { id: 'id', label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.id') },
+          {
+            id: 'clientName',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.clientName')
+          },
+          {
+            id: 'technicianName',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.technicianName')
+          },
+          {
+            id: 'intializedAt',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.intializedAt')
+          },
+          {
+            id: 'currentStage',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.currentStage')
+          },
+          {
+            id: 'action',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.action')
+          },
           { id: '' }
         ]}
         filterBy="id"

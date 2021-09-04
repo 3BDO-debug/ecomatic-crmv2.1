@@ -1,12 +1,17 @@
 const ticketsTableTranslation = {
   tableColumns: {
-    id: 'رقم التذكره',
+    ticketNumber: 'رقم التيكت',
+
+    id: 'الرقم التعريفي',
     clientName: 'اسم العميل',
-    technicianPhoto: 'صوره الفني',
+    technicianPhoto: 'صورة الفني',
     technicianName: 'اسم الفني',
-    intializedAt: 'وقت الاضافة',
+    intializedAt: 'انشئ في',
+    currentStage: 'المرحلة الحالية',
+    status: 'الحالة',
+    action: 'اجراء'
   },
-  searchPlaceHolder: 'البحث عن تزاكر',
+  searchPlaceholder: 'ابحث عن تيكتس'
 };
 
 export default ticketsTableTranslation;

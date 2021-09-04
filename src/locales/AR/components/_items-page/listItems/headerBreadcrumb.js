@@ -1,11 +1,11 @@
 const headerBreadcrumbTranslation = {
-  header: 'قائمة العناصر',
+  header: 'عرض العناصر',
   links: {
-    root: 'الصفحة الرئيسيه',
+    root: 'لوحة التحكم',
     main: 'العناصر',
-    current: 'قائمة العناصر'
+    current: 'عرض العناصر'
   },
-  actionButton: 'اضف عنصر'
+  actionButton: 'اضافة عنصر'
 };
 
 export default headerBreadcrumbTranslation;

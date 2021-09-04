@@ -72,19 +72,35 @@ function ListTicketsPage() {
         <Card>
           <DataTable
             columnsData={[
-              { id: 'id', label: 'ID' },
-              { id: 'clientName', label: 'Client name' },
-              { id: 'technicianName', label: 'Technician name' },
-              { id: 'intializedAt', label: 'Intialized at' },
-              { id: 'currentStage', label: 'Current stage' },
-              { id: 'status', label: 'Status' },
-              { id: 'action', label: 'Action' },
+              {
+                id: 'ticketNumber',
+                label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber')
+              },
+              { id: 'id', label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.id') },
+              {
+                id: 'clientName',
+                label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientName')
+              },
+              {
+                id: 'technicianName',
+                label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName')
+              },
+              {
+                id: 'intializedAt',
+                label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.intializedAt')
+              },
+              {
+                id: 'currentStage',
+                label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.currentStage')
+              },
+              { id: 'status', label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.status') },
+              { id: 'action', label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action') },
               { id: '' }
             ]}
-            filterBy="id"
+            filterBy="ticketNumber"
             identifier="id"
             rowsData={ticketsTableRows}
-            searchPlaceholder="Search tickets..."
+            searchPlaceholder={translate('ticketsPages.listTicketsPage.ticketsTable.searchPlaceholder')}
             onSelectAllDelete={ticketsDeleterHandler}
           />
         </Card>

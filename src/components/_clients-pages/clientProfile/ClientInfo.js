@@ -12,6 +12,8 @@ import {
   clientInfoFormDefaults,
   clientInfoFormValidationSchema
 } from '../../../utils/formValidationSchemas/clientInfo';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // context
 import { ConfigurationsContext } from '../../../contexts';
 // utils
@@ -30,6 +32,7 @@ ClientInfo.propTypes = {
 };
 
 function ClientInfo({ clientDataState, clientId }) {
+  const { translate } = useLocales();
   const [clientData, setClientData] = clientDataState;
 
   const cities = useContext(ConfigurationsContext).citiesState[0];
@@ -81,7 +84,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Full Name"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.fullname')}
               {...getFieldProps('fullname')}
               onChange={(event) => setFieldValue('fullname', event.target.value)}
               error={Boolean(touched.fullname && errors.fullname)}
@@ -92,7 +95,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Phone Number 1"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.phoneNumber1')}
               {...getFieldProps('phoneNumber1')}
               error={Boolean(touched.phoneNumber1 && errors.phoneNumber1)}
               helperText={touched.phoneNumber1 && errors.phoneNumber1}
@@ -102,7 +105,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Phone Number 2"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.phoneNumber2')}
               {...getFieldProps('phoneNumber2')}
               error={Boolean(touched.phoneNumber2 && errors.phoneNumber2)}
               helperText={touched.phoneNumber2 && errors.phoneNumber2}
@@ -112,7 +115,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Landline"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.landline')}
               {...getFieldProps('landline')}
               error={Boolean(touched.landline && errors.landline)}
               helperText={touched.landline && errors.landline}
@@ -131,7 +134,7 @@ function ClientInfo({ clientDataState, clientId }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="City"
+                  label={translate('clientProfilePage.clientInfoTab.clientInfoForm.city')}
                   margin="none"
                   focused
                   error={Boolean(touched.city && errors.city)}
@@ -156,7 +159,7 @@ function ClientInfo({ clientDataState, clientId }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Region"
+                  label={translate('clientProfilePage.clientInfoTab.clientInfoForm.region')}
                   focused
                   margin="none"
                   error={Boolean(touched.region && errors.region)}
@@ -172,7 +175,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Address"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.address')}
               {...getFieldProps('address')}
               error={Boolean(touched.address && errors.address)}
               helperText={touched.address && errors.address}
@@ -182,7 +185,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Building no"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.buildingNo')}
               {...getFieldProps('buildingNo')}
               error={Boolean(touched.buildingNo && errors.buildingNo)}
               helperText={touched.buildingNo && errors.buildingNo}
@@ -192,7 +195,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Floor no"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.floorNo')}
               {...getFieldProps('floorNo')}
               error={Boolean(touched.floorNo && errors.floorNo)}
               helperText={touched.floorNo && errors.floorNo}
@@ -202,7 +205,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Apartment no"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.apartmentNo')}
               {...getFieldProps('apartmentNo')}
               error={Boolean(touched.apartmentNo && errors.apartmentNo)}
               helperText={touched.apartmentNo && errors.apartmentNo}
@@ -212,7 +215,7 @@ function ClientInfo({ clientDataState, clientId }) {
             <TextField
               fullWidth
               focused
-              label="Landmark"
+              label={translate('clientProfilePage.clientInfoTab.clientInfoForm.landmark')}
               {...getFieldProps('landmark')}
               error={Boolean(touched.landmark && errors.landmark)}
               helperText={touched.landmark && errors.landmark}
@@ -233,7 +236,7 @@ function ClientInfo({ clientDataState, clientId }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="category"
+                  label={translate('clientProfilePage.clientInfoTab.clientInfoForm.category')}
                   margin="none"
                   focused
                   error={Boolean(touched.category && errors.category)}
@@ -255,7 +258,7 @@ function ClientInfo({ clientDataState, clientId }) {
               onClick={handleSubmit}
               fullWidth
             >
-              Update
+              {translate('clientProfilePage.clientInfoTab.clientInfoForm.actionButton')}
             </LoadingButton>
           </Grid>
         </Grid>

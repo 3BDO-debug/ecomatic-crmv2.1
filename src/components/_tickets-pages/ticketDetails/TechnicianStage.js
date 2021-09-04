@@ -23,23 +23,67 @@ import {
 import { LoadingButton } from '@material-ui/lab';
 // utils
 import { ticketDevicesFetcher, ticketDeviceUpdater } from '../../../APIs/customerService/tickets';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // component
 import DataTable from '../../dataTable/DataTable';
 import Label from '../../Label';
 import { MIconButton } from '../../@material-extend';
 import DeviceInfo from './DeviceInfo';
+import InstallationRequirements from '../../installationRequirements/InstallationRequirements';
 
 TechnicianStage.propTypes = {
   ticketState: PropTypes.array
 };
 
+const completeTicketDeviceHandler = (
+  ticketDeviceId,
+  ticketDetails,
+  setTicketDevices,
+  setTicketDevicesTableRows,
+  ticketDevicesDataCreator,
+  enqueueSnackbar,
+  closeSnackbar
+) => {
+  const data = new FormData();
+  data.append('ticketDeviceId', ticketDeviceId);
+  data.append('markCompleted', 'markCompleted');
+  data.append('currentStage', 'technician-stage');
+  ticketDeviceUpdater(ticketDetails.id, data)
+    .then((ticketDevicesData) => {
+      setTicketDevices(ticketDevicesData);
+      setTicketDevicesTableRows(ticketDevicesDataCreator(ticketDevicesData));
+
+      enqueueSnackbar('Device marked  completed', {
+        variant: 'success',
+        action: (key) => (
+          <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Icon icon={closeFill} />
+          </MIconButton>
+        )
+      });
+    })
+    .catch((error) => {
+      enqueueSnackbar(`Couldnt mark device completed ${error}`, {
+        variant: 'error',
+        action: (key) => (
+          <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Icon icon={closeFill} />
+          </MIconButton>
+        )
+      });
+    });
+};
+
 function TechnicianStage({ ticketState }) {
+  const { translate } = useLocales();
   const [ticketDetails, setTicketDetails] = ticketState;
   const [ticketDevices, setTicketDevices] = useState([]);
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [deviceInfo, triggerDeviceInfo] = useState(false);
   const [triggerdDevice, setTriggeredDevice] = useState({});
+  const [completed, triggerCompleted] = useState(false);
   const [notCompleted, triggerNotCompleted] = useState(false);
   const formik = useFormik({
     initialValues: { notCompletedNotes: '' },
@@ -84,40 +128,6 @@ function TechnicianStage({ ticketState }) {
   });
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
 
-  const completeTicketDeviceHandler = useCallback(
-    (ticketDeviceId) => {
-      const data = new FormData();
-      data.append('ticketDeviceId', ticketDeviceId);
-      data.append('markCompleted', 'markCompleted');
-      data.append('currentStage', 'technician-stage');
-      ticketDeviceUpdater(ticketDetails.id, data)
-        .then((ticketDevicesData) => {
-          setTicketDevices(ticketDevicesData);
-          setTicketDevicesTableRows(ticketDevicesDataCreator(ticketDevicesData));
-
-          enqueueSnackbar('Device marked  completed', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-        })
-        .catch((error) => {
-          enqueueSnackbar(`Couldnt mark device  completed ${error}`, {
-            variant: 'error',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-        });
-    },
-    [closeSnackbar, enqueueSnackbar, ticketDetails.id, ticketDevicesDataCreator]
-  );
-
   const ticketDevicesDataCreator = useCallback(
     (ticketDevices) => {
       const ticketDevicesData = [];
@@ -149,16 +159,28 @@ function TechnicianStage({ ticketState }) {
                   >
                     Not completed
                   </Button>
-                  <LoadingButton
-                    onClick={() => completeTicketDeviceHandler(ticketDevice.id)}
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerCompleted(true);
+                    }}
                     variant="contained"
                     color="primary"
                   >
                     Completed
-                  </LoadingButton>
+                  </Button>
                 </>
               ) : (
-                <Button color="info" startIcon={<Icon icon="carbon:document" width={20} height={20} />} />
+                ticketDevice.device_ticket_status === 'Completed' && (
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerCompleted(true);
+                    }}
+                    color="info"
+                    startIcon={<Icon icon="carbon:document" width={20} height={20} />}
+                  />
+                )
               )}
               <Button
                 onClick={() => {
@@ -175,7 +197,7 @@ function TechnicianStage({ ticketState }) {
       );
       return ticketDevicesData;
     },
-    [completeTicketDeviceHandler]
+    [closeSnackbar, enqueueSnackbar, ticketDetails]
   );
 
   useEffect(() => {
@@ -193,10 +215,30 @@ function TechnicianStage({ ticketState }) {
         <CardContent>
           <DataTable
             columnsData={[
-              { id: 'modelNumber', label: 'Model number' },
-              { id: 'ticketType', label: 'Ticket type' },
-              { id: 'ticketStatus', label: 'Ticket status' },
-              { id: 'actions', label: 'Actions' }
+              {
+                id: 'modelNumber',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.modelNumber'
+                )
+              },
+              {
+                id: 'ticketType',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketType'
+                )
+              },
+              {
+                id: 'ticketStatus',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketStatus'
+                )
+              },
+              {
+                id: 'actions',
+                label: translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.actions'
+                )
+              }
             ]}
             rowsData={ticketDevicesTableRows}
             searchPlaceholder="Search devices.."
@@ -212,6 +254,26 @@ function TechnicianStage({ ticketState }) {
             ticketDevicesState={[ticketDevices, setTicketDevices]}
             triggeredDevice={triggerdDevice}
             ticketState={[ticketDetails, setTicketDetails]}
+          />
+
+          {/* Completed form */}
+          <InstallationRequirements
+            saveHandler={() =>
+              completeTicketDeviceHandler(
+                triggerdDevice.id,
+                ticketDetails,
+                setTicketDevices,
+                setTicketDevicesTableRows,
+                ticketDevicesDataCreator,
+                enqueueSnackbar,
+                closeSnackbar
+              )
+            }
+            triggerHandler={() => triggerCompleted(false)}
+            isTriggered={completed}
+            triggeredDevice={triggerdDevice}
+            ticketDetails={ticketDetails}
+            reviewMode={triggerdDevice.device_ticket_status === 'Completed' && true}
           />
           {/* Not completed form */}
 

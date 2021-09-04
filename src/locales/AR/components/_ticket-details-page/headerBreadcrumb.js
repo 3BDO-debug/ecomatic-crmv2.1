@@ -1,10 +1,8 @@
-const headerBreadcrumbTranslation = {
-    header: 'تفاصيل التذكره | 59',
-    links: {
-      root: 'الصفحة الرئيسية',
-      main: 'التذاكر',
-      current: 'تفاصيل التذكرة'
-    }
-  };
-  
-  export default headerBreadcrumbTranslation;
+export const headerBreadcrumbTranslation = {
+  header: 'تفاصيل التيكت',
+  links: {
+    root: 'لوحة التحكم',
+    main: 'التيكتس',
+    current: 'تفاصيل التيكت'
+  }
+};

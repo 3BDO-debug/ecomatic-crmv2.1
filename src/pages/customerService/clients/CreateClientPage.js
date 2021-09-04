@@ -23,6 +23,7 @@ import {
 import { LoadingButton } from '@material-ui/lab';
 // hooks
 import useSettings from '../../../hooks/useSettings';
+import useLocales from '../../../hooks/useLocales';
 // form schema
 import {
   createClientFormDefaults,
@@ -45,6 +46,7 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { MIconButton } from '../../../components/@material-extend';
 
 function CreateClientPage() {
+  const { translate } = useLocales();
   const navigate = useNavigate();
   const { themeStretch } = useSettings();
   const [clientExistAlert, triggerClientExistAlert] = useState(false);
@@ -128,11 +130,14 @@ function CreateClientPage() {
     <Page title="Clients | Create client">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Create a new client"
+          heading={translate('clientsPages.createClientPage.headerBreadcrumb.header')}
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Clients', href: PATH_DASHBOARD.customerService.clients.root },
-            { name: 'Create client' }
+            { name: translate('clientsPages.createClientPage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
+            {
+              name: translate('clientsPages.createClientPage.headerBreadcrumb.links.main'),
+              href: PATH_DASHBOARD.customerService.clients.root
+            },
+            { name: translate('clientsPages.createClientPage.headerBreadcrumb.links.current') }
           ]}
         />
         <Card>
@@ -142,7 +147,7 @@ function CreateClientPage() {
                 <TextField
                   autoFocus
                   fullWidth
-                  label="Full name"
+                  label={translate('clientsPages.createClientPage.createClientForm.fullname')}
                   {...getFieldProps('fullname')}
                   onChange={(event) => setFieldValue('fullname', event.target.value)}
                   value={values.fullname}
@@ -153,7 +158,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Phone Number 1"
+                  label={translate('clientsPages.createClientPage.createClientForm.phoneNumber1')}
                   {...getFieldProps('phoneNumber1')}
                   onChange={(event) => setFieldValue('phoneNumber1', event.target.value)}
                   value={values.phoneNumber1}
@@ -164,7 +169,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Phone Number 2"
+                  label={translate('clientsPages.createClientPage.createClientForm.phoneNumber2')}
                   {...getFieldProps('phoneNumber2')}
                   onChange={(event) => setFieldValue('phoneNumber2', event.target.value)}
                   value={values.phoneNumber2}
@@ -175,7 +180,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Landline"
+                  label={translate('clientsPages.createClientPage.createClientForm.landline')}
                   {...getFieldProps('landline')}
                   onChange={(event) => setFieldValue('landline', event.target.value)}
                   value={values.landline}
@@ -194,7 +199,7 @@ function CreateClientPage() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="City"
+                      label={translate('clientsPages.createClientPage.createClientForm.city')}
                       margin="none"
                       error={Boolean(touched.city && errors.city)}
                       helperText={touched.city && errors.city}
@@ -218,7 +223,7 @@ function CreateClientPage() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Region"
+                      label={translate('clientsPages.createClientPage.createClientForm.region')}
                       margin="none"
                       error={Boolean(touched.region && errors.region)}
                       helperText={touched.region && errors.region}
@@ -232,7 +237,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <TextField
                   fullWidth
-                  label="Address"
+                  label={translate('clientsPages.createClientPage.createClientForm.address')}
                   {...getFieldProps('address')}
                   onChange={(event) => setFieldValue('address', event.target.value)}
                   value={values.address}
@@ -243,7 +248,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Building no"
+                  label={translate('clientsPages.createClientPage.createClientForm.buildingNo')}
                   {...getFieldProps('buildingNo')}
                   onChange={(event) => setFieldValue('buildingNo', event.target.value)}
                   value={values.buildingNo}
@@ -254,7 +259,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Floor no"
+                  label={translate('clientsPages.createClientPage.createClientForm.floorNo')}
                   {...getFieldProps('floorNo')}
                   onChange={(event) => setFieldValue('floorNo', event.target.value)}
                   value={values.floorNo}
@@ -265,7 +270,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={4} lg={4}>
                 <TextField
                   fullWidth
-                  label="Apartment no"
+                  label={translate('clientsPages.createClientPage.createClientForm.apartmentNo')}
                   {...getFieldProps('apartmentNo')}
                   onChange={(event) => setFieldValue('apartmentNo', event.target.value)}
                   value={values.apartmentNo}
@@ -276,7 +281,7 @@ function CreateClientPage() {
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <TextField
                   fullWidth
-                  label="Landmark"
+                  label={translate('clientsPages.createClientPage.createClientForm.landmark')}
                   {...getFieldProps('landmark')}
                   onChange={(event) => setFieldValue('landmark', event.target.value)}
                   value={values.landmark}
@@ -295,7 +300,7 @@ function CreateClientPage() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="category"
+                      label={translate('clientsPages.createClientPage.createClientForm.category')}
                       margin="none"
                       error={Boolean(touched.category && errors.category)}
                       helperText={touched.category && errors.category}
@@ -316,7 +321,7 @@ function CreateClientPage() {
                   onClick={handleSubmit}
                   fullWidth
                 >
-                  Save
+                  {translate('clientsPages.createClientPage.createClientForm.actionButton')}
                 </LoadingButton>
               </Grid>
             </Grid>

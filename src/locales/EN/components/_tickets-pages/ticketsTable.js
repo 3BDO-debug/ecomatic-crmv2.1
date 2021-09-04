@@ -1,12 +1,16 @@
 const ticketsTableTranslation = {
   tableColumns: {
+    ticketNumber: 'Ticket number',
     id: 'ID',
     clientName: 'Client Name',
     technicianPhoto: 'Technician Photo',
     technicianName: 'Technician Name',
-    intializedAt: 'Intialized At'
+    intializedAt: 'Intialized At',
+    currentStage: 'Current stage',
+    status: 'Status',
+    action: 'Action'
   },
-  searchPlaceHolder: 'Search tickets..'
+  searchPlaceholder: 'Search tickets..'
 };
 
 export default ticketsTableTranslation;
