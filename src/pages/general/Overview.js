@@ -20,17 +20,17 @@ function Overview() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
   const user = useContext(AuthContext).userState[0];
-  const tickets = useContext(TicketsContext).ticketsState[0];
-  console.log();
+  /*   const tickets = useContext(TicketsContext).ticketsState[0];
+   */ console.log();
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
-  useEffect(() => {
+  /* useEffect(() => {
     if (user.role === 'technician') {
       const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
       setTicketsTableRows(ticketsDataCreator(userTickets));
     } else {
       setTicketsTableRows(ticketsDataCreator(tickets));
     }
-  }, [user, tickets]);
+  }, [user, tickets]); */
   return (
     <Page title="Overview">
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -79,7 +79,7 @@ function Overview() {
                   },
                   { id: '' }
                 ]}
-                rowsData={ticketsTableRows}
+                rowsData={[]}
                 searchPlaceholder={translate('overviewPage.ticketsOverview.searchPlaceholder')}
                 filterBy="id"
                 disableCheckbox
