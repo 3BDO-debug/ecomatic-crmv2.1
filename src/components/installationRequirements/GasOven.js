@@ -19,7 +19,8 @@ GasOven.propTypes = {
   clientName: PropTypes.string,
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
-  submitState: PropTypes.array
+  submitState: PropTypes.array,
+  deviceId: PropTypes.number
 };
 function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
   const { translate } = useLocales();
@@ -27,7 +28,7 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
-  const submitHandler = () => {
+  const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       gasOvenAdder(deviceId, values)
         .then((response) => {
@@ -45,7 +46,7 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
         })
         .catch((error) => console.log(error));
     }
-  };
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
 
   useEffect(() => {
     if (reviewMode) {
@@ -55,12 +56,12 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [submit, reviewMode, submitHandler, deviceId]);
   useEffect(() => {
     if (submit && !reviewMode) {
       submitHandler();
     }
-  }, [submit]);
+  }, [submit, reviewMode, submitHandler]);
 
   const formik = useFormik({
     initialValues: {
@@ -79,11 +80,11 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
       clientSignature: clientName,
       technicianName: technicainName
     },
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       await submitHandler();
     }
   });
-  const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
+  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

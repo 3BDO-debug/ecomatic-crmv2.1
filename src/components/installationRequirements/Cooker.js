@@ -19,7 +19,8 @@ Cooker.propTypes = {
   clientName: PropTypes.string,
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
-  submitState: PropTypes.array
+  submitState: PropTypes.array,
+  deviceId: PropTypes.number
 };
 
 function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
@@ -28,7 +29,7 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
-  const submitHandler = () => {
+  const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       cookerAdder(deviceId, values)
         .then((response) => {
@@ -45,7 +46,7 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
         })
         .catch((error) => console.log(error));
     }
-  };
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
 
   useEffect(() => {
     if (reviewMode) {
@@ -55,13 +56,13 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [deviceId, reviewMode]);
 
   useEffect(() => {
     if (submit && !reviewMode) {
       submitHandler();
     }
-  }, [submit]);
+  }, [submit, reviewMode, submitHandler]);
 
   const formik = useFormik({
     initialValues: {
@@ -76,11 +77,11 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
       clientSignature: clientName,
       technicianName: technicainName
     },
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       await submitHandler();
     }
   });
-  const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
+  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

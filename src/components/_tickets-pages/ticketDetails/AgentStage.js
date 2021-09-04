@@ -34,7 +34,7 @@ function AgentStage({ ticketDevicesState, ticketState }) {
     )
       .then((ticketDevicesData) => setTicketDevicesTableRows(ticketDevicesData))
       .catch((error) => console.log(error));
-  }, [ticketDevices]);
+  }, [ticketDevices, translate]);
 
   return (
     <Box>

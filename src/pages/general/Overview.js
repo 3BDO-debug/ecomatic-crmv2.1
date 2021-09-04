@@ -78,7 +78,7 @@ function Overview() {
                   },
                   { id: '' }
                 ]}
-                rowsData={[]}
+                rowsData={ticketsTableRows}
                 searchPlaceholder={translate('overviewPage.ticketsOverview.searchPlaceholder')}
                 filterBy="id"
                 disableCheckbox

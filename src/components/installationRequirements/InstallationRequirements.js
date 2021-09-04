@@ -17,7 +17,10 @@ import Hood from './Hood';
 InstallationRequirements.propTypes = {
   isTriggered: PropTypes.bool,
   triggerHandler: PropTypes.func,
-  reviewMode: PropTypes.bool
+  reviewMode: PropTypes.bool,
+  ticketDetails: PropTypes.object,
+  triggeredDevice: PropTypes.any,
+  saveHandler: PropTypes.func
 };
 
 function InstallationRequirements({

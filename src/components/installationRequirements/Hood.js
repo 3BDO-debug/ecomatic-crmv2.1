@@ -19,7 +19,8 @@ Hood.propTypes = {
   clientName: PropTypes.string,
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
-  submitState: PropTypes.array
+  submitState: PropTypes.array,
+  deviceId: PropTypes.number
 };
 function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
   const { translate } = useLocales();
@@ -27,7 +28,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
-  const submitHandler = () => {
+  const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       hoodAdder(deviceId, values)
         .then((response) => {
@@ -45,7 +46,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
         })
         .catch((error) => console.log(error));
     }
-  };
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
 
   useEffect(() => {
     if (reviewMode) {
@@ -55,13 +56,13 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [deviceId, reviewMode]);
 
   useEffect(() => {
     if (submit && !reviewMode) {
       submitHandler();
     }
-  }, [submit]);
+  }, [submit, reviewMode, submitHandler]);
 
   const formik = useFormik({
     initialValues: {
@@ -76,7 +77,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
     }
   });
 
-  const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
+  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 // material
-import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel, Typography } from '@material-ui/core';
+import { Box, Step, Paper, Button, Stepper as MaterialStepper, StepLabel } from '@material-ui/core';
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +16,7 @@ Stepper.propTypes = {
 
 function Stepper({ steps, activeStepState, nextHandler, backHandler, resetHandler, finalStepComponent, showNext }) {
   const [activeStep, setActiveStep] = activeStepState;
+  console.log(showNext, setActiveStep);
   /*
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
