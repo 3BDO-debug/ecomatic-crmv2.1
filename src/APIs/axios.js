@@ -1,6 +1,6 @@
 import axios from 'axios';
-// https://ecomaticcrmv2.pythonanywhere.com http://127.0.0.1:8000 https://ecomatic-crmv2.herokuapp.com https://ecrmv2.pythonanywhere.com
-export const mainUrl = 'http://127.0.0.1:8000';
+// http://ecrm.pythonanywhere.com/ https://ecomaticcrmv2.pythonanywhere.com http://127.0.0.1:8000 https://ecomatic-crmv2.herokuapp.com https://ecrmv2.pythonanywhere.com
+export const mainUrl = 'http://ecrm.pythonanywhere.com';
 
 const axiosInstance = axios.create({
   baseURL: mainUrl,
