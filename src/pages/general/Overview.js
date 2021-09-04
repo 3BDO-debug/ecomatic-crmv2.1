@@ -5,8 +5,7 @@ import { Container, Grid, Card, CardHeader } from '@material-ui/core';
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
 // context
-import { AuthContext } from '../../contexts';
-import { TicketsContext } from '../../contexts/customerService/TicketsContext';
+import { AuthContext, TicketsContext } from '../../contexts';
 // utils
 import { ticketsDataCreator } from '../../utils/mock-data/overview';
 // components
@@ -20,17 +19,17 @@ function Overview() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
   const user = useContext(AuthContext).userState[0];
-  /*   const tickets = useContext(TicketsContext).ticketsState[0];
-   */ console.log();
+  const tickets = useContext(TicketsContext).ticketsState[0];
+  console.log();
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
-  /* useEffect(() => {
+  useEffect(() => {
     if (user.role === 'technician') {
       const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
       setTicketsTableRows(ticketsDataCreator(userTickets));
     } else {
       setTicketsTableRows(ticketsDataCreator(tickets));
     }
-  }, [user, tickets]); */
+  }, [user, tickets]);
   return (
     <Page title="Overview">
       <Container maxWidth={themeStretch ? false : 'xl'}>

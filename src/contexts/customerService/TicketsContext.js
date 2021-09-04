@@ -9,8 +9,14 @@ export const TicketsProvider = ({ children }) => {
   const [tickets, setTickets] = useState([]);
   useEffect(() => {
     ticketsFetcher()
-      .then((ticketsData) => setTickets(ticketsData))
-      .catch((error) => console.log(error));
+      .then((ticketsData) => {
+        setTickets(ticketsData);
+        console.log('FSDF', ticketsData);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTickets([]);
+      });
   }, []);
   return <TicketsContext.Provider value={{ ticketsState: [tickets, setTickets] }}>{children}</TicketsContext.Provider>;
 };

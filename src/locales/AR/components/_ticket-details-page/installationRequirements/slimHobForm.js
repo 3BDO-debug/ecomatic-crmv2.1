@@ -1,12 +1,12 @@
 export const slimHobFormTranslation = {
-  modelNumber: 'Model number',
-  feedingSource: 'Feeding source',
-  gasPressure: 'Gas pressure',
-  marbelOpeningAvailabilty: 'Marbel opening is available ?',
-  openingMeasurements: 'Opening measurements',
-  stabillizerType: 'Stabillizer type',
-  technicianAction: 'Whats done by the technicain ?',
-  deviceCondition: 'Device final condition',
-  clientSignature: 'Client signature',
-  technicianName: 'Technician name'
+  modelNumber: 'رقم الموديل',
+  feedingSource: 'نوع الغاز',
+  gasPressure: 'قياس ضغط الغاز',
+  marbelOpeningAvailabilty: 'فتحة السقوط في الرخامة متوفرة ؟',
+  openingMeasurements: 'مقاس الفتحة',
+  stabillizerType: 'نوع المنظم',
+  technicianAction: 'ما تم تنفيذه من خلال الفني',
+  deviceCondition: 'الحالة النهائية للجهاز',
+  clientSignature: 'توقيع العميل',
+  technicianName: 'اسم الفني'
 };
