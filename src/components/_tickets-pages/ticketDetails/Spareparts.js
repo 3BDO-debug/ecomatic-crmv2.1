@@ -46,7 +46,7 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
   const formik = useFormik({
     initialValues: { requiredQty: 0 },
     validationSchema: Yup.object().shape({
-      requiredQty: Yup.number().min(1, 'you cant assign negative value').required('Required qty is required')
+      requiredQty: Yup.number().min(0, 'you cant assign negative value').required('Required qty is required')
     }),
     onSubmit: async (values, { resetForm }) => {
       const data = new FormData();
