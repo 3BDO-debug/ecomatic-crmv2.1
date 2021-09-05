@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
@@ -57,6 +57,7 @@ function CreateItemPage() {
   const setItems = useContext(ItemsContext).itemsState[1];
   const brands = useContext(ConfigurationsContext).brandsState[0];
   const categories = useContext(ConfigurationsContext).categoriesState[0];
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const warehouses = useContext(WarehousesContext).warehousesState[0];
   const formik = useFormik({
     initialValues: createItemFormDefaults,
@@ -101,6 +102,11 @@ function CreateItemPage() {
     },
     [setFieldValue]
   );
+  console.log('categories', categories);
+  useEffect(() => {
+    const filteredCategoriesData = categories.filter((category) => category.related_brand === values.brand);
+    setFilteredCategories(categoriesDataCreator(filteredCategoriesData));
+  }, [values.brand, categories]);
   return (
     <Page title="Items | Create Item">
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -174,7 +180,7 @@ function CreateItemPage() {
               <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Autocomplete
                   fullWidth
-                  options={categoriesDataCreator(categories)}
+                  options={values.brand === '' ? categoriesDataCreator(categories) : filteredCategories}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => {
                     setFieldValue('category', value == null ? 'none' : value.label);

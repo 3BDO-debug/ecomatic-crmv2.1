@@ -329,21 +329,19 @@ function CreateClientPage() {
         </Card>
         {/* Client exist alert */}
         <Dialog open={clientExistAlert} onClose={() => triggerClientExistAlert(false)}>
-          <DialogTitle>Our system detected someting</DialogTitle>
+          <DialogTitle>{translate('clientsPages.createClientPage.clientExistAlert.title')}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Client with this phone number already exist, please tell us which action you would like to take
-            </DialogContentText>
+            <DialogContentText>{translate('clientsPages.createClientPage.clientExistAlert.body')}</DialogContentText>
             <DialogActions>
               <Button color="error" onClose={() => triggerClientExistAlert(false)}>
-                Cancel
+                {translate('clientsPages.createClientPage.clientExistAlert.cancelButton')}
               </Button>
               <Button
-                variant="outlined"
+                variant="text"
                 onClick={() => navigate(`/dashboard/clients/client-profile/${lookedUpClient}`)}
                 autoFocus
               >
-                Proceed to client profile page
+                {translate('clientsPages.createClientPage.clientExistAlert.actionButton')}
               </Button>
             </DialogActions>
           </DialogContent>

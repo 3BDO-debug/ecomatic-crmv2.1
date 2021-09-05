@@ -68,18 +68,22 @@ function DeviceNotice({ formik, isTriggered, triggerHandler }) {
   );
   useEffect(() => {
     if (values.device) {
-      if (itemFinder(values.device).category === 'gas-oven') {
-        setQuestion(devicesNotices.oven.question);
-        setYesNotice(devicesNotices.oven.yesNotice);
-        setNoNotice(devicesNotices.oven.noNotice);
-      } else if (itemFinder(values.device).category === 'slim-hob') {
-        setNotice(devicesNotices.slimHob.notice);
-      } else if (itemFinder(values.device).category === 'hood') {
-        setQuestion(devicesNotices.hood.question);
-        setYesNotice(devicesNotices.hood.yesNotice);
-        setNoNotice(devicesNotices.hood.noNotice);
-      } else if (itemFinder(values.device).category === 'cooker') {
-        setNotice(devicesNotices.cooker.notice);
+      try {
+        if (itemFinder(values.device).category === 'gas-oven') {
+          setQuestion(devicesNotices.oven.question);
+          setYesNotice(devicesNotices.oven.yesNotice);
+          setNoNotice(devicesNotices.oven.noNotice);
+        } else if (itemFinder(values.device).category === 'slim-hob') {
+          setNotice(devicesNotices.slimHob.notice);
+        } else if (itemFinder(values.device).category === 'hood') {
+          setQuestion(devicesNotices.hood.question);
+          setYesNotice(devicesNotices.hood.yesNotice);
+          setNoNotice(devicesNotices.hood.noNotice);
+        } else if (itemFinder(values.device).category === 'cooker') {
+          setNotice(devicesNotices.cooker.notice);
+        }
+      } catch (error) {
+        console.log('couldnt set', error);
       }
     }
   }, [values.device, itemFinder]);

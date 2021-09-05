@@ -71,7 +71,7 @@ function ClientProfilePage() {
         <HeaderBreadcrumbs
           heading={
             <>
-              Abdelrahman Essam
+              {clientData.client_full_name}
               <Label style={{ marginLeft: '10px' }} variant="ghost" color="info">
                 {clientData.client_category_name}
               </Label>
