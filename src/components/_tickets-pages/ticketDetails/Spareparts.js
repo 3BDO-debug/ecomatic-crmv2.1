@@ -44,7 +44,7 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const formik = useFormik({
-    initialValues: { requiredQty: 1 },
+    initialValues: { requiredQty: 0 },
     validationSchema: Yup.object().shape({
       requiredQty: Yup.number().min(1, 'you cant assign negative value').required('Required qty is required')
     }),
