@@ -126,7 +126,6 @@ function AddClientDeviceForm({ formik }) {
             options={items.map((item) => ({ label: item.item_model_number, id: item.id }))}
             getOptionLabel={(option) => option.label}
             onChange={(event, value) => {
-              console.log('dsads');
               if (value !== null) {
                 setFieldValue('device', value.id);
                 triggerDeviceNotice(true);

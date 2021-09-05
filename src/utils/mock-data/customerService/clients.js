@@ -95,9 +95,9 @@ export const feedingSourcesDataCreator = (deviceCategory) => {
   const feedingSourcesData = [];
   const nonHoodFeedingSources = ['Natural Gas', 'Gas Cylinder'];
   const hoodFeedingSources = ['Internal Expulsion', 'External Expulsion'];
-  if (deviceCategory !== 'hoods') {
+  if (deviceCategory !== 'hood') {
     nonHoodFeedingSources.map((feedingSource, index) => feedingSourcesData.push({ label: feedingSource, id: index }));
-  } else if (deviceCategory === 'hoods') {
+  } else if (deviceCategory === 'hood') {
     hoodFeedingSources.map((feedingSource, index) => feedingSourcesData.push({ label: feedingSource, id: index }));
   }
   return feedingSourcesData;
