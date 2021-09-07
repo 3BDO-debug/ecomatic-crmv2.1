@@ -18,7 +18,8 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  TextField
+  TextField,
+  Tooltip
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // utils
@@ -31,6 +32,7 @@ import Label from '../../Label';
 import { MIconButton } from '../../@material-extend';
 import DeviceInfo from './DeviceInfo';
 import InstallationRequirements from '../../installationRequirements/InstallationRequirements';
+import RedirectTicketDevice from './RedirectTicketDevice';
 
 TechnicianStage.propTypes = {
   ticketState: PropTypes.array
@@ -82,9 +84,11 @@ function TechnicianStage({ ticketState }) {
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [deviceInfo, triggerDeviceInfo] = useState(false);
-  const [triggerdDevice, setTriggeredDevice] = useState({});
+  const [triggeredDevice, setTriggeredDevice] = useState({});
   const [completed, triggerCompleted] = useState(false);
   const [notCompleted, triggerNotCompleted] = useState(false);
+  const [redirectDeviceTicket, triggerRedirectTicketDevice] = useState(false);
+
   const formik = useFormik({
     initialValues: { notCompletedNotes: '' },
     validationSchema: Yup.object().shape({
@@ -94,7 +98,7 @@ function TechnicianStage({ ticketState }) {
     }),
     onSubmit: async (values, { resetForm }) => {
       const data = new FormData();
-      data.append('ticketDeviceId', triggerdDevice.id);
+      data.append('ticketDeviceId', triggeredDevice.id);
       data.append('markNotCompleted', 'markNotCompleted');
       data.append('currentStage', 'technician-stage');
       data.append('notCompletedNotes', values.notCompletedNotes);
@@ -181,6 +185,18 @@ function TechnicianStage({ ticketState }) {
                 />
               )
             )}
+            {ticketDevice.device_ticket_status !== 'Under Processing' && (
+              <Tooltip title="redirect to supervisor">
+                <Button
+                  onClick={() => {
+                    setTriggeredDevice(ticketDevice);
+                    triggerRedirectTicketDevice(true);
+                  }}
+                  color="error"
+                  startIcon={<Icon icon="bi:arrow-return-left" />}
+                />
+              </Tooltip>
+            )}
             <Button
               onClick={() => {
                 console.log('dsfsdfs', ticketDevices);
@@ -249,7 +265,7 @@ function TechnicianStage({ ticketState }) {
             triggerHandler={() => triggerDeviceInfo(false)}
             isEditable={false}
             ticketDevicesState={[ticketDevices, setTicketDevices]}
-            triggeredDevice={triggerdDevice}
+            triggeredDevice={triggeredDevice}
             ticketState={[ticketDetails, setTicketDetails]}
           />
 
@@ -257,7 +273,7 @@ function TechnicianStage({ ticketState }) {
           <InstallationRequirements
             saveHandler={() =>
               completeTicketDeviceHandler(
-                triggerdDevice.id,
+                triggeredDevice.id,
                 ticketDetails,
                 setTicketDevices,
                 setTicketDevicesTableRows,
@@ -268,16 +284,29 @@ function TechnicianStage({ ticketState }) {
             }
             triggerHandler={() => triggerCompleted(false)}
             isTriggered={completed}
-            triggeredDevice={triggerdDevice}
+            triggeredDevice={triggeredDevice}
             ticketDetails={ticketDetails}
-            reviewMode={triggerdDevice.device_ticket_status === 'Completed' && true}
+            reviewMode={triggeredDevice.device_ticket_status === 'Completed' && true}
+          />
+
+          {/* Device ticket redirection */}
+          <RedirectTicketDevice
+            isTriggered={redirectDeviceTicket}
+            triggerHandler={() => triggerRedirectTicketDevice(false)}
+            triggeredDevice={triggeredDevice}
+            ticketDetails={ticketDetails}
+            reviewMode={triggeredDevice.device_ticket_status === 'Redirected' && true}
+            setTicketDevices={setTicketDevices}
+            setTicketDevicesTableRows={setTicketDevicesTableRows}
+            ticketDeviceDataCreator={ticketDevicesDataCreator}
+            setTicketDetails={setTicketDetails}
           />
           {/* Not completed form */}
 
-          {triggerdDevice && (
+          {triggeredDevice && (
             <Dialog open={notCompleted} onClose={() => triggerNotCompleted(false)} fullWidth maxWidth="sm">
               <DialogTitle>
-                {triggerdDevice.device_model_number}
+                {triggeredDevice.device_model_number}
                 <Label variant="ghost" color="error" style={{ marginLeft: '10px' }}>
                   Not completed
                 </Label>

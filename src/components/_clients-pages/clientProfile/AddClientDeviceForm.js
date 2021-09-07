@@ -247,7 +247,10 @@ function AddClientDeviceForm({ formik }) {
                 triggerDeviceInstallationQuestion(!deviceInstallationQuestion);
                 triggerDeviceInstallationThroughCompanyQuestion(true);
               }}
-              onNoHandler={deviceInstallationQuestionNoHandler}
+              onNoHandler={() => {
+                deviceInstallationQuestionNoHandler();
+                setFieldValue('installationStatus', 'Not installed');
+              }}
             />
           </Grid>
         )}
@@ -281,13 +284,13 @@ function AddClientDeviceForm({ formik }) {
               onYesHandler={() => {
                 triggerDeviceInstallationThroughCompanyQuestion(!deviceInstallationThroughCompanyQuestion);
                 triggerInstallationDateSection(true);
-                setFieldValue('installedThroughTheCompany', true);
+                setFieldValue('installationStatus', 'Installed by the company');
               }}
               onNoHandler={() => {
                 triggerDeviceInstallationThroughCompanyQuestion(!deviceInstallationThroughCompanyQuestion);
                 setFieldValue('warrantyStatus', false);
                 triggerResetOfForm(true);
-                setFieldValue('installedThroughTheCompany', '');
+                setFieldValue('installationStatus', 'Not installed by the company');
               }}
             />
           </Grid>

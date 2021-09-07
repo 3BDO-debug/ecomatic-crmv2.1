@@ -90,6 +90,7 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
           });
         });
       resetForm();
+      triggerHandler();
     }
   });
 
@@ -111,10 +112,24 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
               <Label
                 style={{ marginLeft: '10px' }}
                 variant="ghost"
-                color={ticketDeviceFinder().installed_through_the_company ? 'info' : 'error'}
+                color={ticketDeviceFinder().installation_status !== 'Not installed' ? 'info' : 'error'}
               >
-                {ticketDeviceFinder().installed_through_the_company ? 'Installed' : 'Not installed'}
+                {ticketDeviceFinder().installation_status}
               </Label>
+              {ticketDeviceFinder().installation_status === 'Not installed by the company' && (
+                <Label variant="ghost" color="error">
+                  Out of warranty
+                </Label>
+              )}
+              {ticketDeviceFinder().installation_date && (
+                <Label
+                  style={{ marginLeft: '10px' }}
+                  variant="ghost"
+                  color={ticketDeviceFinder().in_warranty ? 'primary' : 'error'}
+                >
+                  {ticketDeviceFinder().in_warranty ? 'In warranty' : 'Out of warranty'}
+                </Label>
+              )}
               <Tooltip title="Download invoice">
                 <IconButton
                   onClick={() => window.open(`${mainUrl}/${ticketDeviceFinder().device_invoice_or_manufacturer_label}`)}

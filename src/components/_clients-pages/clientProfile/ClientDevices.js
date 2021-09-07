@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 // material
 import { Card, Fab, Slide, Tooltip, Badge } from '@material-ui/core';
 import DataTable from '../../dataTable/DataTable';
@@ -20,11 +20,11 @@ import { MIconButton } from '../../@material-extend';
 import ClientDeviceDetails from './ClientDeviceDetails';
 
 ClientDevices.propTypes = {
-  clientId: PropTypes.number,
   clientDevicesState: PropTypes.array
 };
 
-function ClientDevices({ clientId, clientDevicesState }) {
+function ClientDevices({ clientDevicesState }) {
+  const { clientId } = useParams();
   const { translate } = useLocales();
   const [clientDevices, setClientDevices] = clientDevicesState;
   const [tickets, setTickets] = useContext(TicketsContext).ticketsState;

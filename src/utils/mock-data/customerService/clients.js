@@ -36,19 +36,47 @@ export const clientDevicessDataCreator = (clientDevices, triggerDeviceDetails, s
     clientDevicesData.push({
       id: clientDevice.id,
       modelNumber: clientDevice.device_model_number,
-      purchasingDate: clientDevice.purchasing_date,
-      manufacturingDate: clientDevice.manufacturing_date,
-      installationDate: clientDevice.installation_date,
-      warrantyStartDate: clientDevice.warranty_start_date,
-      warrantyStatus: clientDevice.in_warranty,
+      purchasingDate: clientDevice.purchasing_date ? (
+        clientDevice.purchasing_date
+      ) : (
+        <Label variant="ghost" color="error">
+          Not available
+        </Label>
+      ),
+      manufacturingDate: clientDevice.manufacturing_date ? (
+        clientDevice.manufacturing_date
+      ) : (
+        <Label variant="ghost" color="error">
+          Not available
+        </Label>
+      ),
+      installationDate: clientDevice.installation_date ? (
+        clientDevice.installation_date
+      ) : (
+        <Label variant="ghost" color="error">
+          Not available
+        </Label>
+      ),
+      warrantyStartDate: clientDevice.warranty_start_date ? (
+        clientDevice.warranty_start_date
+      ) : (
+        <Label variant="ghost" color="error">
+          Not available
+        </Label>
+      ),
+      warrantyStatus: (
+        <Label variant="ghost" color="primary">
+          {clientDevice.installation_status === 'Not installed' && 'Not available'}
+          {clientDevice.installation_status !== 'Not installed' && clientDevice.in_warranty && 'In warranty'}
+          {clientDevice.installation_status !== 'Not installed' && !clientDevice.in_warranty && 'Out of warranty'}
+        </Label>
+      ),
       action: (
         <Button
-          component={Link}
           onClick={() => {
             setTriggeredDevice(clientDevice);
             triggerDeviceDetails(true);
           }}
-          to="/dashboard/clients/client-profile/client-device-data"
           startIcon={<Icon icon="akar-icons:eye" />}
         />
       )
@@ -66,7 +94,7 @@ export const clientTicketsDataCreator = (tickets, clientId) => {
         id: ticket.ticket_generated_id,
         clientName: ticket.client_name,
         technicianName:
-          ticket.technician_name !== 'Technician Not Selected Yet' ? (
+          ticket.technician_name !== 'Technician not selected yet' ? (
             ticket.technician_name
           ) : (
             <Label variant="ghost" color="error">

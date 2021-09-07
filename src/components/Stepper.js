@@ -11,10 +11,22 @@ Stepper.propTypes = {
   nextHandler: PropTypes.func,
   backHandler: PropTypes.func,
   resetHandler: PropTypes.func,
-  showNext: PropTypes.bool
+  showNext: PropTypes.bool,
+  actionButton: PropTypes.node,
+  currentStage: PropTypes.number
 };
 
-function Stepper({ steps, activeStepState, nextHandler, backHandler, resetHandler, finalStepComponent, showNext }) {
+function Stepper({
+  steps,
+  activeStepState,
+  nextHandler,
+  backHandler,
+  resetHandler,
+  finalStepComponent,
+  showNext,
+  actionButton,
+  currentStage
+}) {
   const [activeStep, setActiveStep] = activeStepState;
   console.log(showNext, setActiveStep);
   /*
@@ -43,7 +55,7 @@ function Stepper({ steps, activeStepState, nextHandler, backHandler, resetHandle
           const labelProps = {};
 
           return (
-            <Step key={index} {...stepProps} completed={step.active}>
+            <Step key={index} {...stepProps} active={step.active} completed={index <= currentStage - 1 && true}>
               <StepLabel {...labelProps}>{step.title}</StepLabel>
             </Step>
           );
@@ -70,6 +82,7 @@ function Stepper({ steps, activeStepState, nextHandler, backHandler, resetHandle
             <Button variant="text" onClick={nextHandler}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
+            {actionButton}
             {/*             <Button variant="contained" onClick={nextStageHandler}>
               Proceed to next stage
             </Button> */}

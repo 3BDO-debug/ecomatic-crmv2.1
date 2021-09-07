@@ -25,10 +25,15 @@ function ClientDeviceDetails({ deviceDetails, isTriggered, triggerHandler }) {
           <Label
             style={{ marginLeft: '10px' }}
             variant="ghost"
-            color={deviceDetails.installed_through_the_company ? 'info' : 'error'}
+            color={deviceDetails.installation_status !== 'Not installed' ? 'info' : 'error'}
           >
-            {deviceDetails.installed_through_the_company ? 'Installed' : 'Not installed'}
+            {deviceDetails.installation_status}
           </Label>
+          {deviceDetails.installation_status === 'Not installed by the company' && (
+            <Label variant="ghost" color="error">
+              Out of warranty
+            </Label>
+          )}
           {deviceDetails.installation_date && (
             <Label
               style={{ marginLeft: '10px' }}

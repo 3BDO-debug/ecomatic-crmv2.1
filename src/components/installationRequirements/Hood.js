@@ -28,6 +28,21 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const formik = useFormik({
+    initialValues: {
+      hoodModelNumber: modelNumber,
+      hoodHeight: '',
+      hoodExhaustHeight: '',
+      hoodExhaustIsStraight: '',
+      whatsDoneByTechnician: '',
+      hoodFinalCondition: '',
+      clientSignature: clientName,
+      technicianName: technicainName
+    }
+  });
+
+  const { values, setFieldValue } = formik;
+
   const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       hoodAdder(deviceId, values)
@@ -63,21 +78,6 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
-
-  const formik = useFormik({
-    initialValues: {
-      hoodModelNumber: modelNumber,
-      hoodHeight: '',
-      hoodExhaustHeight: '',
-      hoodExhaustIsStraight: '',
-      whatsDoneByTechnician: '',
-      hoodFinalCondition: '',
-      clientSignature: clientName,
-      technicianName: technicainName
-    }
-  });
-
-  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

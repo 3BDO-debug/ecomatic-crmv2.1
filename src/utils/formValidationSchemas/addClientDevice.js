@@ -7,7 +7,7 @@ export const addClientDeviceFormDefaults = {
   manufacturingDate: null,
   purchasingDate: null,
   expectedWarrantyStartDate: null,
-  installedThroughTheCompany: null,
+  installationStatus: '',
   installationDate: null,
   warrantyStartDate: null,
   warrantyStatus: null,

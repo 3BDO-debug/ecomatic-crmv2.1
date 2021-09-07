@@ -29,6 +29,25 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const formik = useFormik({
+    initialValues: {
+      cookerModelNumber: modelNumber,
+      gasType: feedingSource,
+      gasPressure: '',
+      cookerFoniaNumber: '',
+      grillFoniaNumber: '',
+      stabilizerType: '',
+      whatsDoneByTechnician: '',
+      cookerFinalCondition: '',
+      clientSignature: clientName,
+      technicianName: technicainName
+    },
+    onSubmit: async () => {
+      await submitHandler();
+    }
+  });
+  const { values, setFieldValue } = formik;
+
   const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       cookerAdder(deviceId, values)
@@ -63,25 +82,6 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
-
-  const formik = useFormik({
-    initialValues: {
-      cookerModelNumber: modelNumber,
-      gasType: feedingSource,
-      gasPressure: '',
-      cookerFoniaNumber: '',
-      grillFoniaNumber: '',
-      stabilizerType: '',
-      whatsDoneByTechnician: '',
-      cookerFinalCondition: '',
-      clientSignature: clientName,
-      technicianName: technicainName
-    },
-    onSubmit: async () => {
-      await submitHandler();
-    }
-  });
-  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

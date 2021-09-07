@@ -38,6 +38,7 @@ function SupervisorStage({ ticketDetailsState }) {
       ticketUpdater(ticketDetails.id, data)
         .then((ticketDetailsData) => {
           setTicketDetails(ticketDetailsData);
+
           enqueueSnackbar('Technician assigned', {
             variant: 'success',
             action: (key) => (
@@ -61,12 +62,6 @@ function SupervisorStage({ ticketDetailsState }) {
     [closeSnackbar, enqueueSnackbar, setTicketDetails, ticketDetails.id]
   );
 
-  const assignedTechnicianFinder = useCallback(() => {
-    const assignedTechnician = accounts.find((account) => account.id === ticketDetails.related_technician);
-    console.log('xxx', assignedTechnician);
-    return assignedTechnician;
-  }, [accounts, ticketDetails.related_technician]);
-
   const techniciansDataCreator = useCallback(() => {
     const techniciansData = [];
     if (accounts.map) {
@@ -83,20 +78,20 @@ function SupervisorStage({ ticketDetailsState }) {
             <Button
               onClick={() => assignTechnicianHandler(account.id)}
               variant="contained"
-              color={assignedTechnicianFinder() ? 'error' : 'primary'}
+              color={ticketDetails.related_technician === account.id ? 'error' : 'primary'}
             >
-              {assignedTechnicianFinder() ? 'Technician assigned' : 'Assign technician'}
+              {ticketDetails.related_technician === account.id ? 'Technician assigned' : 'Assign technician'}
             </Button>
           )
         })
       );
     }
     return techniciansData;
-  }, [accounts, assignTechnicianHandler, assignedTechnicianFinder]);
+  }, [accounts, assignTechnicianHandler, ticketDetails.related_technician]);
   useEffect(() => {
     setRequiredRole('Technicians');
     setTechnicianTableRows(techniciansDataCreator());
-  }, [accounts, ticketDetails, setRequiredRole, techniciansDataCreator]);
+  }, [accounts, ticketDetails, setRequiredRole, techniciansDataCreator, assignTechnicianHandler]);
   return (
     <Card sx={{ boxShadow: 'none' }}>
       <CardHeader title="Pick a technician" />

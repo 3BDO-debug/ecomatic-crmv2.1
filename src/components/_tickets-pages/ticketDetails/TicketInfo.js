@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
+import { useReactToPrint } from 'react-to-print';
 // material
 import { Card, CardContent, CardHeader, Grid, IconButton, Stack, TextField, Tooltip } from '@material-ui/core';
 // hooks
@@ -14,17 +15,22 @@ TicketInfo.propTypes = {
 
 function TicketInfo({ ticketDetails }) {
   const { translate } = useLocales();
+  const printComponent = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printComponent.current
+  });
+
   return (
-    <Card sx={{ boxShadow: 'none' }}>
+    <Card sx={{ boxShadow: 'none' }} ref={printComponent}>
       <CardHeader
         title={
           <Stack direction="row" rowGap={3} alignItems="center">
-            {translate('ticketDetailsPage.ticketInfo.title')} |
+            {translate('ticketDetailsPage.ticketInfo.title')} | {ticketDetails.ticket_generated_id}
             <Label style={{ marginLeft: '10px' }} variant="ghost" color="info">
               {ticketDetails.current_stage}
             </Label>
             <Tooltip title="Print ticket info">
-              <IconButton color="primary" sx={{ marginLeft: 'auto', order: '2' }}>
+              <IconButton onClick={handlePrint} color="primary" sx={{ marginLeft: 'auto', order: '2' }}>
                 <Icon icon="ci:download" width={20} height={20} />
               </IconButton>
             </Tooltip>

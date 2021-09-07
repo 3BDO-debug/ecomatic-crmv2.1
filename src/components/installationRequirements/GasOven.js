@@ -28,6 +28,29 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const formik = useFormik({
+    initialValues: {
+      gasOvenModelNumber: modelNumber,
+      gasType: feedingSource,
+      gasPressure: '',
+      ventillationOpeningBelowOvenIsAvailable: '',
+      ventillationOpeningBelowOvenMeasurements: '',
+      ventillationOpeningInFrontOfOvenIsAvailable: '',
+      ventillationOpeningInFrontOfOvenMeasurements: '',
+      stabilizerType: '',
+      gasOvenFoniaNumber: '',
+      grillFoniaNumber: '',
+      whatsDoneByTechnician: '',
+      gasOvenFinalCondition: '',
+      clientSignature: clientName,
+      technicianName: technicainName
+    },
+    onSubmit: async () => {
+      await submitHandler();
+    }
+  });
+  const { values, setFieldValue } = formik;
+
   const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       gasOvenAdder(deviceId, values)
@@ -62,29 +85,6 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
-
-  const formik = useFormik({
-    initialValues: {
-      gasOvenModelNumber: modelNumber,
-      gasType: feedingSource,
-      gasPressure: '',
-      ventillationOpeningBelowOvenIsAvailable: '',
-      ventillationOpeningBelowOvenMeasurements: '',
-      ventillationOpeningInFrontOfOvenIsAvailable: '',
-      ventillationOpeningInFrontOfOvenMeasurements: '',
-      stabilizerType: '',
-      gasOvenFoniaNumber: '',
-      grillFoniaNumber: '',
-      whatsDoneByTechnician: '',
-      gasOvenFinalCondition: '',
-      clientSignature: clientName,
-      technicianName: technicainName
-    },
-    onSubmit: async () => {
-      await submitHandler();
-    }
-  });
-  const { values, setFieldValue } = formik;
 
   return (
     <Grid container spacing={3}>

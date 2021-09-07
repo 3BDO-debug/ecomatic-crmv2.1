@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 import { useSnackbar } from 'notistack5';
+import { useParams } from 'react-router';
 // material
 import { Chip } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
@@ -23,11 +24,11 @@ import AddClientDeviceForm from './AddClientDeviceForm';
 AddClientDevice.propTypes = {
   open: PropTypes.bool,
   closeHandler: PropTypes.func,
-  clientDevicesState: PropTypes.array,
-  clientId: PropTypes.number
+  clientDevicesState: PropTypes.array
 };
 
-function AddClientDevice({ open, closeHandler, clientDevicesState, clientId }) {
+function AddClientDevice({ open, closeHandler, clientDevicesState }) {
+  const { clientId } = useParams();
   const setClientDevices = clientDevicesState[1];
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();

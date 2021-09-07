@@ -29,6 +29,25 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const formik = useFormik({
+    initialValues: {
+      slimHobModelNumber: modelNumber,
+      gasType: feedingSource,
+      gasPressure: '',
+      marbleOpeningHoleIsAvailable: '',
+      marbleOpeningHoleMeasurements: '',
+      stabilizerType: '',
+      whatsDoneByTechnician: '',
+      slimHobFinalCondition: '',
+      clientSignature: clientName,
+      technicianName: technicainName
+    },
+    onSubmit: async () => {
+      await submitHandler();
+    }
+  });
+  const { setFieldValue, values } = formik;
+
   const submitHandler = useCallback(() => {
     if (submit && !reviewMode) {
       slimHobAdder(deviceId, values)
@@ -64,25 +83,6 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
-
-  const formik = useFormik({
-    initialValues: {
-      slimHobModelNumber: modelNumber,
-      gasType: feedingSource,
-      gasPressure: '',
-      marbleOpeningHoleIsAvailable: '',
-      marbleOpeningHoleMeasurements: '',
-      stabilizerType: '',
-      whatsDoneByTechnician: '',
-      slimHobFinalCondition: '',
-      clientSignature: clientName,
-      technicianName: technicainName
-    },
-    onSubmit: async () => {
-      await submitHandler();
-    }
-  });
-  const { setFieldValue, values } = formik;
 
   return (
     <Grid container spacing={3}>

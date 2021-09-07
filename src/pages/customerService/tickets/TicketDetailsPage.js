@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Icon } from '@iconify/react';
 import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
@@ -19,6 +19,7 @@ import {
   DialogActions,
   Button
 } from '@material-ui/core';
+import { LoadingButton } from '@material-ui/lab';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -46,10 +47,8 @@ function TicketDetailsPage() {
   const { themeStretch } = useSettings();
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+  const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-
-  const [showNext, setShowNext] = useState(false);
 
   const [currentTab, setCurrentTab] = useState('timeline');
   const { ticketId } = useParams();
@@ -61,6 +60,7 @@ function TicketDetailsPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const updateStageHandler = () => {
+    setLoading(true);
     const data = new FormData();
     if (ticketDetails.current_stage === 'agent-stage') {
       data.append('currentStage', 'supervisor-stage');
@@ -80,14 +80,12 @@ function TicketDetailsPage() {
             </MIconButton>
           )
         });
+        setLoading(false);
       })
       .catch((error) => console.log(error));
   };
 
   const handleNext = () => {
-    if (ticketDetails.current_stage !== 'customer-service-stage') {
-      updateStageHandler();
-    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -99,32 +97,20 @@ function TicketDetailsPage() {
     setActiveStep(0);
   };
 
-  const showNextHandler = useCallback(() => {
-    if (currentStep >= activeStep) {
-      setShowNext(true);
-    } else {
-      setShowNext(false);
-    }
-  }, [activeStep, currentStep]);
-
-  useEffect(() => {
-    showNextHandler();
-  }, [activeStep, showNextHandler]);
-  console.log(showNext);
   useEffect(() => {
     if (ticketDetails) {
       if (ticketDetails.current_stage === 'agent-stage') {
-        setActiveStep(0);
         setCurrentStep(0);
+        setActiveStep(0);
       } else if (ticketDetails.current_stage === 'supervisor-stage') {
-        setActiveStep(1);
         setCurrentStep(1);
+        setActiveStep(1);
       } else if (ticketDetails.current_stage === 'technician-stage') {
-        setActiveStep(2);
         setCurrentStep(2);
+        setActiveStep(2);
       } else if (ticketDetails.current_stage === 'customer-service-stage') {
-        setActiveStep(3);
         setCurrentStep(3);
+        setActiveStep(3);
       }
     }
   }, [ticketDetails]);
@@ -147,6 +133,7 @@ function TicketDetailsPage() {
           backHandler={handleBack}
           resetHandler={handleReset}
           nextStageHandler={updateStageHandler}
+          currentStage={currentStep}
           steps={[
             {
               title: 'Agent Stage',
@@ -174,6 +161,11 @@ function TicketDetailsPage() {
             }
           ]}
           finalStepComponent={<FollowBackCall ticketDetailsState={[ticketDetails, setTicketDetails]} />}
+          actionButton={
+            <LoadingButton disabled={loading} loading={loading} onClick={updateStageHandler} variant="contained">
+              Next stage
+            </LoadingButton>
+          }
         />
       )
     },
@@ -196,14 +188,22 @@ function TicketDetailsPage() {
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading={
-            <>
-              {`${translate('ticketDetailsPage.headerBreadcrumb.header')} | ${ticketDetails && ticketDetails.id} `}
+            <Stack direction="row" alignItems="center">
+              {`${translate('ticketDetailsPage.headerBreadcrumb.header')} | ${
+                ticketDetails && ticketDetails.ticket_generated_id
+              } `}
               {ticketDetails && ticketDetails.is_closed && (
                 <Label style={{ marginLeft: '10px' }} variant="ghost" color="error">
                   Closed
                 </Label>
               )}
-            </>
+              {ticketDevices.filter((ticketDevice) => ticketDevice.device_ticket_status === 'Redirected').length ===
+                1 && (
+                <Label style={{ marginLeft: '10px' }} variant="ghost" color="info">
+                  Redirected
+                </Label>
+              )}
+            </Stack>
           }
           links={[
             { name: translate('ticketDetailsPage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
