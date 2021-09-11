@@ -161,7 +161,7 @@ function CreateItemPage() {
                   options={brandsDataCreator(brands)}
                   getOptionLabel={(option) => option.label}
                   onChange={(event, value) => {
-                    setFieldValue('brand', value == null ? 'none' : value.id);
+                    setFieldValue('brand', value == null ? 'none' : value.label);
                   }}
                   renderInput={(params) => (
                     <TextField

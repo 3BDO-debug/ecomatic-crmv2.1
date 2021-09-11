@@ -20,7 +20,7 @@ function Overview() {
   const { translate } = useLocales();
   const user = useContext(AuthContext).userState[0];
   const tickets = useContext(TicketsContext).ticketsState[0];
-  console.log();
+
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
   useEffect(() => {
     if (user.role === 'technician') {

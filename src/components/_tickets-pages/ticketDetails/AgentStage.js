@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 // material
-import { Box, Card, CardHeader, CardContent } from '@material-ui/core';
+import { Box, Card, CardHeader, CardContent, Skeleton, CardActions, Button } from '@material-ui/core';
 // utils
 import { ticketDevicesDataCreator } from '../../../utils/mock-data/customerService/tickets';
 // hooks
@@ -37,57 +37,68 @@ function AgentStage({ ticketDevicesState, ticketState }) {
   }, [ticketDevices, translate]);
 
   return (
-    <Box>
-      <Card sx={{ boxShadow: 'none' }}>
-        <CardHeader title="Ticket Devices" />
-        <CardContent>
-          <CollapsibleTable
-            columnsData={[
-              {
-                id: 'modelNumber',
-                label: translate(
-                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.modelNumber'
-                )
-              },
-              {
-                id: 'ticketType',
-                label: translate(
-                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketType'
-                )
-              },
-              {
-                id: 'ticketStatus',
-                label: translate(
-                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketStatus'
-                )
-              },
-              {
-                id: 'action',
-                label: translate(
-                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.actions'
-                )
-              }
-            ]}
-            rowsData={ticketDevicesTableRows}
-          />
-          <SparepartsServices
-            triggeredDevice={triggeredDevice}
-            open={sparepartsServices}
-            closeHandler={() => triggerSparepartsServices(false)}
+    <>
+      {ticketDevices.length !== 0 && ticketDevicesTableRows.length !== 0 ? (
+        <Box>
+          <Card sx={{ boxShadow: 'none' }}>
+            <CardHeader title="Ticket Devices" />
+            <CardContent>
+              <CollapsibleTable
+                columnsData={[
+                  {
+                    id: 'modelNumber',
+                    label: translate(
+                      'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.modelNumber'
+                    )
+                  },
+                  {
+                    id: 'ticketType',
+                    label: translate(
+                      'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketType'
+                    )
+                  },
+                  {
+                    id: 'ticketStatus',
+                    label: translate(
+                      'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.ticketStatus'
+                    )
+                  },
+                  {
+                    id: 'action',
+                    label: translate(
+                      'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.tableColumns.actions'
+                    )
+                  }
+                ]}
+                rowsData={ticketDevicesTableRows}
+              />
+              <SparepartsServices
+                triggeredDevice={triggeredDevice}
+                open={sparepartsServices}
+                closeHandler={() => triggerSparepartsServices(false)}
+                ticketState={ticketState}
+              />
+            </CardContent>
+            <CardActions>
+              <Button sx={{ marginLeft: 'auto', order: '2' }} variant="text">
+                Total : 250 EGP
+              </Button>
+            </CardActions>
+          </Card>
+          {/* Device details */}
+          <DeviceInfo
             ticketState={ticketState}
+            ticketDevicesState={[ticketDevices, setTicketDevices]}
+            triggeredDevice={triggeredDevice}
+            isTriggered={deviceDetails}
+            triggerHandler={() => triggerDeviceDetails(false)}
+            isEditable
           />
-        </CardContent>
-      </Card>
-      {/* Device details */}
-      <DeviceInfo
-        ticketState={ticketState}
-        ticketDevicesState={[ticketDevices, setTicketDevices]}
-        triggeredDevice={triggeredDevice}
-        isTriggered={deviceDetails}
-        triggerHandler={() => triggerDeviceDetails(false)}
-        isEditable
-      />
-    </Box>
+        </Box>
+      ) : (
+        <Skeleton animation="wave" height={500} />
+      )}
+    </>
   );
 }
 
