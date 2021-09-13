@@ -181,27 +181,29 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
           focused={reviewMode}
         />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        {reviewMode ? (
-          <TextField
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
-            value={installationRequirementsDetails.stabilizer_type}
-            focused={reviewMode}
-            fullWidth
-          />
-        ) : (
-          <TextField
-            select
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
-            value={values.stabilizerType}
-            onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
-            fullWidth
-          >
-            <MenuItem value="with pulley">With pulley</MenuItem>
-            <MenuItem value="without pulley">Without pulley</MenuItem>
-          </TextField>
-        )}
-      </Grid>
+      {feedingSource !== 'Natural Gas' && (
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          {reviewMode ? (
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
+              value={installationRequirementsDetails.stabilizer_type}
+              focused={reviewMode}
+              fullWidth
+            />
+          ) : (
+            <TextField
+              select
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
+              value={values.stabilizerType}
+              onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
+              fullWidth
+            >
+              <MenuItem value="with pulley">With pulley</MenuItem>
+              <MenuItem value="without pulley">Without pulley</MenuItem>
+            </TextField>
+          )}
+        </Grid>
+      )}
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <TextField
           label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.ovenFoniaNumber')}
