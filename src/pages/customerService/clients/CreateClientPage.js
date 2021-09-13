@@ -63,6 +63,9 @@ function CreateClientPage() {
     onSubmit: async (values, { resetForm }) => {
       await clientsAdder(values).then((clientsData) => {
         setClients(clientsData);
+        const client = clientsData.find((client) => client.client_phone_number_1 === values.phoneNumber1);
+        navigate(`/dashboard/clients/client-profile/${client.id}`);
+
         enqueueSnackbar('Client added', {
           variant: 'success',
           action: (key) => (
