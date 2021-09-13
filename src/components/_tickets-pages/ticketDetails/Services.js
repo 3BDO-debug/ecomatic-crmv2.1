@@ -39,7 +39,7 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
     onSubmit: async (values, { resetForm }) => {
       const data = new FormData();
       data.append('assignedServiceId', triggeredService);
-      data.append('requiredQty', values.requiredQty);
+      data.append('requiredQty', 1);
       await ticketDeviceServicesAdder(triggeredDevice, data)
         .then((deviceServicesData) => {
           setDeviceServices(deviceServicesData.ticket_device_services);
@@ -81,7 +81,10 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
 
   const deviceServiceAssignHandler = useCallback(
     (serviceId) => {
+      console.log('here');
       if (deviceServicesMatcher(serviceId)) {
+        console.log('here2');
+
         const data = new FormData();
         data.append('assignedServiceId', serviceId);
         ticketDeviceServicesDeleter(triggeredDevice, data)
@@ -109,10 +112,10 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
           });
       } else {
         setTriggeredService(serviceId);
-        triggerAssignService(true);
+        handleSubmit();
       }
     },
-    [closeSnackbar, deviceServicesMatcher, enqueueSnackbar, setDeviceServices, setTicket, triggeredDevice]
+    [closeSnackbar, deviceServicesMatcher, enqueueSnackbar, setDeviceServices, setTicket, triggeredDevice, handleSubmit]
   );
 
   const servicesDataCreator = useCallback(() => {
