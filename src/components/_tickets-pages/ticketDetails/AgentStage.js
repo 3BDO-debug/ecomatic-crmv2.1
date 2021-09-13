@@ -18,6 +18,7 @@ AgentStage.propTypes = {
 
 function AgentStage({ ticketDevicesState, ticketState }) {
   const { translate } = useLocales();
+  const ticketDetails = ticketState[0];
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
   const [sparepartsServices, triggerSparepartsServices] = useState(false);
@@ -81,7 +82,7 @@ function AgentStage({ ticketDevicesState, ticketState }) {
             </CardContent>
             <CardActions>
               <Button sx={{ marginLeft: 'auto', order: '2' }} variant="text">
-                Total : 250 EGP
+                Total : {ticketDetails.total_cost} EGP
               </Button>
             </CardActions>
           </Card>

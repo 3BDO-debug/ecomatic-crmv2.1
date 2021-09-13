@@ -1,5 +1,6 @@
 const clientTicketsTableTranslation = {
   tableColumns: {
+    ticketNumber: 'Ticket number',
     id: 'ID',
     clientName: 'Client name',
     technicianName: 'Technician name',

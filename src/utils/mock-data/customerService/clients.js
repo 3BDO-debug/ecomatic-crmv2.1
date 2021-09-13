@@ -91,7 +91,8 @@ export const clientTicketsDataCreator = (tickets, clientId) => {
     (ticket) =>
       ticket.related_client === parseInt(clientId, 10) &&
       ticketsData.push({
-        id: ticket.ticket_generated_id,
+        ticketNumber: ticket.ticket_generated_id,
+        id: ticket.id,
         clientName: ticket.client_name,
         technicianName:
           ticket.technician_name !== 'Technician not selected yet' ? (

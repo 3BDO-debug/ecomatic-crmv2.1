@@ -1,5 +1,6 @@
 const clientTicketsTableTranslation = {
   tableColumns: {
+    ticketNumber: 'رقم التيكيت',
     id: 'الرقم التعريفي',
     clientName: 'اسم العميل',
     technicianName: 'اسم الفني',

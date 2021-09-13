@@ -59,6 +59,10 @@ function ClientTickets({ clientId }) {
     <Card>
       <DataTable
         columnsData={[
+          {
+            id: 'ticketNumber',
+            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.ticketNumber')
+          },
           { id: 'id', label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.id') },
           {
             id: 'clientName',
