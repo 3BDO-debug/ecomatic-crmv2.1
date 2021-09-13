@@ -20,11 +20,13 @@ import Label from '../../Label';
 // --------------------------------------------
 const feedingSourcesNotices = {
   gasCylinder: {
+    question: `هل تم تجهيز متطلبات التركيب علي غاز انبوبة`,
     note1: `برجاء تجهيز منظم ايطالي او تركي ببكرة + ٢ افيز نصف بوصه + خرطوم و مشترك حرف T في حالة توصيل اكثر من جهاز علي نفس الانبوبة بالاضافة لعدد ٦ افيز`,
     note2: `برجاء العلم بان ضغط الغاز المقنن للجهاز هو ٣٠ مللي بار ، خلاف ذلك لن يتم تركيب او اعتماد الضمان و سيتم تحصيل رسوم الزيارة`
   },
   naturalGas: {
     question: `هل تم توصيل خراطيم الغاز بالجهاز عن طريق شركة الغاز الطبيعي ؟`,
+    note1: `برجاء عدم السماح لفني شركة الغاز الطبيعي بالعبث في الجهاز حيس انه من الممكن ان تتلف الفواني او الحساسات و سيتم تغيرها بتكلفة اضافية `,
     noNote: `برجاء توصيل الغاز مسبقا من خلال شركة الغاز ثم معاودة الاتصال`
   },
   internalExpulsion: {
@@ -54,8 +56,10 @@ function FeedingSourceNotice({ isTriggered, triggerHandler, formik }) {
   useEffect(() => {
     if (values.feedingSource === 'Natural Gas') {
       setQuestion(feedingSourcesNotices.naturalGas.question);
+      setNote1(feedingSourcesNotices.naturalGas.note1);
       setNoNote(feedingSourcesNotices.naturalGas.noNote);
     } else if (values.feedingSource === 'Gas Cylinder') {
+      setQuestion(feedingSourcesNotices.gasCylinder.question);
       setNote1(feedingSourcesNotices.gasCylinder.note1);
       setNote2(feedingSourcesNotices.gasCylinder.note2);
     } else if (values.feedingSource === 'Internal Expulsion') {
