@@ -23,11 +23,13 @@ function Overview() {
 
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
   useEffect(() => {
-    if (user.role === 'technician') {
-      const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
-      setTicketsTableRows(ticketsDataCreator(userTickets));
-    } else {
-      setTicketsTableRows(ticketsDataCreator(tickets));
+    if (user) {
+      if (user.role === 'technician') {
+        const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
+        setTicketsTableRows(ticketsDataCreator(userTickets));
+      } else {
+        setTicketsTableRows(ticketsDataCreator(tickets));
+      }
     }
   }, [user, tickets]);
   return (

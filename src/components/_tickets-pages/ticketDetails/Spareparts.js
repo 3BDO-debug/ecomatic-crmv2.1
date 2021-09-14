@@ -20,6 +20,7 @@ import {
 import { LoadingButton } from '@material-ui/lab';
 // utils
 import { ticketDeviceSparepartsAdder, ticketDeviceSparepartsDeleter } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
 // context
 import { SparepartsContext } from '../../../contexts';
 // routes
@@ -31,11 +32,12 @@ import { MIconButton } from '../../@material-extend';
 Spareparts.propTypes = {
   deviceSparepartsState: PropTypes.array,
   triggeredDevice: PropTypes.number,
-  ticketState: PropTypes.object
+  ticketState: PropTypes.object,
+  setTicketLogs: PropTypes.func
 };
 
-function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
-  const setTicket = ticketState[1];
+function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState, setTicketLogs }) {
+  const [ticket, setTicket] = ticketState;
   const [deviceSpareparts, setDeviceSpareparts] = deviceSparepartsState;
   const spareparts = useContext(SparepartsContext).sparepartsState[0];
   const [sparepartsTableRows, setSparepartsTableRows] = useState([]);
@@ -64,6 +66,13 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
               </MIconButton>
             )
           });
+          triggerAssignSparepart(false);
+          ticketLogs(
+            ticket.id,
+            `Assigned sparepart with ID - ${triggeredSparepart}`,
+            ticket.current_stage,
+            setTicketLogs
+          );
         })
         .catch((error) => {
           enqueueSnackbar(`Couldnt assign sparepart ${error}`, {
@@ -108,6 +117,12 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
                 </MIconButton>
               )
             });
+            ticketLogs(
+              ticket.id,
+              `Unassigned sparepart with ID - ${triggeredSparepart}`,
+              ticket.current_stage,
+              setTicketLogs
+            );
           })
           .catch((error) => {
             enqueueSnackbar(`Couldnt unassign sparepart ${error}`, {
@@ -124,7 +139,18 @@ function Spareparts({ deviceSparepartsState, triggeredDevice, ticketState }) {
         triggerAssignSparepart(true);
       }
     },
-    [closeSnackbar, enqueueSnackbar, deviceSparepartsMatcher, setDeviceSpareparts, setTicket, triggeredDevice]
+    [
+      closeSnackbar,
+      enqueueSnackbar,
+      deviceSparepartsMatcher,
+      setDeviceSpareparts,
+      setTicket,
+      triggeredDevice,
+      setTicketLogs,
+      ticket.current_stage,
+      ticket.id,
+      triggeredSparepart
+    ]
   );
 
   const sparepartsDataCreator = useCallback(() => {

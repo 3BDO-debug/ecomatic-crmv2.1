@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { Box, Card, CardHeader, CardContent, Skeleton, CardActions, Button } from '@material-ui/core';
@@ -6,6 +6,8 @@ import { Box, Card, CardHeader, CardContent, Skeleton, CardActions, Button } fro
 import { ticketDevicesDataCreator } from '../../../utils/mock-data/customerService/tickets';
 // hooks
 import useLocales from '../../../hooks/useLocales';
+// context
+import { AuthContext } from '../../../contexts';
 // components
 import CollapsibleTable from '../../collapsible-table';
 import SparepartsServices from './SparepartsServices';
@@ -13,11 +15,13 @@ import DeviceInfo from './DeviceInfo';
 
 AgentStage.propTypes = {
   ticketDevicesState: PropTypes.array,
-  ticketState: PropTypes.object
+  ticketState: PropTypes.object,
+  setTicketLogs: PropTypes.func
 };
 
-function AgentStage({ ticketDevicesState, ticketState }) {
+function AgentStage({ ticketDevicesState, ticketState, setTicketLogs }) {
   const { translate } = useLocales();
+  const userRole = useContext(AuthContext).userState[0].role;
   const ticketDetails = ticketState[0];
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
@@ -31,11 +35,12 @@ function AgentStage({ ticketDevicesState, ticketState }) {
       triggerSparepartsServices,
       setTriggeredDevice,
       triggerDeviceDetails,
-      translate
+      translate,
+      userRole
     )
       .then((ticketDevicesData) => setTicketDevicesTableRows(ticketDevicesData))
       .catch((error) => console.log(error));
-  }, [ticketDevices, translate]);
+  }, [ticketDevices, translate, userRole]);
 
   return (
     <>
@@ -78,6 +83,7 @@ function AgentStage({ ticketDevicesState, ticketState }) {
                 open={sparepartsServices}
                 closeHandler={() => triggerSparepartsServices(false)}
                 ticketState={ticketState}
+                setTicketLogs={setTicketLogs}
               />
             </CardContent>
             <CardActions>
@@ -94,6 +100,7 @@ function AgentStage({ ticketDevicesState, ticketState }) {
             isTriggered={deviceDetails}
             triggerHandler={() => triggerDeviceDetails(false)}
             isEditable
+            setTicketLogs={setTicketLogs}
           />
         </Box>
       ) : (

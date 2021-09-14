@@ -5,6 +5,7 @@ import DashboardLayout from '../layouts/dashboard';
 import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
 import AuthGuard from '../guards/AuthGuard';
+import RoleBasedGuard from '../guards/RoleBasedGuard';
 // context
 import {
   WarehousesProvider,
@@ -81,10 +82,16 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="/dashboard/overview" replace /> },
         // GENERAL
-
         { path: 'overview', element: <Overview /> },
         // STORAGE
-        { path: 'warehouses', element: <WarehousesPage /> },
+        {
+          path: 'warehouses',
+          element: (
+            <RoleBasedGuard accessibleRoles={['admin', 'store_keeper']}>
+              <WarehousesPage />
+            </RoleBasedGuard>
+          )
+        },
         {
           path: 'items',
           children: [
@@ -94,11 +101,19 @@ export default function Router() {
             },
             {
               path: 'create-item',
-              element: <CreateItemPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'store_keeper']}>
+                  <CreateItemPage />
+                </RoleBasedGuard>
+              )
             },
             {
               path: 'list-items',
-              element: <ListItemsPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'store_keeper']}>
+                  <ListItemsPage />
+                </RoleBasedGuard>
+              )
             }
           ]
         },
@@ -111,11 +126,19 @@ export default function Router() {
             },
             {
               path: 'create-sparepart',
-              element: <CreateSparepartPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'store_keeper']}>
+                  <CreateSparepartPage />
+                </RoleBasedGuard>
+              )
             },
             {
               path: 'list-spareparts',
-              element: <ListSparepartPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'store_keeper']}>
+                  <ListSparepartPage />
+                </RoleBasedGuard>
+              )
             }
           ]
         },
@@ -129,15 +152,27 @@ export default function Router() {
             },
             {
               path: 'create-client',
-              element: <CreateClientPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                  <CreateClientPage />
+                </RoleBasedGuard>
+              )
             },
             {
               path: 'list-clients',
-              element: <ListClientsPage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                  <ListClientsPage />
+                </RoleBasedGuard>
+              )
             },
             {
               path: 'client-profile/:clientId',
-              element: <ClientProfilePage />
+              element: (
+                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                  <ClientProfilePage />
+                </RoleBasedGuard>
+              )
             }
           ]
         },
@@ -151,11 +186,34 @@ export default function Router() {
 
             {
               path: 'list-tickets',
-              element: <ListTicketsPage />
+              element: (
+                <RoleBasedGuard
+                  accessibleRoles={[
+                    'admin',
+                    'customer_service_supervisor',
+                    'customer_service_agent',
+                    'technicians_supervisor'
+                  ]}
+                >
+                  <ListTicketsPage />
+                </RoleBasedGuard>
+              )
             },
             {
               path: 'ticket-details/:ticketId',
-              element: <TicketDetailsPage />
+              element: (
+                <RoleBasedGuard
+                  accessibleRoles={[
+                    'admin',
+                    'customer_service_supervisor',
+                    'customer_service_agent',
+                    'technicians_supervisor',
+                    'technician'
+                  ]}
+                >
+                  <TicketDetailsPage />
+                </RoleBasedGuard>
+              )
             }
           ]
         }

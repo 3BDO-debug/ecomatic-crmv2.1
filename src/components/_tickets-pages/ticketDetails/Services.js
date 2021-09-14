@@ -6,29 +6,29 @@ import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 // material
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
-import { LoadingButton } from '@material-ui/lab';
+import { Button } from '@material-ui/core';
 // utils
 import { ticketDeviceServicesAdder, ticketDeviceServicesDeleter } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
 // context
 import { ConfigurationsContext } from '../../../contexts';
 // components
 import DataTable from '../../dataTable/DataTable';
 import { MIconButton } from '../../@material-extend';
 
-Spareparts.propTypes = {
+Services.propTypes = {
   deviceServicesState: PropTypes.array,
   triggeredDevice: PropTypes.number,
-  ticketState: PropTypes.object
+  ticketState: PropTypes.object,
+  setTicketLogs: PropTypes.func
 };
 
-function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
-  const setTicket = ticketState[1];
+function Services({ deviceServicesState, triggeredDevice, ticketState, setTicketLogs }) {
+  const [ticket, setTicket] = ticketState;
   const [deviceServices, setDeviceServices] = deviceServicesState;
   const services = useContext(ConfigurationsContext).servicesState[0];
   const [servicesTableRows, setServicesTableRows] = useState([]);
   const [triggeredService, setTriggeredService] = useState(0);
-  const [assignService, triggerAssignService] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const formik = useFormik({
@@ -52,6 +52,7 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
               </MIconButton>
             )
           });
+          ticketLogs(ticket.id, `Assigned service with ID - ${triggeredService}`, ticket.current_stage, setTicketLogs);
         })
         .catch((error) => {
           enqueueSnackbar(`Couldnt assign service ${error}`, {
@@ -67,7 +68,7 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
       resetForm();
     }
   });
-  const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
+  const { handleSubmit } = formik;
 
   const deviceServicesMatcher = useCallback(
     (serviceId) => {
@@ -81,10 +82,7 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
 
   const deviceServiceAssignHandler = useCallback(
     (serviceId) => {
-      console.log('here');
       if (deviceServicesMatcher(serviceId)) {
-        console.log('here2');
-
         const data = new FormData();
         data.append('assignedServiceId', serviceId);
         ticketDeviceServicesDeleter(triggeredDevice, data)
@@ -110,12 +108,25 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
               )
             });
           });
+        ticketLogs(ticket.id, `Unassigned service with ID - ${triggeredService}`, ticket.current_stage, setTicketLogs);
       } else {
         setTriggeredService(serviceId);
         handleSubmit();
       }
     },
-    [closeSnackbar, deviceServicesMatcher, enqueueSnackbar, setDeviceServices, setTicket, triggeredDevice, handleSubmit]
+    [
+      closeSnackbar,
+      deviceServicesMatcher,
+      enqueueSnackbar,
+      setDeviceServices,
+      setTicket,
+      triggeredDevice,
+      handleSubmit,
+      setTicketLogs,
+      ticket.current_stage,
+      ticket.id,
+      triggeredService
+    ]
   );
 
   const servicesDataCreator = useCallback(() => {
@@ -156,42 +167,8 @@ function Spareparts({ deviceServicesState, triggeredDevice, ticketState }) {
         searchPlaceholder="Search services.."
         filterBy="serviceName"
       />
-      {/* Assign sparepart modal */}
-      <Dialog fullWidth maxWidth="sm" open={assignService} onClose={() => triggerAssignService(false)}>
-        <DialogTitle>Assign service</DialogTitle>
-        <DialogContent>
-          <Box component="form" marginTop="30px" onSubmit={handleSubmit}>
-            <Grid container>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <TextField
-                  onChange={(event) => setFieldValue('requiredQty', event.target.value)}
-                  value={values.requiredQty}
-                  {...getFieldProps('requiredQty')}
-                  error={Boolean(touched.requiredQty && errors.requiredQty)}
-                  helperText={touched.requiredQty && errors.requiredQty}
-                  fullWidth
-                  label="Required QTY"
-                  type="number"
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <LoadingButton
-            size="medium"
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}
-            disabled={!dirty}
-            onClick={handleSubmit}
-          >
-            Save
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }
 
-export default Spareparts;
+export default Services;

@@ -128,6 +128,7 @@ function AddClientDeviceForm({ formik }) {
             onChange={(event, value) => {
               if (value !== null) {
                 setFieldValue('device', value.id);
+                setFieldValue('device_model_number', value.label);
                 triggerDeviceNotice(true);
                 setItemWarrantyCoverage(items.find((item) => item.id === value.id).warranty_coverage);
                 setFeedingSources(feedingSourcesDataCreator(items.find((item) => item.id === value.id).category));

@@ -12,6 +12,7 @@ import useLocales from '../../../hooks/useLocales';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // utils
 import { clientDataFetcher, clientDevicesFetcher } from '../../../APIs/customerService/clients';
+import { clientLogsFetcher } from '../../../APIs/systemUpdates';
 // components
 import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
@@ -20,11 +21,13 @@ import ClientInfo from '../../../components/_clients-pages/clientProfile/ClientI
 import ClientDevices from '../../../components/_clients-pages/clientProfile/ClientDevices';
 import ClientTickets from '../../../components/_clients-pages/clientProfile/ClientTickets';
 import AddClientDevice from '../../../components/_clients-pages/clientProfile/AddClientDevice';
+import ClientLogs from '../../../components/_clients-pages/clientProfile/ClientLogs';
 
 function ClientProfilePage() {
   const { translate } = useLocales();
   const { themeStretch } = useSettings();
   const { clientId } = useParams();
+  const [clientLogs, setClientLogs] = useState([]);
   const [currentTab, setCurrentTab] = useState('info');
   const [clientData, setClientData] = useState({});
   const [clientDevices, setClientDevices] = useState([]);
@@ -40,18 +43,29 @@ function ClientProfilePage() {
     clientDevicesFetcher(clientId)
       .then((clientDevicesResponse) => setClientDevices(clientDevicesResponse))
       .catch((error) => console.log(error));
+    clientLogsFetcher(clientId)
+      .then((logsResponse) => setClientLogs(logsResponse))
+      .catch((error) => console.log(error));
   }, [clientId]);
 
   const TABS = [
     {
       value: translate('clientProfilePage.navTabs.info'),
       icon: <Icon icon="akar-icons:info" width={20} height={20} />,
-      component: <ClientInfo clientId={clientId} clientDataState={[clientData, setClientData]} />
+      component: (
+        <ClientInfo setClientLogs={setClientLogs} clientId={clientId} clientDataState={[clientData, setClientData]} />
+      )
     },
     {
       value: translate('clientProfilePage.navTabs.devices'),
       icon: <Icon icon="carbon:block-storage-alt" width={20} height={20} />,
-      component: <ClientDevices clientId={clientId} clientDevicesState={[clientDevices, setClientDevices]} />
+      component: (
+        <ClientDevices
+          setClientLogs={setClientLogs}
+          clientId={clientId}
+          clientDevicesState={[clientDevices, setClientDevices]}
+        />
+      )
     },
     {
       value: translate('clientProfilePage.navTabs.tickets'),
@@ -61,7 +75,7 @@ function ClientProfilePage() {
     {
       value: translate('clientProfilePage.navTabs.logs'),
       icon: <Icon icon="cil:history" width={20} height={20} />,
-      component: <>logs</>
+      component: <ClientLogs clientLogsState={[clientLogs, setClientLogs]} />
     }
   ];
 
@@ -119,6 +133,7 @@ function ClientProfilePage() {
           clientId={clientId}
           open={addClientDevice}
           closeHandler={() => triggerAddClientDevice(false)}
+          setClientLogs={setClientLogs}
         />
       </Container>
     </Page>

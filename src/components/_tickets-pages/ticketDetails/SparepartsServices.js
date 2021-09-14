@@ -13,10 +13,11 @@ SparepartsServices.propTypes = {
   open: PropTypes.bool,
   closeHandler: PropTypes.func,
   triggeredDevice: PropTypes.number,
-  ticketState: PropTypes.object
+  ticketState: PropTypes.object,
+  setTicketLogs: PropTypes.func
 };
 
-function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState }) {
+function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState, setTicketLogs }) {
   const [deviceSpareparts, setDeviceSpareparts] = useState([]);
   const [deviceServices, setDeviceServices] = useState([]);
   useEffect(() => {
@@ -40,6 +41,7 @@ function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState }
               deviceSparepartsState={[deviceSpareparts, setDeviceSpareparts]}
               triggeredDevice={triggeredDevice}
               ticketState={ticketState}
+              setTicketLogs={setTicketLogs}
             />
           </Card>
           <Card sx={{ marginTop: '20px' }}>
@@ -48,6 +50,7 @@ function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState }
               deviceServicesState={[deviceServices, setDeviceServices]}
               triggeredDevice={triggeredDevice}
               ticketState={ticketState}
+              setTicketLogs={setTicketLogs}
             />
           </Card>
         </Box>

@@ -11,6 +11,7 @@ import { AccountsContext } from '../../../contexts';
 import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketUpdater } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
 // routes
 import { mainUrl } from '../../../APIs/axios';
 // components
@@ -19,10 +20,11 @@ import Label from '../../Label';
 import { MIconButton } from '../../@material-extend';
 
 SupervisorStage.propTypes = {
-  ticketDetailsState: PropTypes.object
+  ticketDetailsState: PropTypes.object,
+  setTicketLogs: PropTypes.func
 };
 
-function SupervisorStage({ ticketDetailsState }) {
+function SupervisorStage({ ticketDetailsState, setTicketLogs }) {
   const { translate } = useLocales();
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
   const accounts = useContext(AccountsContext).accountsState[0];
@@ -35,18 +37,25 @@ function SupervisorStage({ ticketDetailsState }) {
       const data = new FormData();
       data.append('currentStage', 'supervisor-stage');
       data.append('technicianId', technicianId);
+
       ticketUpdater(ticketDetails.id, data)
         .then((ticketDetailsData) => {
           setTicketDetails(ticketDetailsData);
 
-          enqueueSnackbar('Technician assigned', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
+          enqueueSnackbar(
+            ticketDetails.technician_name === 'Technician Not Selected Yet'
+              ? 'Technician assigned'
+              : 'Technician unassigned',
+            {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            }
+          );
+          ticketLogs(ticketDetails.id, 'Assigned technician', ticketDetails.current_stage, setTicketLogs);
         })
         .catch((error) => {
           enqueueSnackbar(`Couldnt assign technicain ${error}`, {
@@ -59,7 +68,7 @@ function SupervisorStage({ ticketDetailsState }) {
           });
         });
     },
-    [closeSnackbar, enqueueSnackbar, setTicketDetails, ticketDetails.id]
+    [closeSnackbar, enqueueSnackbar, setTicketDetails, ticketDetails, setTicketLogs]
   );
 
   const techniciansDataCreator = useCallback(() => {

@@ -15,16 +15,18 @@ import {
   ticketFollowBackCallFetcher,
   ticketUpdater
 } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
 // hooks
 import useLocales from '../../../hooks/useLocales';
 // components
 import { MIconButton } from '../../@material-extend';
 
 FollowBackCall.propTypes = {
-  ticketDetailsState: PropTypes.array
+  ticketDetailsState: PropTypes.array,
+  setTicketLogs: PropTypes.func
 };
 
-function FollowBackCall({ ticketDetailsState }) {
+function FollowBackCall({ ticketDetailsState, setTicketLogs }) {
   const { translate } = useLocales();
   const [ticketFollowBackCall, setTicketFollowBackCall] = useState(null);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -44,6 +46,13 @@ function FollowBackCall({ ticketDetailsState }) {
             </MIconButton>
           )
         });
+        ticketLogs(
+          ticketDetails.id,
+          'Ticket followback call had been created',
+          ticketDetails.current_stage,
+          setTicketLogs
+        );
+        ticketLogs(ticketDetails.id, 'Ticket is closed.', ticketDetails.current_stage, setTicketLogs);
       })
       .catch((error) => {
         enqueueSnackbar(`Couldnt proceed ticket to the final stage ${error}`, {

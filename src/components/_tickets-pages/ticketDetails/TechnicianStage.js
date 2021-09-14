@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -24,6 +24,9 @@ import {
 import { LoadingButton } from '@material-ui/lab';
 // utils
 import { ticketDevicesFetcher, ticketDeviceUpdater } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
+// context
+import { AuthContext } from '../../../contexts';
 // hooks
 import useLocales from '../../../hooks/useLocales';
 // component
@@ -35,7 +38,8 @@ import InstallationRequirements from '../../installationRequirements/Installatio
 import RedirectTicketDevice from './RedirectTicketDevice';
 
 TechnicianStage.propTypes = {
-  ticketState: PropTypes.array
+  ticketState: PropTypes.array,
+  setTicketLogs: PropTypes.func
 };
 
 const completeTicketDeviceHandler = (
@@ -45,7 +49,8 @@ const completeTicketDeviceHandler = (
   setTicketDevicesTableRows,
   ticketDevicesDataCreator,
   enqueueSnackbar,
-  closeSnackbar
+  closeSnackbar,
+  setTicketLogs
 ) => {
   const data = new FormData();
   data.append('ticketDeviceId', ticketDeviceId);
@@ -64,6 +69,12 @@ const completeTicketDeviceHandler = (
           </MIconButton>
         )
       });
+      ticketLogs(
+        ticketDetails.id,
+        `Device with ID - ${ticketDeviceId} marked completed`,
+        ticketDetails.current_stage,
+        setTicketLogs
+      );
     })
     .catch((error) => {
       enqueueSnackbar(`Couldnt mark device completed ${error}`, {
@@ -77,8 +88,10 @@ const completeTicketDeviceHandler = (
     });
 };
 
-function TechnicianStage({ ticketState }) {
+function TechnicianStage({ ticketState, setTicketLogs }) {
   const { translate } = useLocales();
+
+  const userRole = useContext(AuthContext).userState[0].role;
   const [ticketDetails, setTicketDetails] = ticketState;
   const [ticketDevices, setTicketDevices] = useState([]);
   const [ticketDevicesTableRows, setTicketDevicesTableRows] = useState([]);
@@ -115,6 +128,12 @@ function TechnicianStage({ ticketState }) {
               </MIconButton>
             )
           });
+          ticketLogs(
+            ticketDetails.id,
+            `Device with ID - ${triggeredDevice.id} marked not completed`,
+            ticketDetails.current_stage,
+            setTicketLogs
+          );
         })
         .catch((error) => {
           enqueueSnackbar(`Couldnt mark device as not completed ${error}`, {
@@ -132,86 +151,90 @@ function TechnicianStage({ ticketState }) {
   });
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
 
-  const ticketDevicesDataCreator = useCallback((ticketDevices) => {
-    const ticketDevicesData = [];
-    ticketDevices.map((ticketDevice) =>
-      ticketDevicesData.push({
-        modelNumber: ticketDevice.device_model_number,
-        ticketType: (
-          <Label variant="ghost" color="primary">
-            {ticketDevice.device_ticket_type}
-          </Label>
-        ),
-        ticketStatus: (
-          <Label variant="ghost" color="info">
-            {ticketDevice.device_ticket_status}
-          </Label>
-        ),
-        actions: (
-          <>
-            {ticketDevice.device_ticket_status === 'Under Processing' ? (
-              <>
-                <Button
-                  onClick={() => {
-                    setTriggeredDevice(ticketDevice);
-                    triggerNotCompleted(true);
-                  }}
-                  sx={{ marginRight: '10px' }}
-                  variant="outlined"
-                  color="error"
-                >
-                  Not completed
-                </Button>
-                <Button
-                  onClick={() => {
-                    setTriggeredDevice(ticketDevice);
-                    triggerCompleted(true);
-                  }}
-                  variant="contained"
-                  color="primary"
-                >
-                  Completed
-                </Button>
-              </>
-            ) : (
-              ticketDevice.device_ticket_status === 'Completed' && (
-                <Button
-                  onClick={() => {
-                    setTriggeredDevice(ticketDevice);
-                    triggerCompleted(true);
-                  }}
-                  color="info"
-                  startIcon={<Icon icon="carbon:document" width={20} height={20} />}
-                />
-              )
-            )}
-            {ticketDevice.device_ticket_status !== 'Under Processing' && (
-              <Tooltip title="redirect to supervisor">
-                <Button
-                  onClick={() => {
-                    setTriggeredDevice(ticketDevice);
-                    triggerRedirectTicketDevice(true);
-                  }}
-                  color="error"
-                  startIcon={<Icon icon="bi:arrow-return-left" />}
-                />
-              </Tooltip>
-            )}
-            <Button
-              onClick={() => {
-                console.log('dsfsdfs', ticketDevices);
-                setTriggeredDevice(ticketDevice.id);
-                triggerDeviceInfo(true);
-              }}
-              color="primary"
-              startIcon={<Icon icon="carbon:view" />}
-            />
-          </>
-        )
-      })
-    );
-    return ticketDevicesData;
-  }, []);
+  const ticketDevicesDataCreator = useCallback(
+    (ticketDevices) => {
+      const ticketDevicesData = [];
+      ticketDevices.map((ticketDevice) =>
+        ticketDevicesData.push({
+          modelNumber: ticketDevice.device_model_number,
+          ticketType: (
+            <Label variant="ghost" color="primary">
+              {ticketDevice.device_ticket_type}
+            </Label>
+          ),
+          ticketStatus: (
+            <Label variant="ghost" color="info">
+              {ticketDevice.device_ticket_status}
+            </Label>
+          ),
+          actions: (
+            <>
+              {['admin', 'customer_service_supervisor', 'technicians_supervisor', 'technician'].includes(userRole) &&
+              ticketDevice.device_ticket_status === 'Under Processing' ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerNotCompleted(true);
+                    }}
+                    sx={{ marginRight: '10px' }}
+                    variant="outlined"
+                    color="error"
+                  >
+                    Not completed
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerCompleted(true);
+                    }}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Completed
+                  </Button>
+                </>
+              ) : (
+                ticketDevice.device_ticket_status === 'Completed' && (
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerCompleted(true);
+                    }}
+                    color="info"
+                    startIcon={<Icon icon="carbon:document" width={20} height={20} />}
+                  />
+                )
+              )}
+              {ticketDevice.device_ticket_status !== 'Under Processing' && (
+                <Tooltip title="redirect to supervisor">
+                  <Button
+                    onClick={() => {
+                      setTriggeredDevice(ticketDevice);
+                      triggerRedirectTicketDevice(true);
+                    }}
+                    color="error"
+                    startIcon={<Icon icon="bi:arrow-return-left" />}
+                  />
+                </Tooltip>
+              )}
+              <Button
+                onClick={() => {
+                  console.log('dsfsdfs', ticketDevices);
+                  setTriggeredDevice(ticketDevice.id);
+                  triggerDeviceInfo(true);
+                }}
+                color="primary"
+                startIcon={<Icon icon="carbon:view" />}
+              />
+            </>
+          )
+        })
+      );
+      return ticketDevicesData;
+    },
+    [userRole]
+  );
 
   useEffect(() => {
     ticketDevicesFetcher(ticketDetails.id)
@@ -279,7 +302,8 @@ function TechnicianStage({ ticketState }) {
                 setTicketDevicesTableRows,
                 ticketDevicesDataCreator,
                 enqueueSnackbar,
-                closeSnackbar
+                closeSnackbar,
+                setTicketLogs
               )
             }
             triggerHandler={() => triggerCompleted(false)}
@@ -300,6 +324,7 @@ function TechnicianStage({ ticketState }) {
             setTicketDevicesTableRows={setTicketDevicesTableRows}
             ticketDeviceDataCreator={ticketDevicesDataCreator}
             setTicketDetails={setTicketDetails}
+            setTicketLogs={setTicketLogs}
           />
           {/* Not completed form */}
 

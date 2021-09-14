@@ -21,6 +21,7 @@ import { LoadingButton } from '@material-ui/lab';
 import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketDeviceUpdater, ticketUpdater } from '../../../APIs/customerService/tickets';
+import { ticketLogs } from '../../../utils/systemUpdates';
 // components
 import { MIconButton } from '../../@material-extend';
 
@@ -33,7 +34,8 @@ RedirectTicketDevice.propTypes = {
   setTicketDevices: PropTypes.func,
   ticketDeviceDataCreator: PropTypes.func,
   setTicketDevicesTableRows: PropTypes.func,
-  setTicketDetails: PropTypes.func
+  setTicketDetails: PropTypes.func,
+  setTicketLogs: PropTypes.func
 };
 
 function RedirectTicketDevice({
@@ -45,7 +47,8 @@ function RedirectTicketDevice({
   setTicketDevices,
   ticketDeviceDataCreator,
   setTicketDevicesTableRows,
-  setTicketDetails
+  setTicketDetails,
+  setTicketLogs
 }) {
   const { translate } = useLocales();
 
@@ -76,6 +79,12 @@ function RedirectTicketDevice({
               </MIconButton>
             )
           });
+          ticketLogs(
+            ticketDetails.id,
+            `Ticket device with ID - ${triggeredDevice.id} had been redirected to the supervisor`,
+            ticketDetails.current_stage,
+            setTicketLogs
+          );
         })
         .catch((error) => {
           enqueueSnackbar(`Couldnt redirect device ${error}`, {
@@ -111,6 +120,12 @@ function RedirectTicketDevice({
             </MIconButton>
           )
         });
+        ticketLogs(
+          ticketDetails.id,
+          `Ticket device with ID - ${triggeredDevice.id} redirection request had been accepted by the supervisor`,
+          ticketDetails.current_stage,
+          setTicketLogs
+        );
         setLoading(false);
       })
       .catch((error) => {

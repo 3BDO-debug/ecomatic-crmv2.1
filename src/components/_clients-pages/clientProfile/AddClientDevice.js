@@ -16,6 +16,7 @@ import {
   addClientDeviceFormValidationSchema
 } from '../../../utils/formValidationSchemas/addClientDevice';
 import { clientDevicesAdder } from '../../../APIs/customerService/clients';
+import { clientLogs } from '../../../utils/systemUpdates';
 // components
 import FullScreenDialog from '../../FullScreenDialog';
 import { MIconButton } from '../../@material-extend';
@@ -24,10 +25,11 @@ import AddClientDeviceForm from './AddClientDeviceForm';
 AddClientDevice.propTypes = {
   open: PropTypes.bool,
   closeHandler: PropTypes.func,
-  clientDevicesState: PropTypes.array
+  clientDevicesState: PropTypes.array,
+  setClientLogs: PropTypes.func
 };
 
-function AddClientDevice({ open, closeHandler, clientDevicesState }) {
+function AddClientDevice({ open, closeHandler, clientDevicesState, setClientLogs }) {
   const { clientId } = useParams();
   const setClientDevices = clientDevicesState[1];
   const { translate } = useLocales();
@@ -42,7 +44,7 @@ function AddClientDevice({ open, closeHandler, clientDevicesState }) {
       await clientDevicesAdder(clientId, data)
         .then((clientDevicesData) => {
           setClientDevices(clientDevicesData);
-
+          const clientDevice = clientDevicesData.find((device) => device.related_storage_item === values.device);
           enqueueSnackbar('Client device added', {
             variant: 'success',
             action: (key) => (
@@ -51,6 +53,11 @@ function AddClientDevice({ open, closeHandler, clientDevicesState }) {
               </MIconButton>
             )
           });
+          clientLogs(
+            clientId,
+            `Added new client device with model number - ${values.device_model_number} & ID - ${clientDevice.id}`,
+            setClientLogs
+          );
           closeHandler();
         })
         .catch((error) =>

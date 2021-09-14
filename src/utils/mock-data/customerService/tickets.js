@@ -86,7 +86,8 @@ export const ticketDevicesDataCreator = async (
   triggerSparepartsServices,
   setTriggeredDevice,
   triggerDeviceDetails,
-  translate
+  translate,
+  currentRole
 ) => {
   const ticketDevicesData = [];
   const mapper = ticketDevices.map((ticketDevice) =>
@@ -105,15 +106,17 @@ export const ticketDevicesDataCreator = async (
         ),
         action: (
           <Box component="div">
-            <Button
-              onClick={() => {
-                triggerSparepartsServices(true);
-                setTriggeredDevice(ticketDevice.id);
-              }}
-              variant="outlined"
-            >
-              Add spareparts &amp; services
-            </Button>
+            {currentRole !== 'technician' && (
+              <Button
+                onClick={() => {
+                  triggerSparepartsServices(true);
+                  setTriggeredDevice(ticketDevice.id);
+                }}
+                variant="outlined"
+              >
+                Add spareparts &amp; services
+              </Button>
+            )}
             <Button
               sx={{ marginLeft: '10px' }}
               startIcon={<Icon icon="carbon:view" />}

@@ -13,6 +13,7 @@ import useLocales from '../../../hooks/useLocales';
 import { clientDevicessDataCreator } from '../../../utils/mock-data/customerService/clients';
 import { clientDevicesDeleter } from '../../../APIs/customerService/clients';
 import { ticketIntializer as ticketIntializerAPI } from '../../../APIs/customerService/tickets';
+import { clientLogs, ticketLogs } from '../../../utils/systemUpdates';
 // context
 import { TicketsContext } from '../../../contexts';
 // components
@@ -20,10 +21,11 @@ import { MIconButton } from '../../@material-extend';
 import ClientDeviceDetails from './ClientDeviceDetails';
 
 ClientDevices.propTypes = {
-  clientDevicesState: PropTypes.array
+  clientDevicesState: PropTypes.array,
+  setClientLogs: PropTypes.func
 };
 
-function ClientDevices({ clientDevicesState }) {
+function ClientDevices({ clientDevicesState, setClientLogs }) {
   const { clientId } = useParams();
   const { translate } = useLocales();
   const [clientDevices, setClientDevices] = clientDevicesState;
@@ -63,6 +65,7 @@ function ClientDevices({ clientDevicesState }) {
     ticketIntializerAPI(data)
       .then((response) => {
         setTickets([...tickets, response]);
+        clientLogs(clientId, `New ticket had been intialized with ID - ${response.ticket_generated_id}`, setClientLogs);
         navigate(`/dashboard/tickets/ticket-details/${response.id}`);
         enqueueSnackbar('Ticket intialized sucessfully', {
           variant: 'success',
@@ -72,6 +75,7 @@ function ClientDevices({ clientDevicesState }) {
             </MIconButton>
           )
         });
+        ticketLogs(response.id, 'Ticket had been intialized', response.current_stage);
       })
       .catch((error) => {
         enqueueSnackbar(`Couldnt intialize ticket ${error}`, {

@@ -23,15 +23,17 @@ import {
   clientsCategoriesDataCreator
 } from '../../../utils/mock-data/configurations';
 import { clientDataUpdater } from '../../../APIs/customerService/clients';
+import { clientLogs } from '../../../utils/systemUpdates';
 // components
 import { MIconButton } from '../../@material-extend';
 
 ClientInfo.propTypes = {
   clientDataState: PropTypes.array,
-  clientId: PropTypes.number
+  clientId: PropTypes.number,
+  setClientLogs: PropTypes.func
 };
 
-function ClientInfo({ clientDataState, clientId }) {
+function ClientInfo({ clientDataState, clientId, setClientLogs }) {
   const { translate } = useLocales();
   const [clientData, setClientData] = clientDataState;
 
@@ -57,6 +59,7 @@ function ClientInfo({ clientDataState, clientId }) {
               </MIconButton>
             )
           });
+          clientLogs(clientId, 'Client info had been updated', setClientLogs);
         })
         .catch((error) => {
           enqueueSnackbar(`Client couldnt be updated ${error}`, {

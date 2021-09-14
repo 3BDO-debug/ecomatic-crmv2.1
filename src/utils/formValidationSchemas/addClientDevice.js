@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 export const addClientDeviceFormDefaults = {
   device: '',
+  device_model_number: '',
   feedingSource: '',
   purchasingInvoice: null,
   manufacturingDate: null,

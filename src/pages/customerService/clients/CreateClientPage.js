@@ -35,6 +35,7 @@ import {
   regionsDataCreator,
   clientsCategoriesDataCreator
 } from '../../../utils/mock-data/configurations';
+import { clientLogs } from '../../../utils/systemUpdates';
 import { clientsAdder, clientLookup } from '../../../APIs/customerService/clients';
 // context
 import { ClientsContext, ConfigurationsContext } from '../../../contexts';
@@ -64,6 +65,7 @@ function CreateClientPage() {
       await clientsAdder(values).then((clientsData) => {
         setClients(clientsData);
         const client = clientsData.find((client) => client.client_phone_number_1 === values.phoneNumber1);
+        clientLogs(client.id, 'Client had been created');
         navigate(`/dashboard/clients/client-profile/${client.id}`);
 
         enqueueSnackbar('Client added', {

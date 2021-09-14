@@ -23,9 +23,11 @@ import {
 import { LoadingButton } from '@material-ui/lab';
 // context
 import { ConfigurationsContext } from '../../../contexts';
-import { ticketDeviceUpdater } from '../../../APIs/customerService/tickets';
+import { AuthContext } from '../../../contexts/AuthContext';
 // utils
 import { commonDiagnosticsFetcher } from '../../../APIs/configurations';
+import { ticketLogs } from '../../../utils/systemUpdates';
+import { ticketDeviceUpdater } from '../../../APIs/customerService/tickets';
 // routes
 import { mainUrl } from '../../../APIs/axios';
 // components
@@ -38,11 +40,21 @@ DeviceInfo.propTypes = {
   isTriggered: PropTypes.bool,
   triggerHandler: PropTypes.func,
   ticketState: PropTypes.array,
-  isEditable: PropTypes.bool
+  isEditable: PropTypes.bool,
+  setTicketLogs: PropTypes.func
 };
 
-function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTriggered, triggerHandler, isEditable }) {
+function DeviceInfo({
+  ticketState,
+  ticketDevicesState,
+  triggeredDevice,
+  isTriggered,
+  triggerHandler,
+  isEditable,
+  setTicketLogs
+}) {
   const ticketDetails = ticketState[0];
+  const userRole = useContext(AuthContext).userState[0].role;
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
   const ticketTypes = useContext(ConfigurationsContext).ticketTypesState[0];
   const [commonDiagnostics, setCommonDiagnostics] = useState([]);
@@ -91,6 +103,12 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
         });
       resetForm();
       triggerHandler();
+      ticketLogs(
+        ticketDetails.id,
+        `Ticket device with ID - ${triggeredDevice} updated`,
+        ticketDetails.current_stage,
+        setTicketLogs
+      );
     }
   });
 
@@ -273,7 +291,7 @@ function DeviceInfo({ ticketState, ticketDevicesState, triggeredDevice, isTrigge
             <Button variant="outlined" color="secondary" onClick={triggerHandler}>
               Cancel
             </Button>
-            {isEditable && (
+            {isEditable && userRole !== 'technician' && (
               <LoadingButton
                 size="medium"
                 type="submit"

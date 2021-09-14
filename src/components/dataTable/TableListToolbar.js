@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
@@ -5,6 +6,8 @@ import trash2Fill from '@iconify/icons-eva/trash-2-fill';
 // material
 import { useTheme, styled } from '@material-ui/core/styles';
 import { Box, Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@material-ui/core';
+// context
+import { AuthContext } from '../../contexts';
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +51,7 @@ export default function TableListToolbar({
 }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
-
+  const userRole = useContext(AuthContext).userState[0].role;
   return (
     <RootStyle
       sx={{
@@ -75,7 +78,7 @@ export default function TableListToolbar({
         />
       )}
 
-      {numSelected > 0 ? (
+      {userRole === 'admin' && numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
             <Icon onClick={onSelectAllDelete} icon={trash2Fill} />

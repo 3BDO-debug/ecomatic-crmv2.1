@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Icon } from '@iconify/react';
 import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
@@ -17,7 +17,9 @@ import {
   DialogContent,
   Typography,
   DialogActions,
-  Button
+  Button,
+  Alert,
+  AlertTitle
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // hooks
@@ -26,11 +28,14 @@ import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketDetailsDataCreator } from '../../../utils/mock-data/customerService/tickets';
 import { ticketUpdater, ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
+import { ticketLogsFetcher } from '../../../APIs/systemUpdates';
+import { ticketLogs as ticketLogsHandler } from '../../../utils/systemUpdates';
 /* import { closeTicketValidation } from '../../../utils/closeTicketValidation';
  */ // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // context
 import { TicketsContext } from '../../../contexts';
+import { AuthContext } from '../../../contexts/AuthContext';
 // components
 import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
@@ -42,14 +47,17 @@ import FollowBackCall from '../../../components/_tickets-pages/ticketDetails/Fol
 import TicketInfo from '../../../components/_tickets-pages/ticketDetails/TicketInfo';
 import { MIconButton } from '../../../components/@material-extend';
 import Label from '../../../components/Label';
+import TicketLogs from '../../../components/_tickets-pages/ticketDetails/TicketLogs';
 
 function TicketDetailsPage() {
   const { themeStretch } = useSettings();
+  const [viewNextStageButton, setViewNextStageButton] = useState(false);
+  const [ticketLogs, setTicketLogs] = useState([]);
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-
+  const userRole = useContext(AuthContext).userState[0].role;
   const [currentTab, setCurrentTab] = useState('timeline');
   const { ticketId } = useParams();
   const tickets = useContext(TicketsContext).ticketsState[0];
@@ -61,13 +69,17 @@ function TicketDetailsPage() {
 
   const updateStageHandler = () => {
     setLoading(true);
+    let currentStage;
     const data = new FormData();
     if (ticketDetails.current_stage === 'agent-stage') {
       data.append('currentStage', 'supervisor-stage');
+      currentStage = 'supervisor-stage';
     } else if (ticketDetails.current_stage === 'supervisor-stage') {
       data.append('currentStage', 'technician-stage');
+      currentStage = 'technician-stage';
     } else if (ticketDetails.current_stage === 'technician-stage') {
       data.append('currentStage', 'customer-service-stage');
+      currentStage = 'customer-service-stage';
     }
     ticketUpdater(ticketDetails.id, data)
       .then((ticketDetailsData) => {
@@ -83,6 +95,12 @@ function TicketDetailsPage() {
         setLoading(false);
       })
       .catch((error) => console.log(error));
+    ticketLogsHandler(
+      ticketDetails.id,
+      `Ticket had been proceeded to next stage - ${currentStage}`,
+      ticketDetails.current_stage,
+      setTicketLogs
+    );
   };
 
   const handleNext = () => {
@@ -96,6 +114,14 @@ function TicketDetailsPage() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const showNextStageButtonHandler = useCallback(() => {
+    const allowedRoles = ['admin', 'customer_service_supervisor', 'technicians_supervisor'];
+    if (ticketDetails.current_stage === 'agent-stage' || ticketDetails.current_stage === 'technician-stage') {
+      allowedRoles.push('customer_service_agent');
+    }
+    return allowedRoles.includes(userRole) && setViewNextStageButton(true);
+  }, [ticketDetails, userRole]);
 
   useEffect(() => {
     if (ticketDetails) {
@@ -112,8 +138,9 @@ function TicketDetailsPage() {
         setCurrentStep(3);
         setActiveStep(3);
       }
+      showNextStageButtonHandler();
     }
-  }, [ticketDetails]);
+  }, [ticketDetails, showNextStageButtonHandler]);
 
   useEffect(() => {
     ticketDevicesFetcher(ticketId)
@@ -143,6 +170,7 @@ function TicketDetailsPage() {
                   ticketDevicesState={[ticketDevices, setTicketDevices]}
                   ticketId={ticketId}
                   ticketState={[ticketDetails, setTicketDetails]}
+                  setTicketLogs={setTicketLogs}
                 />
               ),
               active: currentStep === 0 && true
@@ -151,20 +179,44 @@ function TicketDetailsPage() {
               active: currentStep === 1 && true,
               title: 'Supervisor Stage',
               id: 2,
-              content: <SupervisorStage ticketDetailsState={[ticketDetails, setTicketDetails]} />
+              content: !['admin', 'technicians_supervisor', 'customer_service_supervisor'].includes(userRole) ? (
+                <Container>
+                  <Alert severity="error">
+                    <AlertTitle>Permission Denied</AlertTitle>
+                    You do not have permission to view this screen
+                  </Alert>
+                </Container>
+              ) : (
+                <SupervisorStage setTicketLogs={setTicketLogs} ticketDetailsState={[ticketDetails, setTicketDetails]} />
+              )
             },
             {
               active: currentStep === 2 && true,
               title: 'Technician Stage',
               id: 3,
-              content: <TechnicianStage ticketState={[ticketDetails, setTicketDetails]} />
+              content: <TechnicianStage setTicketLogs={setTicketLogs} ticketState={[ticketDetails, setTicketDetails]} />
             }
           ]}
-          finalStepComponent={<FollowBackCall ticketDetailsState={[ticketDetails, setTicketDetails]} />}
+          finalStepComponent={
+            !['admin', 'technicians_supervisor', 'customer_service_supervisor', 'customer_service_agent'].includes(
+              userRole
+            ) ? (
+              <Container>
+                <Alert severity="error">
+                  <AlertTitle>Permission Denied</AlertTitle>
+                  You do not have permission to view this screen
+                </Alert>
+              </Container>
+            ) : (
+              <FollowBackCall setTicketLogs={setTicketLogs} ticketDetailsState={[ticketDetails, setTicketDetails]} />
+            )
+          }
           actionButton={
-            <LoadingButton disabled={loading} loading={loading} onClick={updateStageHandler} variant="contained">
-              Next stage
-            </LoadingButton>
+            viewNextStageButton && (
+              <LoadingButton disabled={loading} loading={loading} onClick={updateStageHandler} variant="contained">
+                Next stage
+              </LoadingButton>
+            )
           }
         />
       )
@@ -175,13 +227,20 @@ function TicketDetailsPage() {
       component: <TicketInfo ticketDetails={ticketDetails} />
     },
 
-    { value: 'logs', icon: <Icon icon="cil:history" width={20} height={20} />, component: <>logs</> }
+    {
+      value: 'logs',
+      icon: <Icon icon="cil:history" width={20} height={20} />,
+      component: <TicketLogs ticketLogsState={[ticketLogs, setTicketLogs]} />
+    }
   ];
   const handleChangeTab = (event, newValue) => {
     setCurrentTab(newValue);
   };
   useEffect(() => {
     setTicketDetails(ticketDetailsDataCreator(tickets, ticketId));
+    ticketLogsFetcher(ticketId)
+      .then((logsResponse) => setTicketLogs(logsResponse))
+      .catch((error) => console.log(error));
   }, [tickets, ticketId]);
   return (
     <Page title="Tickets | Ticket Details">
