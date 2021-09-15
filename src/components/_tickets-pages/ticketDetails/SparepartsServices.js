@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { Box, Card, CardHeader } from '@material-ui/core';
 // utils
 import { ticketDeviceServicesFetcher, ticketDeviceSparepartsFetcher } from '../../../APIs/customerService/tickets';
+// context
+import { AuthContext } from '../../../contexts';
 // components
 import FullScreenDialog from '../../FullScreenDialog';
 import Spareparts from './Spareparts';
@@ -20,6 +22,8 @@ SparepartsServices.propTypes = {
 function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState, setTicketLogs }) {
   const [deviceSpareparts, setDeviceSpareparts] = useState([]);
   const [deviceServices, setDeviceServices] = useState([]);
+  const userRole = useContext(AuthContext).userState[0].role;
+
   useEffect(() => {
     ticketDeviceSparepartsFetcher(parseInt(triggeredDevice, 10))
       .then((deviceSparepartsData) => setDeviceSpareparts(deviceSparepartsData))
@@ -28,6 +32,7 @@ function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState, 
       .then((deviceServicesData) => setDeviceServices(deviceServicesData))
       .catch((error) => console.log(error));
   }, [triggeredDevice]);
+
   return (
     <FullScreenDialog
       open={open}
@@ -35,15 +40,17 @@ function SparepartsServices({ open, closeHandler, triggeredDevice, ticketState, 
       dialogTitle="Add spareparts &amp; services"
       dialogContent={
         <Box padding="30px">
-          <Card>
-            <CardHeader title="Spareparts" />
-            <Spareparts
-              deviceSparepartsState={[deviceSpareparts, setDeviceSpareparts]}
-              triggeredDevice={triggeredDevice}
-              ticketState={ticketState}
-              setTicketLogs={setTicketLogs}
-            />
-          </Card>
+          {userRole !== 'customer_service_agent' && (
+            <Card>
+              <CardHeader title="Spareparts" />
+              <Spareparts
+                deviceSparepartsState={[deviceSpareparts, setDeviceSpareparts]}
+                triggeredDevice={triggeredDevice}
+                ticketState={ticketState}
+                setTicketLogs={setTicketLogs}
+              />
+            </Card>
+          )}
           <Card sx={{ marginTop: '20px' }}>
             <CardHeader title="Services" />
             <Services
