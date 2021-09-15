@@ -317,6 +317,7 @@ function AddClientDeviceForm({ formik }) {
                       helperText={touched.installationDate && errors.installationDate}
                     />
                   )}
+                  minDate={values.purchasingDate}
                 />
               </AnimatedSection>
             </Grid>
