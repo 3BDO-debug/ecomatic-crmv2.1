@@ -214,6 +214,7 @@ function AddClientDeviceForm({ formik }) {
                       helperText={touched.purchasingDate && errors.purchasingDate}
                     />
                   )}
+                  maxDate={new Date()}
                 />
               ) : (
                 <MobileDatePicker
