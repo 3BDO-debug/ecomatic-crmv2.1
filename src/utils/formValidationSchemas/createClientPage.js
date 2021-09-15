@@ -15,11 +15,14 @@ export const createClientFormDefaults = {
   category: ''
 };
 
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 export const createClientFormValidationSchema = Yup.object().shape({
   fullname: Yup.string().required('Full name is required'),
-  phoneNumber1: Yup.string().required('Phone number 1 is required'),
-  phoneNumber2: Yup.string().required('Phone number 2 is required'),
-  landline: Yup.string().required('Landline is required'),
+  phoneNumber1: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number 1 is required'),
+  phoneNumber2: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number 2 is required'),
+  landline: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Landline is required'),
   city: Yup.string().required('City is required'),
   region: Yup.string().required('Region is required'),
   address: Yup.string().required('Address is required'),

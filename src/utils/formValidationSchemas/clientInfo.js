@@ -17,12 +17,13 @@ export const clientInfoFormDefaults = (clientData) => {
   };
   return clientInfoFormDefaults;
 };
-
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 export const clientInfoFormValidationSchema = Yup.object().shape({
   fullname: Yup.string().required('Full name is required'),
-  phoneNumber1: Yup.string().required('Phone number 1 is required'),
-  phoneNumber2: Yup.string().required('Phone number 2 is required'),
-  landline: Yup.string().required('Landline is required'),
+  phoneNumber1: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number 1 is required'),
+  phoneNumber2: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number 2 is required'),
+  landline: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Landline is required'),
   city: Yup.object().required('City is required'),
   region: Yup.object().required('Region is required'),
   address: Yup.string().required('Address is required'),
