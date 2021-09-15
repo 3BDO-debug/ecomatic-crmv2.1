@@ -235,6 +235,7 @@ function AddClientDeviceForm({ formik }) {
                       helperText={touched.manufacturingDate && errors.manufacturingDate}
                     />
                   )}
+                  maxDate={new Date()}
                 />
               )}
             </AnimatedSection>
