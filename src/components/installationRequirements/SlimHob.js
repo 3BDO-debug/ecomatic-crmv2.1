@@ -5,13 +5,15 @@ import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Grid, TextField, MenuItem } from '@material-ui/core';
+import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 // utils
 import { slimHobAdder, slimHobFetcher } from '../../APIs/installationRequirements';
+import { mainUrl } from '../../APIs/axios';
 // components
 import { MIconButton } from '../@material-extend';
+import { UploadSingleFile } from '../upload';
 
 SlimHob.propTypes = {
   feedingSource: PropTypes.string,
@@ -28,6 +30,7 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
+  const [attachment, setAttachment] = useState({});
 
   const formik = useFormik({
     initialValues: {
@@ -40,7 +43,8 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
       whatsDoneByTechnician: '',
       slimHobFinalCondition: '',
       clientSignature: clientName,
-      technicianName: technicainName
+      technicianName: technicainName,
+      attachment: null
     },
     onSubmit: async () => {
       await submitHandler();
@@ -48,9 +52,12 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
   });
   const { setFieldValue, values } = formik;
 
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     if (submit && !reviewMode) {
-      slimHobAdder(deviceId, values)
+      const data = new FormData();
+      data.append('formikValues', JSON.stringify(values));
+      data.append('attachment', values.attachment);
+      await slimHobAdder(deviceId, data)
         .then(() => {
           setSubmit(false);
 
@@ -83,6 +90,20 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setAttachment({
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+        setFieldValue('attachment', file);
+      }
+    },
+    [setFieldValue]
+  );
 
   return (
     <Grid container spacing={3}>
@@ -192,6 +213,7 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
           focused={reviewMode}
         />
       </Grid>
+
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <TextField
           label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.clientSignature')}
@@ -207,6 +229,22 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
           fullWidth
           focused={reviewMode}
         />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <Button
+            startIcon={<Icon icon="teenyicons:attachment-outline" />}
+            onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
+            fullWidth
+          >
+            View attachment
+          </Button>
+        ) : (
+          <UploadSingleFile
+            file={reviewMode ? installationRequirementsDetails.attachment : attachment}
+            onDrop={handleDrop}
+          />
+        )}
       </Grid>
     </Grid>
   );

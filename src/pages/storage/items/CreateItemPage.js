@@ -90,6 +90,7 @@ function CreateItemPage() {
     }
   });
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
+
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -102,11 +103,12 @@ function CreateItemPage() {
     },
     [setFieldValue]
   );
-  console.log('categories', categories);
+
   useEffect(() => {
     const filteredCategoriesData = categories.filter((category) => category.related_brand === values.brand);
     setFilteredCategories(categoriesDataCreator(filteredCategoriesData));
   }, [values.brand, categories]);
+
   return (
     <Page title="Items | Create Item">
       <Container maxWidth={themeStretch ? false : 'lg'}>

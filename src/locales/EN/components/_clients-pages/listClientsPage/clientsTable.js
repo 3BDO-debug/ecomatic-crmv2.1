@@ -1,13 +1,11 @@
 export const clientsTableTranslation = {
   tableColumns: {
-    id: 'ID',
-    fullname: 'Full Name',
+    fullName: 'Full name',
+    phoneNumber1: 'Phone number 1',
+    phoneNumber2: 'Phone number 2',
+    region: 'Region',
     category: 'Category',
-    phoneNumber: 'Phone Number',
-    landline: 'Landline',
-    address: 'Address',
-    createdAt: 'Created At',
+    createdAt: 'Created at',
     action: 'Action'
-  },
-  searchPlaceholder: 'Search clients..'
+  }
 };

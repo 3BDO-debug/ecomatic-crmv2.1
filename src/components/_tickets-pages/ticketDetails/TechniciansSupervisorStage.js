@@ -19,12 +19,12 @@ import DataTable from '../../dataTable/DataTable';
 import Label from '../../Label';
 import { MIconButton } from '../../@material-extend';
 
-SupervisorStage.propTypes = {
+TechniciansSupervisorStage.propTypes = {
   ticketDetailsState: PropTypes.object,
   setTicketLogs: PropTypes.func
 };
 
-function SupervisorStage({ ticketDetailsState, setTicketLogs }) {
+function TechniciansSupervisorStage({ ticketDetailsState, setTicketLogs }) {
   const { translate } = useLocales();
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
   const accounts = useContext(AccountsContext).accountsState[0];
@@ -35,7 +35,7 @@ function SupervisorStage({ ticketDetailsState, setTicketLogs }) {
   const assignTechnicianHandler = useCallback(
     (technicianId) => {
       const data = new FormData();
-      data.append('currentStage', 'supervisor-stage');
+      data.append('currentStage', 'technicians-supervisor-stage');
       data.append('technicianId', technicianId);
 
       ticketUpdater(ticketDetails.id, data)
@@ -96,7 +96,7 @@ function SupervisorStage({ ticketDetailsState, setTicketLogs }) {
       );
     }
     return techniciansData;
-  }, [accounts, assignTechnicianHandler, ticketDetails.related_technician]);
+  }, [accounts, assignTechnicianHandler, ticketDetails]);
   useEffect(() => {
     setRequiredRole('Technicians');
     setTechnicianTableRows(techniciansDataCreator());
@@ -139,4 +139,4 @@ function SupervisorStage({ ticketDetailsState, setTicketLogs }) {
   );
 }
 
-export default SupervisorStage;
+export default TechniciansSupervisorStage;

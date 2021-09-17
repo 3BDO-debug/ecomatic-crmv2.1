@@ -4,6 +4,8 @@ import { ticketTimelineTabTranslation } from './ticketTimelineTab';
 import { ticketInfoTranslation } from '../../components/_ticket-details-page/ticketInfo';
 import { installtionRequirementsFormsTranslation } from '../../components/_ticket-details-page/installationRequirements';
 import { redirectionDialogTranslation } from '../../components/_ticket-details-page/redirectionDialog';
+import { deviceNotesTranslation } from '../../components/_ticket-details-page/deviceNotes';
+import { ticketActionsTranslations } from '../../components/_ticket-details-page/ticketActions';
 
 export const ticketDetailsPageTranslation = {
   headerBreadcrumb: headerBreadcrumbTranslation,
@@ -11,5 +13,7 @@ export const ticketDetailsPageTranslation = {
   ticketTimelineTab: ticketTimelineTabTranslation,
   ticketInfo: ticketInfoTranslation,
   installationRequirementsForms: installtionRequirementsFormsTranslation,
-  redirectionDialog: redirectionDialogTranslation
+  redirectionDialog: redirectionDialogTranslation,
+  deviceNotes: deviceNotesTranslation,
+  ticketActions: ticketActionsTranslations
 };

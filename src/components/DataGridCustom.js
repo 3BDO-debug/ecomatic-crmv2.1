@@ -1,12 +1,21 @@
+import { useContext, useState } from 'react';
+import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 // material
-import { Box, Rating, Pagination } from '@material-ui/core';
+import { Box, Rating, Pagination, IconButton } from '@material-ui/core';
 import {
   DataGrid,
-  GridToolbar,
   useGridSlotComponentProps,
-  getGridNumericColumnOperators
+  getGridNumericColumnOperators,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarDensitySelector,
+  GridToolbarExport
 } from '@material-ui/data-grid';
+// context
+import { AuthContext } from '../contexts';
+
 // ----------------------------------------------------------------------
 
 function CustomPagination() {
@@ -48,12 +57,36 @@ function RatingInputValue({ item, applyValue }) {
   );
 }
 
-DataGridCustom.propTypes = {
-  rows: PropTypes.array,
-  columns: PropTypes.array
+CustomToolbar.propTypes = {
+  selectedRowsData: PropTypes.array,
+  selectedRowsHandler: PropTypes.func
 };
 
-export default function DataGridCustom({ rows, columns }) {
+function CustomToolbar({ selectedRowsData, selectedRowsHandler }) {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport />
+      {selectedRowsData.length > 0 && (
+        <IconButton onClick={() => selectedRowsHandler(selectedRowsData)} sx={{ marginLeft: 'auto' }}>
+          <Icon icon="fluent:delete-20-filled" />
+        </IconButton>
+      )}
+    </GridToolbarContainer>
+  );
+}
+
+DataGridCustom.propTypes = {
+  rows: PropTypes.array,
+  columns: PropTypes.array,
+  onSelectionModelChange: PropTypes.func
+};
+
+export default function DataGridCustom({ rows, columns, onSelectionModelChange }) {
+  const userRole = useContext(AuthContext).userState[0].role;
+  const [selectedRows, setSelectedRows] = useState([]);
   if (columns.length > 0) {
     const ratingColumn = columns.find((column) => column.field === 'rating');
     const ratingColIndex = columns.findIndex((col) => col.field === 'rating');
@@ -71,52 +104,20 @@ export default function DataGridCustom({ rows, columns }) {
 
   return (
     <DataGrid
-      checkboxSelection
+      checkboxSelection={userRole === 'admin' && true}
+      disableSelectionOnClick
       rows={rows}
       columns={columns}
       pagination
       pageSize={10}
       components={{
-        Toolbar: GridToolbar,
+        Toolbar: CustomToolbar,
         Pagination: CustomPagination
       }}
+      componentsProps={{ toolbar: { selectedRowsData: selectedRows, selectedRowsHandler: onSelectionModelChange } }}
+      onSelectionModelChange={(newSelectionModel) => {
+        setSelectedRows(newSelectionModel);
+      }}
     />
-    /* <DataGridCustom
-          rows={[
-            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
-            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
-            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
-            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 },
-            { id: 21, firstName: 'Ahmed', lastName: 'Moahmed', age: 21 }
-          ]}
-          columns={[
-            {
-              field: 'id',
-              headerName: 'ID',
-              width: 120
-            },
-            {
-              field: 'firstName',
-              headerName: 'First name',
-              width: 160,
-              editable: true
-            },
-            {
-              field: 'lastName',
-              headerName: 'Last name',
-              width: 160,
-              editable: true
-            },
-            {
-              field: 'age',
-              headerName: 'Age',
-              type: 'number',
-              width: 120,
-              editable: true,
-              align: 'center',
-              headerAlign: 'center'
-            }
-          ]}
-        /> */
   );
 }

@@ -5,13 +5,15 @@ import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Grid, TextField, MenuItem } from '@material-ui/core';
+import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 // utils
 import { gasOvenAdder, gasOvenFetcher } from '../../APIs/installationRequirements';
+import { mainUrl } from '../../APIs/axios';
 // components
 import { MIconButton } from '../@material-extend';
+import { UploadSingleFile } from '../upload';
 
 GasOven.propTypes = {
   feedingSource: PropTypes.string,
@@ -28,6 +30,8 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const [attachment, setAttachment] = useState({});
+
   const formik = useFormik({
     initialValues: {
       gasOvenModelNumber: modelNumber,
@@ -43,7 +47,8 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
       whatsDoneByTechnician: '',
       gasOvenFinalCondition: '',
       clientSignature: clientName,
-      technicianName: technicainName
+      technicianName: technicainName,
+      attachment: null
     },
     onSubmit: async () => {
       await submitHandler();
@@ -51,9 +56,12 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
   });
   const { values, setFieldValue } = formik;
 
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     if (submit && !reviewMode) {
-      gasOvenAdder(deviceId, values)
+      const data = new FormData();
+      data.append('formikValues', JSON.stringify(values));
+      data.append('attachment', values.attachment);
+      await gasOvenAdder(deviceId, data)
         .then((response) => {
           console.log(response);
           setSubmit(false);
@@ -80,11 +88,26 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
         .catch((error) => console.log(error));
     }
   }, [submit, reviewMode, submitHandler, deviceId]);
+
   useEffect(() => {
     if (submit && !reviewMode) {
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setAttachment({
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+        setFieldValue('attachment', file);
+      }
+    },
+    [setFieldValue]
+  );
 
   return (
     <Grid container spacing={3}>
@@ -246,6 +269,7 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
           focused={reviewMode}
         />
       </Grid>
+
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <TextField
           label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.clientSignature')}
@@ -261,6 +285,20 @@ function GasOven({ feedingSource, modelNumber, deviceId, technicainName, clientN
           fullWidth
           focused={reviewMode}
         />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <Button
+            onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
+            size="large"
+            startIcon={<Icon icon="teenyicons:attachment-outline" />}
+            fullWidth
+          >
+            View attachment
+          </Button>
+        ) : (
+          <UploadSingleFile file={attachment} onDrop={handleDrop} />
+        )}
       </Grid>
     </Grid>
   );

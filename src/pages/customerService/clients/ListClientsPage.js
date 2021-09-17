@@ -2,10 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import closeFill from '@iconify/icons-eva/close-fill';
-import { useSnackbar } from 'notistack5';
 // material
-import { Container, Button, Card } from '@material-ui/core';
+import { Container, Button, Card, Box } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -18,16 +16,14 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
-import DataTable from '../../../components/dataTable/DataTable';
-import { clientsDeleter } from '../../../APIs/customerService/clients';
-import { MIconButton } from '../../../components/@material-extend';
+import DataGridCustom from '../../../components/DataGridCustom';
+import Label from '../../../components/Label';
 
 function ListClientsPage() {
   const { translate } = useLocales();
   const { themeStretch } = useSettings();
-  const [clients, setClients] = useContext(ClientsContext).clientsState;
+  const clients = useContext(ClientsContext).clientsState[0];
   const [clientsTableRows, setClientsTableRows] = useState([]);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
     setClientsTableRows(clientsDataCreator(clients));
@@ -60,52 +56,68 @@ function ListClientsPage() {
           }
         />
         <Card>
-          <DataTable
-            columnsData={[
-              { id: 'id', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.id') },
-              { id: 'fullname', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.fullname') },
-              { id: 'category', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.category') },
-              {
-                id: 'phoneNumber',
-                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber')
-              },
-              { id: 'landline', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.landline') },
-              { id: 'address', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.address') },
-              { id: 'createdAt', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.createdAt') },
-              { id: 'action', label: translate('clientsPages.listClientPage.clientsTable.tableColumns.action') },
-              { id: '' }
-            ]}
-            rowsData={clientsTableRows}
-            filterBy="phoneNumber"
-            searchPlaceholder={translate('clientsPages.listClientPage.clientsTable.searchPlaceholder')}
-            onSelectAllDelete={(selectedRows) => {
-              const data = new FormData();
-              data.append('clientsToBeDeleted', JSON.stringify(selectedRows));
-              clientsDeleter(data)
-                .then((clientsData) => {
-                  setClients(clientsData);
-                  enqueueSnackbar('Deleted Clients', {
-                    variant: 'success',
-                    action: (key) => (
-                      <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                        <Icon icon={closeFill} />
-                      </MIconButton>
-                    )
-                  });
-                })
-                .catch(() => {
-                  enqueueSnackbar('Couldnt delete Clients at the moment', {
-                    variant: 'error',
-                    action: (key) => (
-                      <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                        <Icon icon={closeFill} />
-                      </MIconButton>
-                    )
-                  });
-                });
-            }}
-            identifier="id"
-          />
+          <Box component="div" width="100%" height="600px">
+            <DataGridCustom
+              columns={[
+                { field: 'id', headerName: 'ID', hide: true },
+                {
+                  field: 'fullName',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.fullName'),
+                  flex: 1,
+                  minWidth: 200
+                },
+                {
+                  field: 'phoneNumber1',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber1'),
+                  flex: 1,
+                  minWidth: 200
+                },
+                {
+                  field: 'phoneNumber2',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber2'),
+                  flex: 1,
+                  minWidth: 200
+                },
+                {
+                  field: 'region',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.region'),
+                  minWidth: 100,
+                  flex: 1
+                },
+                {
+                  field: 'category',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.category'),
+                  minWidth: 100,
+                  flex: 1,
+                  renderCell: (cellValues) => (
+                    <Label variant="ghost" color="info">
+                      {cellValues.value}
+                    </Label>
+                  )
+                },
+                {
+                  field: 'createdAt',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.createdAt'),
+                  minWidth: 200,
+                  flex: 1
+                },
+                {
+                  field: 'action',
+                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.action'),
+                  minWidth: 100,
+                  flex: 1,
+                  renderCell: (cellValues) => (
+                    <Button
+                      component={RouterLink}
+                      to={`/dashboard/clients/client-profile/${cellValues.value}`}
+                      startIcon={<Icon icon="carbon:view" />}
+                    />
+                  )
+                }
+              ]}
+              rows={clientsTableRows}
+            />
+          </Box>
         </Card>
       </Container>
     </Page>

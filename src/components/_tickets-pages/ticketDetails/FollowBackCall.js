@@ -33,8 +33,8 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs }) {
   const [ticketDetails, setTicketDetails] = ticketDetailsState;
   const updateTicketStageHandler = () => {
     const data = new FormData();
-    data.append('currentStage', 'customer-service-stage');
-    data.append('isClosed', true);
+    data.append('currentStage', 'follow-up-stage');
+    data.append('ticketStatus', 'Closed');
     ticketUpdater(ticketDetails.id, data)
       .then((ticketDetailsData) => {
         setTicketDetails(ticketDetailsData);

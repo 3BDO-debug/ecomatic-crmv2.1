@@ -1,18 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Icon } from '@iconify/react';
+import { Link } from 'react-router-dom';
 // material
-import { Container, Grid, Card, CardHeader } from '@material-ui/core';
+import { Container, Grid, Card, CardHeader, Box, Button } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
 // context
 import { AuthContext, TicketsContext } from '../../contexts';
 // utils
-import { ticketsDataCreator } from '../../utils/mock-data/overview';
+import { ticketsDataCreator } from '../../utils/mock-data/customerService/tickets';
 // components
 import Page from '../../components/Page';
 import AppWelcome from '../../components/_overview-page/AppWelcome';
 import OverviewCard from '../../components/_overview-page/OverviewCard';
-import DataTable from '../../components/dataTable/DataTable';
+import DataGridCustom from '../../components/DataGridCustom';
+import Label from '../../components/Label';
 // ----------------------------------------------------------------------
 
 function Overview() {
@@ -43,48 +46,83 @@ function Overview() {
               body={translate('overviewPage.appWelcome.welcomeBody')}
             />
           </Grid>
-          <Grid item xs={12} md={4} lg={4} xl={4}>
-            <OverviewCard title={translate('overviewPage.overviewCard.activeTickets')} colorVariant="main" />
-          </Grid>
-          <Grid item xs={12} md={4} lg={4} xl={4}>
-            <OverviewCard title={translate('overviewPage.overviewCard.closedTickets')} colorVariant="secondary" />
-          </Grid>
-          <Grid item xs={12} md={4} lg={4} xl={4}>
-            <OverviewCard title={translate('overviewPage.overviewCard.reopenedTickets')} colorVariant="info" />
-          </Grid>
+
+          {user.role !== 'technician' && (
+            <>
+              <Grid item xs={12} md={4} lg={4} xl={4}>
+                <OverviewCard title={translate('overviewPage.overviewCard.activeTickets')} colorVariant="main" />
+              </Grid>
+              <Grid item xs={12} md={4} lg={4} xl={4}>
+                <OverviewCard title={translate('overviewPage.overviewCard.closedTickets')} colorVariant="secondary" />
+              </Grid>
+              <Grid item xs={12} md={4} lg={4} xl={4}>
+                <OverviewCard title={translate('overviewPage.overviewCard.reopenedTickets')} colorVariant="info" />
+              </Grid>
+            </>
+          )}
+
           <Grid item xs={12} md={12} lg={12} xl={12}>
             <Card>
               <CardHeader title={translate('overviewPage.ticketsOverview.title')} />
-              <DataTable
-                columnsData={[
-                  { id: 'id', label: translate('overviewPage.ticketsOverview.tableColumns.id') },
-                  {
-                    id: 'technician',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.technician')
-                  },
-                  {
-                    id: 'clientName',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.clientName')
-                  },
-                  {
-                    id: 'currentStage',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.currentStage')
-                  },
-                  {
-                    id: 'intializedAt',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.intializedAt')
-                  },
-                  {
-                    id: 'action',
-                    label: translate('overviewPage.ticketsOverview.tableColumns.action')
-                  },
-                  { id: '' }
-                ]}
-                rowsData={ticketsTableRows}
-                searchPlaceholder={translate('overviewPage.ticketsOverview.searchPlaceholder')}
-                filterBy="id"
-                disableCheckbox
-              />
+              <Box component="div" height="600px" width="100%" marginTop="30px">
+                <DataGridCustom
+                  rows={ticketsTableRows}
+                  columns={[
+                    { field: 'ticketNumber', headerName: 'Ticket number', flex: 1, minWidth: 200 },
+                    { field: 'id', headerName: 'ID', hide: true },
+                    { field: 'clientFullname', headerName: 'Client Fullname', flex: 1, minWidth: 200 },
+                    { field: 'region', headerName: 'Region', flex: 1, minWidth: 200 },
+                    { field: 'phoneNumber', headerName: 'Phone number', flex: 1, minWidth: 200 },
+                    {
+                      field: 'ticketStatus',
+                      headerName: 'Ticket status',
+                      flex: 1,
+                      minWidth: 200,
+                      renderCell: (cellValues) => {
+                        let labelColor;
+                        if (cellValues.value === 'Pending') {
+                          labelColor = 'warning';
+                        } else if (cellValues.value === 'Closed') {
+                          labelColor = 'error';
+                        } else {
+                          labelColor = 'info';
+                        }
+                        return (
+                          <Label variant="ghost" color={labelColor}>
+                            {cellValues.value}
+                          </Label>
+                        );
+                      }
+                    },
+                    {
+                      field: 'ticketStage',
+                      headerName: 'Ticket stage',
+                      flex: 1,
+                      minWidth: 200,
+                      renderCell: (cellValues) => (
+                        <Label variant="ghost" color="primary">
+                          {cellValues.value}
+                        </Label>
+                      )
+                    },
+                    {
+                      field: 'action',
+                      headerName: 'Action',
+                      flex: 1,
+                      minWidth: 200,
+                      renderCell: (cellValues) => (
+                        <Button
+                          color="primary"
+                          startIcon={<Icon icon="carbon:view" />}
+                          component={Link}
+                          to={`/dashboard/tickets/ticket-details/${cellValues.value}`}
+                        />
+                      )
+                    }
+                  ]}
+                  checkboxSelection={false}
+                />
+              </Box>
             </Card>
           </Grid>
         </Grid>

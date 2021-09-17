@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
+import '../../../index.css';
 // material
 import {
   Dialog,
@@ -148,15 +149,30 @@ function DeviceInfo({
                   {ticketDeviceFinder().in_warranty ? 'In warranty' : 'Out of warranty'}
                 </Label>
               )}
-              <Tooltip title="Download invoice">
-                <IconButton
-                  onClick={() => window.open(`${mainUrl}/${ticketDeviceFinder().device_invoice_or_manufacturer_label}`)}
-                  sx={{ marginLeft: 'auto', order: 2 }}
-                  color="primary"
-                >
-                  <Icon icon="fe:download" width={20} height={20} />
-                </IconButton>
-              </Tooltip>
+
+              <Box sx={{ marginLeft: 'auto', order: 2 }}>
+                {ticketDeviceFinder().not_completed_attachment && (
+                  <Tooltip title="Not completed attachment">
+                    <IconButton
+                      onClick={() => window.open(`${mainUrl}/${ticketDeviceFinder().not_completed_attachment}`)}
+                      color="warning"
+                      className="wobble"
+                    >
+                      <Icon icon="bx:bx-error" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <Tooltip title="Download invoice">
+                  <IconButton
+                    onClick={() =>
+                      window.open(`${mainUrl}/${ticketDeviceFinder().device_invoice_or_manufacturer_label}`)
+                    }
+                    color="primary"
+                  >
+                    <Icon icon="fe:download" width={20} height={20} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Stack>
           </DialogTitle>
           <DialogContent>

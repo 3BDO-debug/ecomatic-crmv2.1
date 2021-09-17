@@ -190,13 +190,15 @@ function RegisterForm() {
               value={values.role}
               error={Boolean(touched.role && errors.role)}
             >
-              <ListSubheader>Customer Service Department</ListSubheader>
-              <MenuItem value="customer_service_supervisor">Customer Service Supervisor</MenuItem>
+              <ListSubheader>Customer Service department</ListSubheader>
+              <MenuItem value="technical_support">Technical Support</MenuItem>
               <MenuItem value="customer_service_agent">Customer Service Agent</MenuItem>
-              <ListSubheader>Maintenance Department</ListSubheader>
-              <MenuItem value="technicians_supervisor">Technicians Supervisor</MenuItem>
+              <ListSubheader>Follow up department</ListSubheader>
+              <MenuItem value="follow_up_agent">Follow up agent</MenuItem>
+              <ListSubheader>Maintenance department</ListSubheader>
+              <MenuItem value="technicial_supervisor">Technicians Supervisor</MenuItem>
               <MenuItem value="technician">Technician</MenuItem>
-              <ListSubheader>Storages Department</ListSubheader>
+              <ListSubheader>Storages department</ListSubheader>
               <MenuItem value="store_keeper">Store Keeper</MenuItem>
             </Select>
           </FormControl>

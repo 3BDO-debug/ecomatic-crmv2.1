@@ -5,13 +5,15 @@ import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Grid, TextField, MenuItem } from '@material-ui/core';
+import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 // utils
 import { cookerAdder, cookerFetcher } from '../../APIs/installationRequirements';
+import { mainUrl } from '../../APIs/axios';
 // components
 import { MIconButton } from '../@material-extend';
+import { UploadSingleFile } from '../upload';
 
 Cooker.propTypes = {
   feedingSource: PropTypes.string,
@@ -29,6 +31,8 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
 
+  const [attachment, setAttachment] = useState({});
+
   const formik = useFormik({
     initialValues: {
       cookerModelNumber: modelNumber,
@@ -40,7 +44,8 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
       whatsDoneByTechnician: '',
       cookerFinalCondition: '',
       clientSignature: clientName,
-      technicianName: technicainName
+      technicianName: technicainName,
+      attachment: null
     },
     onSubmit: async () => {
       await submitHandler();
@@ -48,9 +53,12 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
   });
   const { values, setFieldValue } = formik;
 
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     if (submit && !reviewMode) {
-      cookerAdder(deviceId, values)
+      const data = new FormData();
+      data.append('formikValues', values);
+      data.append('attachment', values.attachment);
+      await cookerAdder(deviceId, data)
         .then((response) => {
           console.log(response);
           setSubmit(false);
@@ -82,6 +90,20 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setAttachment({
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+        setFieldValue('attachment', file);
+      }
+    },
+    [setFieldValue]
+  );
 
   return (
     <Grid container spacing={3}>
@@ -175,6 +197,7 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
           rows={3}
         />
       </Grid>
+
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <TextField
           label={translate('ticketDetailsPage.installationRequirementsForms.cookerForm.clientSignature')}
@@ -190,6 +213,19 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
           fullWidth
           focused={reviewMode}
         />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <Button
+            fullWidth
+            startIcon={<Icon icon="teenyicons:attachment-outline" />}
+            onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
+          >
+            View attachment
+          </Button>
+        ) : (
+          <UploadSingleFile file={attachment} onDrop={handleDrop} />
+        )}
       </Grid>
     </Grid>
   );

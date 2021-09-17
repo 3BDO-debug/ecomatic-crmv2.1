@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Icon } from '@iconify/react';
 import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
-import { useSnackbar } from 'notistack5';
-import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import {
   Container,
@@ -21,15 +19,13 @@ import {
   Alert,
   AlertTitle
 } from '@material-ui/core';
-import { LoadingButton } from '@material-ui/lab';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketDetailsDataCreator } from '../../../utils/mock-data/customerService/tickets';
-import { ticketUpdater, ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
+import { ticketDevicesFetcher } from '../../../APIs/customerService/tickets';
 import { ticketLogsFetcher } from '../../../APIs/systemUpdates';
-import { ticketLogs as ticketLogsHandler } from '../../../utils/systemUpdates';
 /* import { closeTicketValidation } from '../../../utils/closeTicketValidation';
  */ // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -41,21 +37,18 @@ import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import Stepper from '../../../components/Stepper';
 import AgentStage from '../../../components/_tickets-pages/ticketDetails/AgentStage';
-import SupervisorStage from '../../../components/_tickets-pages/ticketDetails/SupervisorStage';
+import TechniciansSupervisorStage from '../../../components/_tickets-pages/ticketDetails/TechniciansSupervisorStage';
 import TechnicianStage from '../../../components/_tickets-pages/ticketDetails/TechnicianStage';
 import FollowBackCall from '../../../components/_tickets-pages/ticketDetails/FollowBackCall';
 import TicketInfo from '../../../components/_tickets-pages/ticketDetails/TicketInfo';
-import { MIconButton } from '../../../components/@material-extend';
 import Label from '../../../components/Label';
 import TicketLogs from '../../../components/_tickets-pages/ticketDetails/TicketLogs';
+import TicketActions from '../../../components/_tickets-pages/ticketDetails/TicketActions';
 
 function TicketDetailsPage() {
   const { themeStretch } = useSettings();
-  const [viewNextStageButton, setViewNextStageButton] = useState(false);
   const [ticketLogs, setTicketLogs] = useState([]);
   const { translate } = useLocales();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const userRole = useContext(AuthContext).userState[0].role;
   const [currentTab, setCurrentTab] = useState('timeline');
@@ -65,43 +58,9 @@ function TicketDetailsPage() {
   const [ticketDevices, setTicketDevices] = useState([]);
   const [ticketCloseAlert, triggerTicketCloseAlert] = useState(false);
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const [ticketActions, triggerTicketActions] = useState(false);
 
-  const updateStageHandler = () => {
-    setLoading(true);
-    let currentStage;
-    const data = new FormData();
-    if (ticketDetails.current_stage === 'agent-stage') {
-      data.append('currentStage', 'supervisor-stage');
-      currentStage = 'supervisor-stage';
-    } else if (ticketDetails.current_stage === 'supervisor-stage') {
-      data.append('currentStage', 'technician-stage');
-      currentStage = 'technician-stage';
-    } else if (ticketDetails.current_stage === 'technician-stage') {
-      data.append('currentStage', 'customer-service-stage');
-      currentStage = 'customer-service-stage';
-    }
-    ticketUpdater(ticketDetails.id, data)
-      .then((ticketDetailsData) => {
-        setTicketDetails(ticketDetailsData);
-        enqueueSnackbar('Ticket proceeded to next stage', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
-        setLoading(false);
-      })
-      .catch((error) => console.log(error));
-    ticketLogsHandler(
-      ticketDetails.id,
-      `Ticket had been proceeded to next stage - ${currentStage}`,
-      ticketDetails.current_stage,
-      setTicketLogs
-    );
-  };
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -115,32 +74,21 @@ function TicketDetailsPage() {
     setActiveStep(0);
   };
 
-  const showNextStageButtonHandler = useCallback(() => {
-    const allowedRoles = ['admin', 'customer_service_supervisor', 'technicians_supervisor'];
-    if (ticketDetails.current_stage === 'agent-stage' || ticketDetails.current_stage === 'technician-stage') {
-      allowedRoles.push('customer_service_agent');
-    }
-    return allowedRoles.includes(userRole) && setViewNextStageButton(true);
-  }, [ticketDetails, userRole]);
-
   useEffect(() => {
     if (ticketDetails) {
       if (ticketDetails.current_stage === 'agent-stage') {
         setCurrentStep(0);
-        setActiveStep(0);
-      } else if (ticketDetails.current_stage === 'supervisor-stage') {
+      } else if (ticketDetails.current_stage === 'technical-support-stage') {
         setCurrentStep(1);
-        setActiveStep(1);
-      } else if (ticketDetails.current_stage === 'technician-stage') {
+      } else if (ticketDetails.current_stage === 'technicians-supervisor-stage') {
         setCurrentStep(2);
-        setActiveStep(2);
-      } else if (ticketDetails.current_stage === 'customer-service-stage') {
+      } else if (ticketDetails.current_stage === 'technician-stage') {
         setCurrentStep(3);
-        setActiveStep(3);
+      } else if (ticketDetails.current_stage === 'follow-up-stage') {
+        setCurrentStep(4);
       }
-      showNextStageButtonHandler();
     }
-  }, [ticketDetails, showNextStageButtonHandler]);
+  }, [ticketDetails]);
 
   useEffect(() => {
     ticketDevicesFetcher(ticketId)
@@ -149,6 +97,7 @@ function TicketDetailsPage() {
       })
       .catch((error) => console.log(error));
   }, [ticketId, ticketDetails]);
+
   const TABS = [
     {
       value: 'timeline',
@@ -159,7 +108,6 @@ function TicketDetailsPage() {
           nextHandler={handleNext}
           backHandler={handleBack}
           resetHandler={handleReset}
-          nextStageHandler={updateStageHandler}
           currentStage={currentStep}
           steps={[
             {
@@ -171,14 +119,29 @@ function TicketDetailsPage() {
                   ticketId={ticketId}
                   ticketState={[ticketDetails, setTicketDetails]}
                   setTicketLogs={setTicketLogs}
+                  activeView={activeStep}
                 />
               ),
               active: currentStep === 0 && true
             },
             {
+              title: 'Technical support stage',
               active: currentStep === 1 && true,
-              title: 'Supervisor Stage',
               id: 2,
+              content: (
+                <AgentStage
+                  ticketDevicesState={[ticketDevices, setTicketDevices]}
+                  ticketId={ticketId}
+                  ticketState={[ticketDetails, setTicketDetails]}
+                  setTicketLogs={setTicketLogs}
+                  activeView={activeStep}
+                />
+              )
+            },
+            {
+              active: currentStep === 2 && true,
+              title: 'Technicians supervisor stage',
+              id: 3,
               content: !['admin', 'technicians_supervisor', 'customer_service_supervisor'].includes(userRole) ? (
                 <Container>
                   <Alert severity="error">
@@ -187,14 +150,24 @@ function TicketDetailsPage() {
                   </Alert>
                 </Container>
               ) : (
-                <SupervisorStage setTicketLogs={setTicketLogs} ticketDetailsState={[ticketDetails, setTicketDetails]} />
+                <TechniciansSupervisorStage
+                  setTicketLogs={setTicketLogs}
+                  ticketDetailsState={[ticketDetails, setTicketDetails]}
+                />
               )
             },
             {
-              active: currentStep === 2 && true,
+              active: currentStep === 3 && true,
               title: 'Technician Stage',
-              id: 3,
-              content: <TechnicianStage setTicketLogs={setTicketLogs} ticketState={[ticketDetails, setTicketDetails]} />
+              id: 4,
+              content: (
+                <TechnicianStage
+                  setTicketLogs={setTicketLogs}
+                  ticketState={[ticketDetails, setTicketDetails]}
+                  ticketDevicesState={[ticketDevices, setTicketDevices]}
+                  activeView={activeStep}
+                />
+              )
             }
           ]}
           finalStepComponent={
@@ -209,13 +182,6 @@ function TicketDetailsPage() {
               </Container>
             ) : (
               <FollowBackCall setTicketLogs={setTicketLogs} ticketDetailsState={[ticketDetails, setTicketDetails]} />
-            )
-          }
-          actionButton={
-            viewNextStageButton && (
-              <LoadingButton disabled={loading} loading={loading} onClick={updateStageHandler} variant="contained">
-                Next stage
-              </LoadingButton>
             )
           }
         />
@@ -242,27 +208,41 @@ function TicketDetailsPage() {
       .then((logsResponse) => setTicketLogs(logsResponse))
       .catch((error) => console.log(error));
   }, [tickets, ticketId]);
+
+  const handleTicketStatusLabel = () => {
+    let labelColor;
+    if (ticketDetails.ticket_status === 'Closed') {
+      labelColor = 'error';
+    } else if (ticketDetails.ticket_status === 'Pending') {
+      labelColor = 'warning';
+    } else {
+      labelColor = 'info';
+    }
+    return labelColor;
+  };
+
   return (
     <Page title="Tickets | Ticket Details">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading={
-            <Stack direction="row" alignItems="center">
-              {`${translate('ticketDetailsPage.headerBreadcrumb.header')} | ${
-                ticketDetails && ticketDetails.ticket_generated_id
-              } `}
-              {ticketDetails && ticketDetails.is_closed && (
-                <Label style={{ marginLeft: '10px' }} variant="ghost" color="error">
-                  Closed
+            ticketDetails && (
+              <Stack direction="row" alignItems="center">
+                {`${translate('ticketDetailsPage.headerBreadcrumb.header')} | ${ticketDetails.ticket_generated_id} `}
+                <Label
+                  style={{ marginLeft: '10px', marginRight: '10px' }}
+                  variant="ghost"
+                  color={handleTicketStatusLabel()}
+                >
+                  {ticketDetails.ticket_status}
                 </Label>
-              )}
-              {ticketDevices.filter((ticketDevice) => ticketDevice.device_ticket_status === 'Redirected').length ===
-                1 && (
-                <Label style={{ marginLeft: '10px' }} variant="ghost" color="info">
-                  Redirected
-                </Label>
-              )}
-            </Stack>
+                {ticketDetails.ticket_forced_status && (
+                  <Label variant="ghost" color="primary">
+                    {ticketDetails.ticket_forced_status}
+                  </Label>
+                )}
+              </Stack>
+            )
           }
           links={[
             { name: translate('ticketDetailsPage.headerBreadcrumb.links.root'), href: PATH_DASHBOARD.root },
@@ -272,6 +252,17 @@ function TicketDetailsPage() {
             },
             { name: translate('ticketDetailsPage.headerBreadcrumb.links.root') }
           ]}
+          action={
+            userRole !== 'technician' && (
+              <Button
+                onClick={() => triggerTicketActions(true)}
+                startIcon={<Icon icon="grommet-icons:trigger" />}
+                variant="contained"
+              >
+                Ticket actions
+              </Button>
+            )
+          }
         />
         <Card>
           <Box padding="20px">
@@ -313,6 +304,14 @@ function TicketDetailsPage() {
             <Button onClick={() => triggerTicketCloseAlert(false)}>Understood</Button>
           </DialogActions>
         </Dialog>
+        {/* Ticket actions */}
+        <TicketActions
+          isTriggered={ticketActions}
+          triggerHandler={() => triggerTicketActions(false)}
+          ticketState={[ticketDetails, setTicketDetails]}
+          setTicketLogs={setTicketLogs}
+          setActiveStep={setActiveStep}
+        />
       </Container>
     </Page>
   );

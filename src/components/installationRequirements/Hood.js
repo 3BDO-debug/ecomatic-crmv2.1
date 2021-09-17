@@ -5,13 +5,15 @@ import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Grid, TextField, MenuItem } from '@material-ui/core';
+import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 // utils
 import { hoodAdder, hoodFetcher } from '../../APIs/installationRequirements';
+import { mainUrl } from '../../APIs/axios';
 // components
 import { MIconButton } from '../@material-extend';
+import { UploadSingleFile } from '../upload';
 
 Hood.propTypes = {
   feedingSource: PropTypes.string,
@@ -27,6 +29,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
+  const [attachment, setAttachment] = useState({});
 
   const formik = useFormik({
     initialValues: {
@@ -37,15 +40,19 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
       whatsDoneByTechnician: '',
       hoodFinalCondition: '',
       clientSignature: clientName,
-      technicianName: technicainName
+      technicianName: technicainName,
+      attachment: null
     }
   });
 
   const { values, setFieldValue } = formik;
 
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     if (submit && !reviewMode) {
-      hoodAdder(deviceId, values)
+      const data = new FormData();
+      data.append('formikValues', values);
+      data.append('attachment', values.attachment);
+      await hoodAdder(deviceId, data)
         .then((response) => {
           console.log(response);
           setSubmit(false);
@@ -78,6 +85,20 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
       submitHandler();
     }
   }, [submit, reviewMode, submitHandler]);
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setAttachment({
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+        setFieldValue('attachment', file);
+      }
+    },
+    [setFieldValue]
+  );
 
   return (
     <Grid container spacing={3}>
@@ -160,6 +181,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
           rows={3}
         />
       </Grid>
+
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <TextField
           label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.clientSignature')}
@@ -175,6 +197,22 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
           fullWidth
           focused={reviewMode}
         />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <Button
+            startIcon={<Icon icon="teenyicons:attachment-outline" />}
+            onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
+            fullWidth
+          >
+            View attachment
+          </Button>
+        ) : (
+          <UploadSingleFile
+            file={reviewMode ? installationRequirementsDetails.attachment : attachment}
+            onDrop={handleDrop}
+          />
+        )}
       </Grid>
     </Grid>
   );

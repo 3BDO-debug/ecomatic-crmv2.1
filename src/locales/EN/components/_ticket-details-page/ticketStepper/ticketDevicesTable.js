@@ -4,6 +4,7 @@ export const ticketDevicesTableTranslation = {
     modelNumber: 'Model number',
     ticketType: 'Ticket type',
     ticketStatus: 'Ticket status',
+    reminder: 'Notes',
     actions: 'Actions'
   },
   collapsibleTableColumns: {

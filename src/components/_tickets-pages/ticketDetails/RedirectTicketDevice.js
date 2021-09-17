@@ -45,8 +45,6 @@ function RedirectTicketDevice({
   ticketDetails,
   reviewMode,
   setTicketDevices,
-  ticketDeviceDataCreator,
-  setTicketDevicesTableRows,
   setTicketDetails,
   setTicketLogs
 }) {
@@ -70,7 +68,6 @@ function RedirectTicketDevice({
       await ticketDeviceUpdater(ticketDetails.id, data)
         .then((ticketDevicesData) => {
           setTicketDevices(ticketDevicesData);
-          setTicketDevicesTableRows(ticketDeviceDataCreator(ticketDevicesData));
           enqueueSnackbar('Device redirected', {
             variant: 'success',
             action: (key) => (
@@ -106,12 +103,11 @@ function RedirectTicketDevice({
   const handleAcceptRedirection = async () => {
     setLoading(true);
     const data = new FormData();
-    data.append('currentStage', 'customer-service-stage');
+    data.append('currentStage', 'redirection-stage');
     data.append('ticketDeviceId', triggeredDevice.id);
     await ticketDeviceUpdater(ticketDetails.id, data)
       .then((ticketDevicesData) => {
         setTicketDevices(ticketDevicesData);
-        setTicketDevicesTableRows(ticketDeviceDataCreator(ticketDevicesData));
         enqueueSnackbar('Accepted redirection request', {
           variant: 'success',
           action: (key) => (
@@ -141,6 +137,7 @@ function RedirectTicketDevice({
       });
     const ticketFormData = new FormData();
     ticketFormData.append('currentStage', 'technician-stage');
+    ticketFormData.append('ticketStatus', 'In progress');
     await ticketUpdater(ticketDetails.id, ticketFormData)
       .then((ticketDetailsData) => {
         setTicketDetails(ticketDetailsData);
@@ -175,7 +172,7 @@ function RedirectTicketDevice({
           {reviewMode ? (
             <TextField
               label={translate('ticketDetailsPage.redirectionDialog.redirectionNotes')}
-              value={triggeredDevice.customer_service_notes}
+              value={triggeredDevice.redirection_notes}
               multiline
               rows={3}
               fullWidth

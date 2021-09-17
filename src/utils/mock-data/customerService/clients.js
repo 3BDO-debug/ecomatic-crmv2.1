@@ -9,22 +9,12 @@ export const clientsDataCreator = (clients) => {
     clientsData.push({
       id: client.id,
       fullName: client.client_full_name,
-      category: (
-        <Label variant="outlined" color="primary">
-          {client.client_category_name}
-        </Label>
-      ),
-      phoneNumber: client.client_phone_number_1,
-      landline: client.client_landline_number,
-      address: client.client_address,
-      createdAt: client.added_at,
-      action: (
-        <Button
-          component={Link}
-          to={`/dashboard/clients/client-profile/${client.id}`}
-          startIcon={<Icon icon="akar-icons:eye" />}
-        />
-      )
+      phoneNumber1: client.client_phone_number_1,
+      phoneNumber2: client.client_phone_number_2,
+      region: client.client_region_name,
+      category: client.client_category_name,
+      createdAt: new Date(client.added_at).toLocaleString(),
+      action: client.id
     })
   );
   return clientsData;

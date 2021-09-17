@@ -3,18 +3,20 @@ import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 // material
-import { Card } from '@material-ui/core';
+import { Card, Box, Button } from '@material-ui/core';
 // utils
-import { clientTicketsDataCreator } from '../../../utils/mock-data/customerService/clients';
+import { ticketsDataCreator } from '../../../utils/mock-data/customerService/tickets';
 import { ticketsDeleter } from '../../../APIs/customerService/tickets';
 // hooks
 import useLocales from '../../../hooks/useLocales';
 // context
 import { TicketsContext } from '../../../contexts';
 // components
-import DataTable from '../../dataTable/DataTable';
 import { MIconButton } from '../../@material-extend';
+import DataGridCustom from '../../DataGridCustom';
+import Label from '../../Label';
 
 ClientTickets.propTypes = {
   clientId: PropTypes.number
@@ -53,45 +55,89 @@ function ClientTickets({ clientId }) {
   };
 
   useEffect(() => {
-    setTicketsTableRows(clientTicketsDataCreator(tickets, clientId));
+    setTicketsTableRows(ticketsDataCreator(tickets));
   }, [tickets, clientId]);
   return (
     <Card>
-      <DataTable
-        columnsData={[
-          {
-            id: 'ticketNumber',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.ticketNumber')
-          },
-          { id: 'id', label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.id') },
-          {
-            id: 'clientName',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.clientName')
-          },
-          {
-            id: 'technicianName',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.technicianName')
-          },
-          {
-            id: 'intializedAt',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.intializedAt')
-          },
-          {
-            id: 'currentStage',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.currentStage')
-          },
-          {
-            id: 'action',
-            label: translate('clientProfilePage.clientTicketsTab.clientTickesTable.tableColumns.action')
-          },
-          { id: '' }
-        ]}
-        filterBy="id"
-        identifier="id"
-        rowsData={ticketsTableRows}
-        searchPlaceholder="Search tickets..."
-        onSelectAllDelete={ticketsDeleterHandler}
-      />
+      <Box component="div" height="600px" width="100%">
+        <DataGridCustom
+          rows={ticketsTableRows}
+          columns={[
+            {
+              field: 'ticketNumber',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
+              flex: 1,
+              minWidth: 200
+            },
+            { field: 'id', headerName: 'ID', hide: true },
+            {
+              field: 'clientFullname',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
+              flex: 1,
+              minWidth: 200
+            },
+            {
+              field: 'region',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
+              flex: 1,
+              minWidth: 200
+            },
+            {
+              field: 'phoneNumber',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
+              flex: 1,
+              minWidth: 200
+            },
+            {
+              field: 'ticketStatus',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
+              flex: 1,
+              minWidth: 200,
+              renderCell: (cellValues) => {
+                let labelColor;
+                if (cellValues.value === 'Pending') {
+                  labelColor = 'warning';
+                } else if (cellValues.value === 'Closed') {
+                  labelColor = 'error';
+                } else {
+                  labelColor = 'info';
+                }
+                return (
+                  <Label variant="ghost" color={labelColor}>
+                    {cellValues.value}
+                  </Label>
+                );
+              }
+            },
+            {
+              field: 'ticketStage',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
+              flex: 1,
+              minWidth: 200,
+              renderCell: (cellValues) => (
+                <Label variant="ghost" color="primary">
+                  {cellValues.value}
+                </Label>
+              )
+            },
+            {
+              field: 'action',
+              headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
+              flex: 1,
+              minWidth: 200,
+              renderCell: (cellValues) => (
+                <Button
+                  color="primary"
+                  startIcon={<Icon icon="carbon:view" />}
+                  component={Link}
+                  to={`/dashboard/tickets/ticket-details/${cellValues.value}`}
+                />
+              )
+            }
+          ]}
+          onSelectionModelChange={ticketsDeleterHandler}
+        />
+      </Box>
     </Card>
   );
 }
