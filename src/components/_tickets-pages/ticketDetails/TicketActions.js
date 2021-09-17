@@ -18,6 +18,8 @@ import {
   ListItemAvatar
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // utils
 import { ticketLogs } from '../../../utils/systemUpdates';
 import { ticketUpdater } from '../../../APIs/customerService/tickets';
@@ -39,6 +41,7 @@ function TicketActions({ triggerHandler, isTriggered, ticketState, setTicketLogs
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const userRole = useContext(AuthContext).userState[0].role;
   const [ticketDetails, setTicketDetails] = ticketState;
+  const { translate } = useLocales();
 
   const updateStageHandler = () => {
     setLoading(true);
@@ -163,12 +166,12 @@ function TicketActions({ triggerHandler, isTriggered, ticketState, setTicketLogs
 
   return (
     <Dialog open={isTriggered} onClose={triggerHandler} fullWidth maxWidth="sm">
-      <DialogTitle>Ticket Actions</DialogTitle>
+      <DialogTitle>{translate('ticketDetailsPage.ticketActions.title')}</DialogTitle>
       <DialogContent>
         <Box marginTop="30px" component="div">
           <List>
             <ListItem alignItems="center">
-              <ListItemText> Proceed the ticket to the next stage</ListItemText>
+              <ListItemText>{translate('ticketDetailsPage.ticketActions.nextStage')}</ListItemText>
               <ListItemAvatar>
                 <LoadingButton
                   loading={loading}
@@ -187,7 +190,7 @@ function TicketActions({ triggerHandler, isTriggered, ticketState, setTicketLogs
             {['admin', 'technical_support'].includes(userRole) && (
               <>
                 <ListItem alignItems="center">
-                  <ListItemText> Proceed the ticket to the follow up stage</ListItemText>
+                  <ListItemText>{translate('ticketDetailsPage.ticketActions.nextStage')}</ListItemText>
                   <ListItemAvatar>
                     <LoadingButton
                       onClick={handlePushToFollowUp}
@@ -207,8 +210,8 @@ function TicketActions({ triggerHandler, isTriggered, ticketState, setTicketLogs
             <ListItem alignItems="center">
               <ListItemText>
                 {ticketDetails && ticketDetails.ticket_status === 'Pending'
-                  ? 'Remove ticket from pending status'
-                  : 'Mark ticket as pending'}
+                  ? translate('ticketDetailsPage.ticketActions.removePending')
+                  : translate('ticketDetailsPage.ticketActions.pending')}
               </ListItemText>
               <ListItemAvatar>
                 <LoadingButton

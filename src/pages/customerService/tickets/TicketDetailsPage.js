@@ -259,7 +259,7 @@ function TicketDetailsPage() {
                 startIcon={<Icon icon="grommet-icons:trigger" />}
                 variant="contained"
               >
-                Ticket actions
+                {translate('ticketDetailsPage.ticketActions.title')}
               </Button>
             )
           }
