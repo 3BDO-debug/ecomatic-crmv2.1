@@ -22,10 +22,20 @@ Cooker.propTypes = {
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
   submitState: PropTypes.array,
-  deviceId: PropTypes.number
+  deviceId: PropTypes.number,
+  triggerHandler: PropTypes.func
 };
 
-function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
+function Cooker({
+  feedingSource,
+  modelNumber,
+  deviceId,
+  technicainName,
+  clientName,
+  reviewMode,
+  submitState,
+  triggerHandler
+}) {
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
@@ -72,6 +82,7 @@ function Cooker({ feedingSource, modelNumber, deviceId, technicainName, clientNa
           });
         })
         .catch((error) => console.log(error));
+      triggerHandler();
     }
   }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
 

@@ -22,9 +22,19 @@ Hood.propTypes = {
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
   submitState: PropTypes.array,
-  deviceId: PropTypes.number
+  deviceId: PropTypes.number,
+  triggerHandler: PropTypes.func
 };
-function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
+function Hood({
+  feedingSource,
+  modelNumber,
+  deviceId,
+  technicainName,
+  clientName,
+  reviewMode,
+  submitState,
+  triggerHandler
+}) {
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
@@ -67,6 +77,7 @@ function Hood({ feedingSource, modelNumber, deviceId, technicainName, clientName
           });
         })
         .catch((error) => console.log(error));
+      triggerHandler();
     }
   }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
 

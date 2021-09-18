@@ -22,10 +22,20 @@ SlimHob.propTypes = {
   technicainName: PropTypes.string,
   reviewMode: PropTypes.bool,
   submitState: PropTypes.array,
-  deviceId: PropTypes.number
+  deviceId: PropTypes.number,
+  triggerHandler: PropTypes.func
 };
 
-function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientName, reviewMode, submitState }) {
+function SlimHob({
+  feedingSource,
+  modelNumber,
+  deviceId,
+  technicainName,
+  clientName,
+  reviewMode,
+  submitState,
+  triggerHandler
+}) {
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
@@ -71,6 +81,7 @@ function SlimHob({ feedingSource, modelNumber, deviceId, technicainName, clientN
           });
         })
         .catch((error) => console.log(error));
+      triggerHandler();
     }
   }, [closeSnackbar, deviceId, enqueueSnackbar, reviewMode, setSubmit, submit, values]);
 

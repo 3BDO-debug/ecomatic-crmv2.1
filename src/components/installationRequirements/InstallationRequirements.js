@@ -42,7 +42,6 @@ function InstallationRequirements({
     if (triggeredDevice) {
       setSubmit(true);
       saveHandler();
-      triggerHandler();
     }
   };
   useEffect(() => {
@@ -62,6 +61,7 @@ function InstallationRequirements({
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
+              triggerHandler={triggerHandler}
             />
           )}
           {installationRequirementsForm === 'cooker' && (
@@ -74,6 +74,7 @@ function InstallationRequirements({
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
+              triggerHandler={triggerHandler}
             />
           )}
           {installationRequirementsForm === 'hood' && (
@@ -86,6 +87,7 @@ function InstallationRequirements({
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
               submitState={[submit, setSubmit]}
+              triggerHandler={triggerHandler}
             />
           )}
           {installationRequirementsForm === 'slim-hob' && (
@@ -98,6 +100,7 @@ function InstallationRequirements({
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
+              triggerHandler={triggerHandler}
             />
           )}
         </Box>
