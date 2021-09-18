@@ -116,7 +116,7 @@ function InstallationRequirements({
             {translate('ticketDetailsPage.installationRequirementsForms.printButton')}
           </Button>
         ) : (
-          <LoadingButton onClick={handleSubmit} variant="inherit">
+          <LoadingButton onClick={handleSubmit} variant="inherit" disabled={submit} loading={submit}>
             {translate('ticketDetailsPage.installationRequirementsForms.actionButton')}
           </LoadingButton>
         )
