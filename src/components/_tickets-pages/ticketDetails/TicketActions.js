@@ -190,7 +190,7 @@ function TicketActions({ triggerHandler, isTriggered, ticketState, setTicketLogs
             {['admin', 'technical_support'].includes(userRole) && (
               <>
                 <ListItem alignItems="center">
-                  <ListItemText>{translate('ticketDetailsPage.ticketActions.nextStage')}</ListItemText>
+                  <ListItemText>{translate('ticketDetailsPage.ticketActions.followUpStage')}</ListItemText>
                   <ListItemAvatar>
                     <LoadingButton
                       onClick={handlePushToFollowUp}
