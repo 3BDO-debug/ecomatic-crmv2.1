@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
 // material
-import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
+import { Grid, TextField, MenuItem, Button, Skeleton } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 // utils
@@ -88,7 +88,7 @@ function GasOven({
         .catch((error) => console.log(error));
       triggerHandler();
     }
-  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values]);
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values, triggerHandler]);
 
   useEffect(() => {
     if (reviewMode) {
@@ -122,195 +122,209 @@ function GasOven({
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.modelNumber')}
-          value={modelNumber}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.feedingSource')}
-          value={feedingSource}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.gasPressure')}
-          value={reviewMode ? installationRequirementsDetails.gas_pressure : values.gasPressure}
-          onChange={(event) => setFieldValue('gasPressure', event.target.value)}
-          focused={reviewMode}
-          fullWidth
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        {reviewMode ? (
-          <TextField
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillation')}
-            value={installationRequirementsDetails.ventillation_opening_below_oven_is_available ? 'Yes' : 'No'}
-            fullWidth
-            focused={reviewMode}
-          />
-        ) : (
-          <TextField
-            select
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillation')}
-            onChange={(event) => setFieldValue('ventillationOpeningBelowOvenIsAvailable', event.target.value)}
-            fullWidth
-          >
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-          </TextField>
-        )}
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillationMeasurements')}
-          value={
-            reviewMode
-              ? installationRequirementsDetails.ventillation_opening_below_oven_measurements
-              : values.ventillationOpeningBelowOvenMeasurements
-          }
-          onChange={(event) => setFieldValue('ventillationOpeningBelowOvenMeasurements', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        {reviewMode ? (
-          <TextField
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillation')}
-            value={installationRequirementsDetails.ventillation_opening_in_front_of_oven_is_available ? 'yes' : 'no'}
-            focused={reviewMode}
-            fullWidth
-          />
-        ) : (
-          <TextField
-            select
-            label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillation')}
-            value={values.ventillationOpeningInFrontOfOvenIsAvailable}
-            onChange={(event) => setFieldValue('ventillationOpeningInFrontOfOvenIsAvailable', event.target.value)}
-            variant="outlined"
-            fullWidth
-          >
-            <MenuItem value="yes">Yes</MenuItem>
-            <MenuItem value="no">No</MenuItem>
-          </TextField>
-        )}
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillationMeasurements')}
-          value={
-            reviewMode
-              ? installationRequirementsDetails.ventillation_opening_in_front_of_oven_measurements
-              : values.ventillationOpeningInFrontOfOvenMeasurements
-          }
-          onChange={(event) => setFieldValue('ventillationOpeningInFrontOfOvenMeasurements', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      {feedingSource !== 'Natural Gas' && (
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          {reviewMode ? (
+      {Object.keys(installationRequirementsDetails).length !== 0 ? (
+        <>
+          {' '}
+          <Grid item xs={12} sm={12} md={4} lg={4}>
             <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
-              value={installationRequirementsDetails.stabilizer_type}
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.modelNumber')}
+              value={modelNumber}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.feedingSource')}
+              value={feedingSource}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.gasPressure')}
+              value={reviewMode ? installationRequirementsDetails.gas_pressure : values.gasPressure}
+              onChange={(event) => setFieldValue('gasPressure', event.target.value)}
               focused={reviewMode}
               fullWidth
             />
-          ) : (
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            {reviewMode ? (
+              <TextField
+                label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillation')}
+                value={installationRequirementsDetails.ventillation_opening_below_oven_is_available ? 'Yes' : 'No'}
+                fullWidth
+                focused={reviewMode}
+              />
+            ) : (
+              <TextField
+                select
+                label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillation')}
+                onChange={(event) => setFieldValue('ventillationOpeningBelowOvenIsAvailable', event.target.value)}
+                fullWidth
+              >
+                <MenuItem value="yes">Yes</MenuItem>
+                <MenuItem value="no">No</MenuItem>
+              </TextField>
+            )}
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
             <TextField
-              select
-              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
-              value={values.stabilizerType}
-              onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
+              label={translate(
+                'ticketDetailsPage.installationRequirementsForms.gasOvenForm.belowVentillationMeasurements'
+              )}
+              value={
+                reviewMode
+                  ? installationRequirementsDetails.ventillation_opening_below_oven_measurements
+                  : values.ventillationOpeningBelowOvenMeasurements
+              }
+              onChange={(event) => setFieldValue('ventillationOpeningBelowOvenMeasurements', event.target.value)}
               fullWidth
-            >
-              <MenuItem value="with pulley">With pulley</MenuItem>
-              <MenuItem value="without pulley">Without pulley</MenuItem>
-            </TextField>
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            {reviewMode ? (
+              <TextField
+                label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillation')}
+                value={
+                  installationRequirementsDetails.ventillation_opening_in_front_of_oven_is_available ? 'yes' : 'no'
+                }
+                focused={reviewMode}
+                fullWidth
+              />
+            ) : (
+              <TextField
+                select
+                label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillation')}
+                value={values.ventillationOpeningInFrontOfOvenIsAvailable}
+                onChange={(event) => setFieldValue('ventillationOpeningInFrontOfOvenIsAvailable', event.target.value)}
+                variant="outlined"
+                fullWidth
+              >
+                <MenuItem value="yes">Yes</MenuItem>
+                <MenuItem value="no">No</MenuItem>
+              </TextField>
+            )}
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <TextField
+              label={translate(
+                'ticketDetailsPage.installationRequirementsForms.gasOvenForm.frontVentillationMeasurements'
+              )}
+              value={
+                reviewMode
+                  ? installationRequirementsDetails.ventillation_opening_in_front_of_oven_measurements
+                  : values.ventillationOpeningInFrontOfOvenMeasurements
+              }
+              onChange={(event) => setFieldValue('ventillationOpeningInFrontOfOvenMeasurements', event.target.value)}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          {feedingSource !== 'Natural Gas' && (
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              {reviewMode ? (
+                <TextField
+                  label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
+                  value={installationRequirementsDetails.stabilizer_type}
+                  focused={reviewMode}
+                  fullWidth
+                />
+              ) : (
+                <TextField
+                  select
+                  label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.stabillizerType')}
+                  value={values.stabilizerType}
+                  onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="with pulley">With pulley</MenuItem>
+                  <MenuItem value="without pulley">Without pulley</MenuItem>
+                </TextField>
+              )}
+            </Grid>
           )}
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.ovenFoniaNumber')}
+              value={reviewMode ? installationRequirementsDetails.gas_oven_fonia_number : values.gasOvenFoniaNumber}
+              onChange={(event) => setFieldValue('gasOvenFoniaNumber', event.target.value)}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.grillFoniaNumber')}
+              value={reviewMode ? installationRequirementsDetails.grill_fonia_number : values.grillFoniaNumber}
+              onChange={(event) => setFieldValue('grillFoniaNumber', event.target.value)}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <TextField
+              multiline
+              rows={3}
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.technicianAction')}
+              value={
+                reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
+              }
+              onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <TextField
+              multiline
+              rows={3}
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.deviceCondition')}
+              value={reviewMode ? installationRequirementsDetails.notes : values.gasOvenFinalCondition}
+              onChange={(event) => setFieldValue('gasOvenFinalCondition', event.target.value)}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.clientSignature')}
+              value={clientName}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <TextField
+              label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.technicianName')}
+              value={technicainName}
+              fullWidth
+              focused={reviewMode}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            {reviewMode ? (
+              <Button
+                onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
+                size="large"
+                startIcon={<Icon icon="teenyicons:attachment-outline" />}
+                fullWidth
+              >
+                View attachment
+              </Button>
+            ) : (
+              <UploadSingleFile file={attachment} onDrop={handleDrop} />
+            )}
+          </Grid>
+        </>
+      ) : (
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Skeleton animation="wave" height={500} />
         </Grid>
       )}
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.ovenFoniaNumber')}
-          value={reviewMode ? installationRequirementsDetails.gas_oven_fonia_number : values.gasOvenFoniaNumber}
-          onChange={(event) => setFieldValue('gasOvenFoniaNumber', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.grillFoniaNumber')}
-          value={reviewMode ? installationRequirementsDetails.grill_fonia_number : values.grillFoniaNumber}
-          onChange={(event) => setFieldValue('grillFoniaNumber', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        <TextField
-          multiline
-          rows={3}
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.technicianAction')}
-          value={
-            reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
-          }
-          onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        <TextField
-          multiline
-          rows={3}
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.deviceCondition')}
-          value={reviewMode ? installationRequirementsDetails.notes : values.gasOvenFinalCondition}
-          onChange={(event) => setFieldValue('gasOvenFinalCondition', event.target.value)}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.clientSignature')}
-          value={clientName}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={6}>
-        <TextField
-          label={translate('ticketDetailsPage.installationRequirementsForms.gasOvenForm.technicianName')}
-          value={technicainName}
-          fullWidth
-          focused={reviewMode}
-        />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        {reviewMode ? (
-          <Button
-            onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
-            size="large"
-            startIcon={<Icon icon="teenyicons:attachment-outline" />}
-            fullWidth
-          >
-            View attachment
-          </Button>
-        ) : (
-          <UploadSingleFile file={attachment} onDrop={handleDrop} />
-        )}
-      </Grid>
     </Grid>
   );
 }
