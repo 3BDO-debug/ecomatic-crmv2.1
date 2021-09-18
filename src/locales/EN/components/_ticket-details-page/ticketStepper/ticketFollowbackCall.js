@@ -1,5 +1,5 @@
 export const ticketFollowbackCallTranslation = {
-  title: 'Followback call',
+  title: 'Follow up call',
   notes: 'Notes',
   actionButton: 'Save'
 };
