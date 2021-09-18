@@ -121,6 +121,22 @@ function DeviceInfo({
         .catch((error) => console.log(error));
     }
   }, [ticketDeviceFinder]);
+
+  const ticketTypesHandler = useCallback(() => {
+    const ticketTypesData = [];
+    if (ticketDeviceFinder().installation_status === 'Not installed') {
+      const notInstalledTypes = ticketTypes.filter((ticketType) => ticketType.ticket_type === 'Installation');
+      notInstalledTypes.map((type) => ticketTypesData.push({ label: type.ticket_type, id: type.id }));
+    } else if (
+      ticketDeviceFinder().installation_status === 'Not installed by the company' ||
+      ticketDeviceFinder().installation_status === 'Installed by the company'
+    ) {
+      const installedTypes = ticketTypes.filter((ticketType) => ticketType.ticket_type !== 'Installation');
+      installedTypes.map((type) => ticketTypesData.push({ label: type.ticket_type, id: type.id }));
+    }
+    return ticketTypesData;
+  }, [ticketDeviceFinder, ticketTypes]);
+
   return (
     <>
       {ticketDeviceFinder() && (
@@ -239,7 +255,7 @@ function DeviceInfo({
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <Autocomplete
                     fullWidth
-                    options={ticketTypes.map((ticketType) => ({ label: ticketType.ticket_type, id: ticketType.id }))}
+                    options={ticketTypesHandler()}
                     getOptionLabel={(option) => option.label}
                     defaultValue={{ label: ticketDeviceFinder().device_ticket_type, id: 1 }}
                     onChange={(event, value) => {
