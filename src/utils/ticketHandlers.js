@@ -7,7 +7,7 @@ import { ticketDeviceUpdater } from '../APIs/customerService/tickets';
 // components
 import { MIconButton } from '../components/@material-extend';
 
-export const completeTicketDeviceHandler = (
+export const completeTicketDeviceHandler = async (
   ticketDeviceId,
   ticketDetails,
   setTicketDevices,
@@ -20,7 +20,7 @@ export const completeTicketDeviceHandler = (
   data.append('ticketDeviceId', ticketDeviceId);
   data.append('markCompleted', 'markCompleted');
   data.append('currentStage', 'technician-stage');
-  ticketDeviceUpdater(ticketDetails.id, data)
+  await ticketDeviceUpdater(ticketDetails.id, data)
     .then((ticketDevicesData) => {
       setTicketDevices(ticketDevicesData);
 

@@ -38,10 +38,9 @@ function InstallationRequirements({
   const handlePrint = useReactToPrint({
     content: () => printComponent.current
   });
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (triggeredDevice) {
       setSubmit(true);
-      saveHandler();
     }
   };
   useEffect(() => {
@@ -57,7 +56,7 @@ function InstallationRequirements({
               feedingSource={triggeredDevice.device_feeding_source}
               clientName={ticketDetails.client_name}
               technicainName={ticketDetails.technician_name}
-              saveHandler={handleSubmit}
+              saveHandler={saveHandler}
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
@@ -70,7 +69,7 @@ function InstallationRequirements({
               feedingSource={triggeredDevice.device_feeding_source}
               clientName={ticketDetails.client_name}
               technicainName={ticketDetails.technician_name}
-              saveHandler={handleSubmit}
+              saveHandler={saveHandler}
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
@@ -83,7 +82,7 @@ function InstallationRequirements({
               feedingSource={triggeredDevice.device_feeding_source}
               clientName={ticketDetails.client_name}
               technicainName={ticketDetails.technician_name}
-              saveHandler={handleSubmit}
+              saveHandler={saveHandler}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}
               submitState={[submit, setSubmit]}
@@ -96,7 +95,7 @@ function InstallationRequirements({
               feedingSource={triggeredDevice.device_feeding_source}
               clientName={ticketDetails.client_name}
               technicainName={ticketDetails.technician_name}
-              saveHandler={handleSubmit}
+              saveHandler={saveHandler}
               submitState={[submit, setSubmit]}
               deviceId={triggeredDevice.id}
               reviewMode={reviewMode}

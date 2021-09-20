@@ -23,7 +23,8 @@ SlimHob.propTypes = {
   reviewMode: PropTypes.bool,
   submitState: PropTypes.array,
   deviceId: PropTypes.number,
-  triggerHandler: PropTypes.func
+  triggerHandler: PropTypes.func,
+  saveHandler: PropTypes.func
 };
 
 function SlimHob({
@@ -34,13 +35,15 @@ function SlimHob({
   clientName,
   reviewMode,
   submitState,
-  triggerHandler
+  triggerHandler,
+  saveHandler
 }) {
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
   const [attachment, setAttachment] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -67,31 +70,42 @@ function SlimHob({
       const data = new FormData();
       data.append('formikValues', JSON.stringify(values));
       data.append('attachment', values.attachment);
-      await slimHobAdder(deviceId, data)
-        .then(() => {
-          setSubmit(false);
+      try {
+        await slimHobAdder(deviceId, data)
+          .then(() => {
+            saveHandler();
+            setSubmit(false);
 
-          enqueueSnackbar('Done', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-        })
-        .catch((error) => console.log(error));
-      triggerHandler();
+            enqueueSnackbar('Done', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+
+            triggerHandler();
+          })
+          .catch((error) => console.log(error));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [closeSnackbar, deviceId, enqueueSnackbar, reviewMode, setSubmit, submit, values, triggerHandler]);
 
   useEffect(() => {
     if (reviewMode) {
+      setLoading(true);
       slimHobFetcher(deviceId)
         .then((response) => {
           setInstallationRequirementsDetails(response);
+          setLoading(false);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
     }
   }, [deviceId, reviewMode]);
 
@@ -118,36 +132,49 @@ function SlimHob({
 
   return (
     <Grid container spacing={3}>
-      {Object.keys(installationRequirementsDetails).length !== 0 ? (
-        <>
-          {' '}
-          <Grid item xs={12} sm={12} md={4} lg={4}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.clientSignature')}
-              value={modelNumber}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.feedingSource')}
-              value={feedingSource}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.gasPressure')}
-              value={reviewMode ? installationRequirementsDetails.gas_pressure : values.gasPressure}
-              onChange={(event) => setFieldValue('gasPressure', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            {reviewMode ? (
+      <Grid item xs={12} sm={12} md={4} lg={4}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.clientSignature')}
+            value={modelNumber}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={4} lg={4}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.feedingSource')}
+            value={feedingSource}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={4} lg={4}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.gasPressure')}
+            value={reviewMode ? installationRequirementsDetails.gas_pressure : values.gasPressure}
+            onChange={(event) => setFieldValue('gasPressure', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {reviewMode ? (
+          <>
+            {loading ? (
+              <Skeleton height={80} />
+            ) : (
               <TextField
                 label={translate(
                   'ticketDetailsPage.installationRequirementsForms.slimHobForm.marbelOpeningAvailabilty'
@@ -156,101 +183,129 @@ function SlimHob({
                 fullWidth
                 focused={reviewMode}
               />
-            ) : (
-              <TextField
-                select
-                label={translate(
-                  'ticketDetailsPage.installationRequirementsForms.slimHobForm.marbelOpeningAvailabilty'
-                )}
-                value={values.marbleOpeningHoleIsAvailable}
-                onChange={(event) => setFieldValue('marbleOpeningHoleIsAvailable', event.target.value)}
-                fullWidth
-              >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
-              </TextField>
             )}
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.openingMeasurements')}
-              value={
-                reviewMode
-                  ? installationRequirementsDetails.marble_opening_hole_measurements
-                  : values.marbleOpeningHoleMeasurements
-              }
-              onChange={(event) => setFieldValue('marbleOpeningHoleMeasurements', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          {feedingSource !== 'Natural Gas' && (
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-              {reviewMode ? (
+          </>
+        ) : (
+          <TextField
+            select
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.marbelOpeningAvailabilty')}
+            value={values.marbleOpeningHoleIsAvailable}
+            onChange={(event) => setFieldValue('marbleOpeningHoleIsAvailable', event.target.value)}
+            fullWidth
+          >
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+          </TextField>
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.openingMeasurements')}
+            value={
+              reviewMode
+                ? installationRequirementsDetails.marble_opening_hole_measurements
+                : values.marbleOpeningHoleMeasurements
+            }
+            onChange={(event) => setFieldValue('marbleOpeningHoleMeasurements', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      {feedingSource !== 'Natural Gas' && (
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          {reviewMode ? (
+            <>
+              {loading ? (
+                <Skeleton height={80} />
+              ) : (
                 <TextField
                   label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.stabillizerType')}
                   value={installationRequirementsDetails.stabilizer_type}
                   fullWidth
                   focused={reviewMode}
                 />
-              ) : (
-                <TextField
-                  select
-                  label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.stabillizerType')}
-                  value={values.stabilizerType}
-                  onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
-                  fullWidth
-                >
-                  <MenuItem value="with pulley">With pulley</MenuItem>
-                  <MenuItem value="without pulley">Without pulley</MenuItem>
-                </TextField>
               )}
-            </Grid>
+            </>
+          ) : (
+            <TextField
+              select
+              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.stabillizerType')}
+              value={values.stabilizerType}
+              onChange={(event) => setFieldValue('stabilizerType', event.target.value)}
+              fullWidth
+            >
+              <MenuItem value="with pulley">With pulley</MenuItem>
+              <MenuItem value="without pulley">Without pulley</MenuItem>
+            </TextField>
           )}
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <TextField
-              multiline
-              rows={3}
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.technicianAction')}
-              value={
-                reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
-              }
-              onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <TextField
-              multiline
-              rows={3}
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.deviceCondition')}
-              value={
-                reviewMode ? installationRequirementsDetails.slim_hob_final_condition : values.slimHobFinalCondition
-              }
-              onChange={(event) => setFieldValue('slimHobFinalCondition', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.clientSignature')}
-              value={clientName}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.technicianName')}
-              value={technicainName}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            {reviewMode ? (
+        </Grid>
+      )}
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            multiline
+            rows={3}
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.technicianAction')}
+            value={
+              reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
+            }
+            onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            multiline
+            rows={3}
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.deviceCondition')}
+            value={reviewMode ? installationRequirementsDetails.slim_hob_final_condition : values.slimHobFinalCondition}
+            onChange={(event) => setFieldValue('slimHobFinalCondition', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.clientSignature')}
+            value={clientName}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.slimHobForm.technicianName')}
+            value={technicainName}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <>
+            {loading ? (
+              <Skeleton height={80} />
+            ) : (
               <Button
                 startIcon={<Icon icon="teenyicons:attachment-outline" />}
                 onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
@@ -258,19 +313,15 @@ function SlimHob({
               >
                 View attachment
               </Button>
-            ) : (
-              <UploadSingleFile
-                file={reviewMode ? installationRequirementsDetails.attachment : attachment}
-                onDrop={handleDrop}
-              />
             )}
-          </Grid>
-        </>
-      ) : (
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <Skeleton animation="wave" height={500} />
-        </Grid>
-      )}
+          </>
+        ) : (
+          <UploadSingleFile
+            file={reviewMode ? installationRequirementsDetails.attachment : attachment}
+            onDrop={handleDrop}
+          />
+        )}
+      </Grid>
     </Grid>
   );
 }

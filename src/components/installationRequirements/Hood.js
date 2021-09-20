@@ -23,7 +23,8 @@ Hood.propTypes = {
   reviewMode: PropTypes.bool,
   submitState: PropTypes.array,
   deviceId: PropTypes.number,
-  triggerHandler: PropTypes.func
+  triggerHandler: PropTypes.func,
+  saveHandler: PropTypes.func
 };
 function Hood({
   feedingSource,
@@ -33,14 +34,15 @@ function Hood({
   clientName,
   reviewMode,
   submitState,
-  triggerHandler
+  triggerHandler,
+  saveHandler
 }) {
   const { translate } = useLocales();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [installationRequirementsDetails, setInstallationRequirementsDetails] = useState({});
   const [submit, setSubmit] = submitState;
   const [attachment, setAttachment] = useState({});
-
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       hoodModelNumber: modelNumber,
@@ -63,8 +65,8 @@ function Hood({
       data.append('formikValues', values);
       data.append('attachment', values.attachment);
       await hoodAdder(deviceId, data)
-        .then((response) => {
-          console.log(response);
+        .then(() => {
+          saveHandler();
           setSubmit(false);
 
           enqueueSnackbar('Done', {
@@ -83,11 +85,16 @@ function Hood({
 
   useEffect(() => {
     if (reviewMode) {
+      setLoading(true);
       hoodFetcher(deviceId)
         .then((response) => {
           setInstallationRequirementsDetails(response);
+          setLoading(false);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
     }
   }, [deviceId, reviewMode]);
 
@@ -113,106 +120,146 @@ function Hood({
 
   return (
     <Grid container spacing={3}>
-      {Object.keys(installationRequirementsDetails).length !== 0 ? (
-        <>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.modelNumber')}
-              value={modelNumber}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.feedingSource')}
-              value={feedingSource}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.hoodHeight')}
-              value={reviewMode ? installationRequirementsDetails.hood_height : values.hoodHeight}
-              onChange={(event) => setFieldValue('hoodHeight', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.exhaustHeight')}
-              value={reviewMode ? installationRequirementsDetails.hood_exhaust_height : values.hoodExhaustHeight}
-              onChange={(event) => setFieldValue('hoodExhaustHeight', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            {reviewMode ? (
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.modelNumber')}
+            value={modelNumber}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.feedingSource')}
+            value={feedingSource}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.hoodHeight')}
+            value={reviewMode ? installationRequirementsDetails.hood_height : values.hoodHeight}
+            onChange={(event) => setFieldValue('hoodHeight', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.exhaustHeight')}
+            value={reviewMode ? installationRequirementsDetails.hood_exhaust_height : values.hoodExhaustHeight}
+            onChange={(event) => setFieldValue('hoodExhaustHeight', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <>
+            {loading ? (
+              <Skeleton height={80} />
+            ) : (
               <TextField
                 label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.hoodExhaustIsStraight')}
                 value={installationRequirementsDetails.hood_exhaust_is_straight ? 'Yes' : 'No'}
                 fullWidth
                 focused={reviewMode}
               />
-            ) : (
-              <TextField
-                select
-                label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.hoodExhaustIsStraight')}
-                value={values.hoodExhaustIsStraight}
-                onChange={(event) => setFieldValue('hoodExhaustIsStraight', event.target.value)}
-                fullWidth
-              >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
-              </TextField>
             )}
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.technicainAction')}
-              value={
-                reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
-              }
-              onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-              multiline
-              rows={3}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.deviceCondition')}
-              value={reviewMode ? installationRequirementsDetails.hood_final_condition : values.hoodFinalCondition}
-              onChange={(event) => setFieldValue('hoodFinalCondition', event.target.value)}
-              fullWidth
-              focused={reviewMode}
-              multiline
-              rows={3}
-            />
-          </Grid>
+          </>
+        ) : (
+          <TextField
+            select
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.hoodExhaustIsStraight')}
+            value={values.hoodExhaustIsStraight}
+            onChange={(event) => setFieldValue('hoodExhaustIsStraight', event.target.value)}
+            fullWidth
+          >
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
+          </TextField>
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.technicainAction')}
+            value={
+              reviewMode ? installationRequirementsDetails.whats_done_by_the_technician : values.whatsDoneByTechnician
+            }
+            onChange={(event) => setFieldValue('whatsDoneByTechnician', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+            multiline
+            rows={3}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.deviceCondition')}
+            value={reviewMode ? installationRequirementsDetails.hood_final_condition : values.hoodFinalCondition}
+            onChange={(event) => setFieldValue('hoodFinalCondition', event.target.value)}
+            fullWidth
+            focused={reviewMode}
+            multiline
+            rows={3}
+          />
+        )}
+      </Grid>
 
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.clientSignature')}
-              value={clientName}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.technicianName')}
-              value={technicainName}
-              fullWidth
-              focused={reviewMode}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            {reviewMode ? (
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.clientSignature')}
+            value={clientName}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
+        {loading ? (
+          <Skeleton height={80} />
+        ) : (
+          <TextField
+            label={translate('ticketDetailsPage.installationRequirementsForms.hoodForm.technicianName')}
+            value={technicainName}
+            fullWidth
+            focused={reviewMode}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        {reviewMode ? (
+          <>
+            {loading ? (
+              <Skeleton height={80} />
+            ) : (
               <Button
                 startIcon={<Icon icon="teenyicons:attachment-outline" />}
                 onClick={() => window.open(`${mainUrl}/${installationRequirementsDetails.attachment}`)}
@@ -220,19 +267,15 @@ function Hood({
               >
                 View attachment
               </Button>
-            ) : (
-              <UploadSingleFile
-                file={reviewMode ? installationRequirementsDetails.attachment : attachment}
-                onDrop={handleDrop}
-              />
             )}
-          </Grid>
-        </>
-      ) : (
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <Skeleton animation="wave" height={500} />
-        </Grid>
-      )}
+          </>
+        ) : (
+          <UploadSingleFile
+            file={reviewMode ? installationRequirementsDetails.attachment : attachment}
+            onDrop={handleDrop}
+          />
+        )}
+      </Grid>
     </Grid>
   );
 }
