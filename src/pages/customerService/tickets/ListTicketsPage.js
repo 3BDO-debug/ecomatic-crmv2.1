@@ -4,7 +4,7 @@ import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
-import { Card, Container, Box, Button } from '@material-ui/core';
+import { Card, Container, Box, Button, Rating } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -76,14 +76,34 @@ function ListTicketsPage() {
             <DataGridCustom
               rows={ticketsTableRows}
               columns={[
-                { field: 'ticketNumber', headerName: 'Ticket number', flex: 1, minWidth: 200 },
+                {
+                  field: 'ticketNumber',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
+                  flex: 1,
+                  minWidth: 200
+                },
                 { field: 'id', headerName: 'ID', hide: true },
-                { field: 'clientFullname', headerName: 'Client Fullname', flex: 1, minWidth: 200 },
-                { field: 'region', headerName: 'Region', flex: 1, minWidth: 200 },
-                { field: 'phoneNumber', headerName: 'Phone number', flex: 1, minWidth: 200 },
+                {
+                  field: 'clientFullname',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
+                  flex: 1,
+                  minWidth: 200
+                },
+                {
+                  field: 'region',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
+                  flex: 1,
+                  minWidth: 200
+                },
+                {
+                  field: 'phoneNumber',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
+                  flex: 1,
+                  minWidth: 200
+                },
                 {
                   field: 'ticketStatus',
-                  headerName: 'Ticket status',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
                   flex: 1,
                   minWidth: 200,
                   renderCell: (cellValues) => {
@@ -104,7 +124,7 @@ function ListTicketsPage() {
                 },
                 {
                   field: 'ticketStage',
-                  headerName: 'Ticket stage',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
                   flex: 1,
                   minWidth: 200,
                   renderCell: (cellValues) => (
@@ -114,8 +134,54 @@ function ListTicketsPage() {
                   )
                 },
                 {
+                  field: 'technicianName',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName'),
+                  flex: 1,
+                  minWidth: 200,
+                  renderCell: (cellValues) =>
+                    cellValues.value === 'Technician Not Selected Yet' ? (
+                      <Label variant="ghost" color="error">
+                        {cellValues.value}
+                      </Label>
+                    ) : (
+                      <Label variant="ghost" color="info">
+                        {cellValues.value}
+                      </Label>
+                    )
+                },
+                {
+                  field: 'routeName',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.routeName'),
+                  flex: 1,
+                  minWidth: 200,
+                  renderCell: (cellValues) =>
+                    cellValues.value === 'Route not yet selected' ? (
+                      <Label variant="ghost" color="error">
+                        {cellValues.value}
+                      </Label>
+                    ) : (
+                      <Label variant="ghost" color="info">
+                        {cellValues.value}
+                      </Label>
+                    )
+                },
+                {
+                  field: 'overallRating',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.overallRating'),
+                  flex: 1,
+                  minWidth: 200,
+                  renderCell: (cellValues) =>
+                    cellValues.value ? (
+                      <Rating value={parseInt(cellValues.value, 10)} max={10} readOnly />
+                    ) : (
+                      <Label variant="ghost" color="error">
+                        Rating is not available yet
+                      </Label>
+                    )
+                },
+                {
                   field: 'action',
-                  headerName: 'Action',
+                  headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
                   flex: 1,
                   minWidth: 200,
                   renderCell: (cellValues) => (

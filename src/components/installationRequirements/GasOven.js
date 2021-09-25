@@ -74,7 +74,7 @@ function GasOven({
       data.append('formikValues', JSON.stringify(values));
       data.append('attachment', values.attachment);
       await gasOvenAdder(deviceId, data)
-        .then((response) => {
+        .then(() => {
           saveHandler();
           setSubmit(false);
 
@@ -90,7 +90,7 @@ function GasOven({
         .catch((error) => console.log(error));
       triggerHandler();
     }
-  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values, triggerHandler]);
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values, triggerHandler, saveHandler]);
 
   useEffect(() => {
     if (reviewMode) {

@@ -196,7 +196,7 @@ function RegisterForm() {
               <ListSubheader>Follow up department</ListSubheader>
               <MenuItem value="follow_up_agent">Follow up agent</MenuItem>
               <ListSubheader>Maintenance department</ListSubheader>
-              <MenuItem value="technicial_supervisor">Technicians Supervisor</MenuItem>
+              <MenuItem value="technician_supervisor">Technicians Supervisor</MenuItem>
               <MenuItem value="technician">Technician</MenuItem>
               <ListSubheader>Storages department</ListSubheader>
               <MenuItem value="store_keeper">Store Keeper</MenuItem>

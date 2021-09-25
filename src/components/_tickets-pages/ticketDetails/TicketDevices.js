@@ -120,7 +120,7 @@ function TicketDevices({ ticketDevicesState, ticketState, setTicketLogs, activeV
             </CardContent>
             <CardActions>
               <Button sx={{ marginLeft: 'auto', order: '2' }} variant="text">
-                Total : {ticketDetails.total_cost} EGP
+                Total : {ticketDetails && ticketDetails.total_cost} EGP
               </Button>
             </CardActions>
           </Card>

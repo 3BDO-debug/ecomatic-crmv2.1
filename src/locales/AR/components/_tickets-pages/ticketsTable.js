@@ -1,17 +1,16 @@
 const ticketsTableTranslation = {
   tableColumns: {
     ticketNumber: 'رقم التيكت',
-
-    id: 'الرقم التعريفي',
-    clientName: 'اسم العميل',
-    technicianPhoto: 'صورة الفني',
+    clientFullname: 'اسم العميل',
+    region: 'المنطقة',
+    phoneNumber: 'رقم الهاتف',
+    ticketStatus: 'حالة التيكت',
+    ticketStage: 'مرحلة التيكت',
     technicianName: 'اسم الفني',
-    intializedAt: 'انشئ في',
-    currentStage: 'المرحلة الحالية',
-    status: 'الحالة',
+    routeName: 'خط السير',
+    overallRating: 'التقييم الكلي',
     action: 'اجراء'
-  },
-  searchPlaceholder: 'ابحث عن تيكتس'
+  }
 };
 
 export default ticketsTableTranslation;

@@ -8,6 +8,7 @@ import Label from '../../../components/Label';
 
 export const ticketsDataCreator = (tickets) => {
   const ticketsData = [];
+
   tickets.map((ticket) =>
     ticketsData.push({
       ticketNumber: ticket.ticket_generated_id,
@@ -17,6 +18,9 @@ export const ticketsDataCreator = (tickets) => {
       phoneNumber: ticket.client_phone_number_1,
       ticketStatus: ticket.ticket_status,
       ticketStage: ticket.current_stage,
+      technicianName: ticket.technician_name,
+      routeName: ticket.route_name,
+      overallRating: ticket.overall_rating,
       action: ticket.id
     })
   );

@@ -1,27 +1,26 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { useReactToPrint } from 'react-to-print';
+import { usePDF } from '@react-pdf/renderer';
 // material
 import { Card, CardContent, CardHeader, Grid, IconButton, Stack, TextField, Tooltip } from '@material-ui/core';
 // hooks
 import useLocales from '../../../hooks/useLocales';
+// utils
 // components
 import Label from '../../Label';
+import TicketDoc from './ticketPDF/TicketDoc';
 
 TicketInfo.propTypes = {
-  ticketDetails: PropTypes.object
+  ticketDetails: PropTypes.object,
+  ticketDevices: PropTypes.array
 };
 
-function TicketInfo({ ticketDetails }) {
+function TicketInfo({ ticketDetails, ticketDevices }) {
   const { translate } = useLocales();
-  const printComponent = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => printComponent.current
-  });
-
+  const [instance] = usePDF({ document: <TicketDoc ticketDetails={ticketDetails} ticketDevices={ticketDevices} /> });
   return (
-    <Card sx={{ boxShadow: 'none' }} ref={printComponent}>
+    <Card sx={{ boxShadow: 'none' }}>
       <CardHeader
         title={
           <Stack direction="row" rowGap={3} alignItems="center">
@@ -30,7 +29,11 @@ function TicketInfo({ ticketDetails }) {
               {ticketDetails.current_stage}
             </Label>
             <Tooltip title="Print ticket info">
-              <IconButton onClick={handlePrint} color="primary" sx={{ marginLeft: 'auto', order: '2' }}>
+              <IconButton
+                onClick={() => window.open(instance.url)}
+                color="primary"
+                sx={{ marginLeft: 'auto', order: '2' }}
+              >
                 <Icon icon="ci:download" width={20} height={20} />
               </IconButton>
             </Tooltip>
@@ -38,7 +41,7 @@ function TicketInfo({ ticketDetails }) {
         }
       />
       <CardContent>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} id="ticket">
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <TextField
               label={translate('ticketDetailsPage.ticketInfo.clientFullname')}

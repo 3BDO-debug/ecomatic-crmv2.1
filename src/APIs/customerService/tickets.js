@@ -69,12 +69,12 @@ export const ticketDeviceUpdater = async (ticketId, deviceData) =>
     data: deviceData
   }).then((response) => response.data);
 
-export const ticketFollowBackCallFetcher = async (ticketId) =>
-  axiosInstance.get(`${mainUrl}/Tickets/Ticket-Followback-Call-Rating/${ticketId}`).then((response) => response.data);
+export const ticketFollowUpCallFetcher = async (ticketId) =>
+  axiosInstance.get(`${mainUrl}/Tickets/Ticket-Follow-Up-Call-Rating/${ticketId}`).then((response) => response.data);
 
-export const ticketFollowBackCallAdder = async (ticketId, followBackCallData) =>
+export const ticketFollowUpCallAdder = async (ticketId, followUpCallData) =>
   axiosInstance({
     method: 'post',
-    url: `${mainUrl}/Tickets/Ticket-Followback-Call-Rating/${ticketId}`,
-    data: followBackCallData
+    url: `${mainUrl}/Tickets/Ticket-Follow-Up-Call-Rating/${ticketId}`,
+    data: followUpCallData
   }).then((response) => response.data);

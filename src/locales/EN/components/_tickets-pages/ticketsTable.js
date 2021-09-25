@@ -6,6 +6,9 @@ const ticketsTableTranslation = {
     phoneNumber: 'Phone number',
     ticketStatus: 'Ticket status',
     ticketStage: 'Ticket stage',
+    technicianName: 'Technician name',
+    routeName: 'Route name',
+    overallRating: 'Overall rating',
     action: 'Action'
   }
 };

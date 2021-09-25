@@ -153,7 +153,7 @@ export default function Router() {
             {
               path: 'create-client',
               element: (
-                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                <RoleBasedGuard accessibleRoles={['admin', 'technical_support', 'customer_service_agent']}>
                   <CreateClientPage />
                 </RoleBasedGuard>
               )
@@ -161,7 +161,7 @@ export default function Router() {
             {
               path: 'list-clients',
               element: (
-                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                <RoleBasedGuard accessibleRoles={['admin', 'technical_support', 'customer_service_agent']}>
                   <ListClientsPage />
                 </RoleBasedGuard>
               )
@@ -169,7 +169,7 @@ export default function Router() {
             {
               path: 'client-profile/:clientId',
               element: (
-                <RoleBasedGuard accessibleRoles={['admin', 'customer_service_supervisor', 'customer_service_agent']}>
+                <RoleBasedGuard accessibleRoles={['admin', 'technical_support', 'customer_service_agent']}>
                   <ClientProfilePage />
                 </RoleBasedGuard>
               )
@@ -188,12 +188,7 @@ export default function Router() {
               path: 'list-tickets',
               element: (
                 <RoleBasedGuard
-                  accessibleRoles={[
-                    'admin',
-                    'customer_service_supervisor',
-                    'customer_service_agent',
-                    'technicians_supervisor'
-                  ]}
+                  accessibleRoles={['admin', 'technical_support', 'customer_service_agent', 'technicians_supervisor']}
                 >
                   <ListTicketsPage />
                 </RoleBasedGuard>
@@ -205,7 +200,7 @@ export default function Router() {
                 <RoleBasedGuard
                   accessibleRoles={[
                     'admin',
-                    'customer_service_supervisor',
+                    'technical_support',
                     'customer_service_agent',
                     'technicians_supervisor',
                     'technician'

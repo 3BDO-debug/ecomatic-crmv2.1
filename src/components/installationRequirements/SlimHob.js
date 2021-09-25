@@ -92,7 +92,7 @@ function SlimHob({
         console.log(error);
       }
     }
-  }, [closeSnackbar, deviceId, enqueueSnackbar, reviewMode, setSubmit, submit, values, triggerHandler]);
+  }, [closeSnackbar, deviceId, enqueueSnackbar, reviewMode, setSubmit, submit, values, triggerHandler, saveHandler]);
 
   useEffect(() => {
     if (reviewMode) {

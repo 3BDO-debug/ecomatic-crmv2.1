@@ -32,3 +32,6 @@ export const ticektStatusesFetcher = async () =>
 
 export const commonDiagnosticsFetcher = async (categoryName) =>
   axiosInstance.get(`${mainUrl}/Configurations/Common-Diagnostics/${categoryName}`).then((response) => response.data);
+
+export const routesFetcher = async () =>
+  axiosInstance.get(`${mainUrl}/Configurations/Routes`).then((response) => response.data);

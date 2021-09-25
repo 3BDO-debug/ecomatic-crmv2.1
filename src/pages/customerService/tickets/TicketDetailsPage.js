@@ -181,7 +181,11 @@ function TicketDetailsPage() {
                 </Alert>
               </Container>
             ) : (
-              <FollowBackCall setTicketLogs={setTicketLogs} ticketDetailsState={[ticketDetails, setTicketDetails]} />
+              <FollowBackCall
+                setTicketLogs={setTicketLogs}
+                ticketDetailsState={[ticketDetails, setTicketDetails]}
+                ticketDevices={ticketDevices}
+              />
             )
           }
         />
@@ -190,7 +194,7 @@ function TicketDetailsPage() {
     {
       value: 'Info',
       icon: <Icon icon="akar-icons:info" width={20} height={20} />,
-      component: <TicketInfo ticketDetails={ticketDetails} />
+      component: <TicketInfo ticketDetails={ticketDetails} ticketDevices={ticketDevices} />
     },
 
     {

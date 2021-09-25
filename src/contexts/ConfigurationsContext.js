@@ -10,7 +10,8 @@ import {
   distributorsFetcher,
   servicesFetcher,
   ticketTypesFetcher,
-  ticektStatusesFetcher
+  ticektStatusesFetcher,
+  routesFetcher
 } from '../APIs/configurations';
 
 export const ConfigurationsContext = createContext();
@@ -26,6 +27,8 @@ export const ConfigurationsProvider = ({ children }) => {
   const [services, setServices] = useState([]);
   const [ticektTypes, setTicketTypes] = useState([]);
   const [ticketStatuses, setTicketStatuses] = useState([]);
+  const [routes, setRoutes] = useState([]);
+
   useEffect(() => {
     brandsFetcher()
       .then((brandsData) => setBrands(brandsData))
@@ -57,6 +60,9 @@ export const ConfigurationsProvider = ({ children }) => {
     ticektStatusesFetcher()
       .then((ticektStatusesData) => setTicketStatuses(ticektStatusesData))
       .catch((error) => console.log(error));
+    routesFetcher()
+      .then((routesData) => setRoutes(routesData))
+      .catch((error) => console.log(error));
   }, []);
   return (
     <ConfigurationsContext.Provider
@@ -70,7 +76,8 @@ export const ConfigurationsProvider = ({ children }) => {
         distributorsState: [distributor, setDistributor],
         servicesState: [services, setServices],
         ticketTypesState: [ticektTypes, setTicketTypes],
-        ticektStatuses: [ticketStatuses, setTicketStatuses]
+        ticektStatuses: [ticketStatuses, setTicketStatuses],
+        routesState: [routes, setRoutes]
       }}
     >
       {children}

@@ -81,7 +81,7 @@ function Hood({
         .catch((error) => console.log(error));
       triggerHandler();
     }
-  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values, triggerHandler]);
+  }, [closeSnackbar, enqueueSnackbar, deviceId, reviewMode, setSubmit, submit, values, triggerHandler, saveHandler]);
 
   useEffect(() => {
     if (reviewMode) {
