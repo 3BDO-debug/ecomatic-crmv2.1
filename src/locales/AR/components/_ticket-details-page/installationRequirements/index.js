@@ -4,11 +4,11 @@ import { gasOvenFormTranslation } from './gasOven';
 import { cookerFormTranslation } from './cookerForm';
 
 export const installtionRequirementsFormsTranslation = {
-  title: 'اشتراطات التركيب',
+  title: 'Instllation requirements',
   hoodForm: hoodFormTranslation,
   slimHobForm: slimHobFormTranslation,
   gasOvenForm: gasOvenFormTranslation,
   cookerForm: cookerFormTranslation,
-  actionButton: 'حفظ ',
-  printButton: 'اطبع'
+  actionButton: 'Save',
+  printButton: 'Print'
 };

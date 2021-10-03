@@ -20,56 +20,18 @@ export const clientsDataCreator = (clients) => {
   return clientsData;
 };
 
-export const clientDevicessDataCreator = (clientDevices, triggerDeviceDetails, setTriggeredDevice) => {
+export const clientDevicessDataCreator = (clientDevices) => {
   const clientDevicesData = [];
   clientDevices.map((clientDevice) =>
     clientDevicesData.push({
       id: clientDevice.id,
       modelNumber: clientDevice.device_model_number,
-      purchasingDate: clientDevice.purchasing_date ? (
-        clientDevice.purchasing_date
-      ) : (
-        <Label variant="ghost" color="error">
-          Not available
-        </Label>
-      ),
-      manufacturingDate: clientDevice.manufacturing_date ? (
-        clientDevice.manufacturing_date
-      ) : (
-        <Label variant="ghost" color="error">
-          Not available
-        </Label>
-      ),
-      installationDate: clientDevice.installation_date ? (
-        clientDevice.installation_date
-      ) : (
-        <Label variant="ghost" color="error">
-          Not available
-        </Label>
-      ),
-      warrantyStartDate: clientDevice.warranty_start_date ? (
-        clientDevice.warranty_start_date
-      ) : (
-        <Label variant="ghost" color="error">
-          Not available
-        </Label>
-      ),
-      warrantyStatus: (
-        <Label variant="ghost" color="primary">
-          {clientDevice.installation_status === 'Not installed' && 'Not available'}
-          {clientDevice.installation_status !== 'Not installed' && clientDevice.in_warranty && 'In warranty'}
-          {clientDevice.installation_status !== 'Not installed' && !clientDevice.in_warranty && 'Out of warranty'}
-        </Label>
-      ),
-      action: (
-        <Button
-          onClick={() => {
-            setTriggeredDevice(clientDevice);
-            triggerDeviceDetails(true);
-          }}
-          startIcon={<Icon icon="akar-icons:eye" />}
-        />
-      )
+      purchasingDate: clientDevice.purchasing_date,
+      manufacturingDate: clientDevice.manufacturing_date,
+      installationDate: clientDevice.installation_date,
+      warrantyStartDate: clientDevice.warranty_start_date,
+      warrantyStatus: clientDevice,
+      action: clientDevice
     })
   );
   return clientDevicesData;

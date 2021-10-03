@@ -6,6 +6,7 @@ import { installtionRequirementsFormsTranslation } from '../../components/_ticke
 import { redirectionDialogTranslation } from '../../components/_ticket-details-page/redirectionDialog';
 import { deviceNotesTranslation } from '../../components/_ticket-details-page/deviceNotes';
 import { ticketActionsTranslations } from '../../components/_ticket-details-page/ticketActions';
+import { deviceInfoTranslation } from '../../components/_ticket-details-page/deviceInfo';
 
 export const ticketDetailsPageTranslation = {
   headerBreadcrumb: headerBreadcrumbTranslation,
@@ -15,5 +16,6 @@ export const ticketDetailsPageTranslation = {
   installationRequirementsForms: installtionRequirementsFormsTranslation,
   redirectionDialog: redirectionDialogTranslation,
   deviceNotes: deviceNotesTranslation,
+  deviceInfo: deviceInfoTranslation,
   ticketActions: ticketActionsTranslations
 };

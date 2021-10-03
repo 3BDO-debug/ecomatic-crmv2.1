@@ -1,5 +1,5 @@
 export const navTabsTranslation = {
-  timeline: 'timeline',
-  info: 'info',
-  logs: 'logs'
+  timeline: 'اخر التحدبثات',
+  info: 'البيانات',
+  logs: 'التسجيلات'
 };

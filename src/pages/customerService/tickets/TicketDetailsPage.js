@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Icon } from '@iconify/react';
-import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
 // material
 import {
@@ -100,6 +99,7 @@ function TicketDetailsPage() {
 
   const TABS = [
     {
+      label: translate('ticketDetailsPage.navTabs.timeline'),
       value: 'timeline',
       icon: <Icon icon="clarity:timeline-line" width={20} height={20} />,
       component: (
@@ -111,7 +111,7 @@ function TicketDetailsPage() {
           currentStage={currentStep}
           steps={[
             {
-              title: 'Agent Stage',
+              title: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.stepperLabels.agentStage'),
               id: 1,
               content: (
                 <AgentStage
@@ -125,7 +125,7 @@ function TicketDetailsPage() {
               active: currentStep === 0 && true
             },
             {
-              title: 'Technical support stage',
+              title: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.stepperLabels.technicalSupportStage'),
               active: currentStep === 1 && true,
               id: 2,
               content: (
@@ -140,7 +140,9 @@ function TicketDetailsPage() {
             },
             {
               active: currentStep === 2 && true,
-              title: 'Technicians supervisor stage',
+              title: translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.stepperLabels.techniciansSupervisorStage'
+              ),
               id: 3,
               content: !['admin', 'technicians_supervisor', 'customer_service_supervisor'].includes(userRole) ? (
                 <Container>
@@ -158,7 +160,7 @@ function TicketDetailsPage() {
             },
             {
               active: currentStep === 3 && true,
-              title: 'Technician Stage',
+              title: translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.stepperLabels.technicianStage'),
               id: 4,
               content: (
                 <TechnicianStage
@@ -192,12 +194,16 @@ function TicketDetailsPage() {
       )
     },
     {
+      label: translate('ticketDetailsPage.navTabs.info'),
+
       value: 'Info',
       icon: <Icon icon="akar-icons:info" width={20} height={20} />,
       component: <TicketInfo ticketDetails={ticketDetails} ticketDevices={ticketDevices} />
     },
 
     {
+      label: translate('ticketDetailsPage.navTabs.logs'),
+
       value: 'logs',
       icon: <Icon icon="cil:history" width={20} height={20} />,
       component: <TicketLogs ticketLogsState={[ticketLogs, setTicketLogs]} />
@@ -279,7 +285,7 @@ function TicketDetailsPage() {
                 onChange={handleChangeTab}
               >
                 {TABS.map((tab) => (
-                  <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
+                  <Tab disableRipple key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
                 ))}
               </Tabs>
               {TABS.map((tab) => {

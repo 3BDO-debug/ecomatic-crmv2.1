@@ -65,7 +65,7 @@ async function ticketDeviceSparepartsServices(deviceId) {
 }
 
 const ticketDeviceActions = (
-  ticketDetails,
+  translate,
   ticketDevice,
   activeView,
   setTriggeredDevice,
@@ -98,7 +98,9 @@ const ticketDeviceActions = (
             sx={{ marginRight: '10px' }}
             variant="contained"
           >
-            Completed
+            {translate(
+              'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.actionButtons.markCompleted'
+            )}
           </Button>
           <Button
             onClick={() => {
@@ -108,7 +110,9 @@ const ticketDeviceActions = (
             variant="outlined"
             color="error"
           >
-            Not completed
+            {translate(
+              'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.actionButtons.markNotCompleted'
+            )}
           </Button>
         </Box>
       ) : (
@@ -154,7 +158,9 @@ const ticketDeviceActions = (
               }}
               variant="outlined"
             >
-              Add spareparts &amp; services
+              {translate(
+                'ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.actionButtons.addSparepartsServices'
+              )}
             </Button>
           )}
         </Box>
@@ -204,11 +210,11 @@ export const ticketDevicesDataCreator = async (
             variant="contained"
             startIcon={<Icon icon="ps:important" />}
           >
-            View notes
+            {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketDevicesTable.actionButtons.viewNotes')}
           </Button>
         ),
         action: ticketDeviceActions(
-          ticketDetails,
+          translate,
           ticketDevice,
           activeView,
           setTriggeredDevice,

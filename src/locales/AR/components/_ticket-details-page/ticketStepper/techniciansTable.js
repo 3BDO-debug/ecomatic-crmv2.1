@@ -1,9 +1,12 @@
 export const techniciansTableTranslation = {
   tableColumns: {
     fullname: 'الاسم',
-    photo: 'صورة',
-    role: 'وظيفة',
+    photo: 'الصورة',
+    role: 'الدور',
     action: 'اجراء'
   },
-  searchPlaceholder: 'ابحث عن فنيين'
+  searchPlaceholder: 'البحث عن فنيين',
+  rowsActions: {
+    assignTechnician: 'تعيين'
+  }
 };

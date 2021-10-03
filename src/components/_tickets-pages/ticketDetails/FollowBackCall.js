@@ -140,17 +140,25 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
 
   const { dirty, errors, values, touched, isSubmitting, handleSubmit, setFieldValue, getFieldProps } = formik;
 
+  useEffect(() => {
+    const ratingsSum = values.agentStageRating + values.technicialSupportStageRating + values.technicianRating;
+    const avgRating = Math.trunc(ratingsSum / 3);
+    setFieldValue('overallRating', avgRating);
+  }, [values.agentStageRating, values.technicialSupportStageRating, values.technicianRating, setFieldValue]);
+
   return (
     <Box component="form">
       <Card sx={{ boxShadow: 'none' }} variant="outlined">
-        <CardHeader title={translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.title')} />
+        <CardHeader title={translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.title')} />
         <Divider variant="middle" sx={{ marginTop: '10px' }} textAlign="center">
-          Stages ratings
+          {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.title')}
         </Divider>
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} md={6} lg={6} align="center">
-              <Typography>Agent stage rating</Typography>
+              <Typography>
+                {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.stages.agentStage')}
+              </Typography>
 
               {ticketFollowUpCall ? (
                 <Rating value={parseInt(ticketFollowUpCall.agent_stage_rating, 10)} max={10} readOnly />
@@ -168,7 +176,11 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
               )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} align="center">
-              <Typography>Technicial support rating</Typography>
+              <Typography>
+                {translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.stages.technicalSupportStage'
+                )}
+              </Typography>
               {ticketFollowUpCall ? (
                 <Rating value={parseInt(ticketFollowUpCall.technicial_support_stage_rating, 10)} max={10} readOnly />
               ) : (
@@ -185,7 +197,11 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
               )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} align="center">
-              <Typography>Technician rating</Typography>
+              <Typography>
+                {translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.stages.technicianRating'
+                )}
+              </Typography>
               {ticketFollowUpCall ? (
                 <Rating value={parseInt(ticketFollowUpCall.technician_rating, 10)} max={10} readOnly />
               ) : (
@@ -202,7 +218,11 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
               )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} align="center">
-              <Typography>Overall rating</Typography>
+              <Typography>
+                {translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.stages.overallRating'
+                )}
+              </Typography>
               {ticketFollowUpCall ? (
                 <Rating value={parseInt(ticketFollowUpCall.overall_rating, 10)} max={10} readOnly />
               ) : (
@@ -220,7 +240,11 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
             </Grid>
 
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <Divider textAlign="center">Devices ratings</Divider>
+              <Divider textAlign="center">
+                {translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.devicesRatings.title'
+                )}
+              </Divider>
             </Grid>
             {ticketFollowUpCall
               ? ticketDevicesFollowUp.map((ticketDeviceFollowUp) => (
@@ -231,7 +255,12 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
                 ))
               : ticketDevices.map((ticketDevice) => (
                   <Grid item xs={12} sm={12} md={6} lg={6} key={ticketDevice.id} align="center">
-                    <Typography>{ticketDevice.device_model_number} rating</Typography>
+                    <Typography>
+                      {ticketDevice.device_model_number}
+                      {translate(
+                        'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.devicesRatings.deviceRating'
+                      )}
+                    </Typography>
                     <Rating
                       max={10}
                       onChange={(event, newValue) => handleTicketDevicesFollowUpRating(newValue, ticketDevice.id)}
@@ -239,13 +268,19 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
                   </Grid>
                 ))}
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <Divider textAlign="center">Follow up notes</Divider>
+              <Divider textAlign="center">
+                {translate(
+                  'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.followUpNotes.title'
+                )}
+              </Divider>
             </Grid>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               {ticketFollowUpCall ? (
                 <TextField
                   value={ticketFollowUpCall.follow_up_notes}
-                  label="Follow up notes"
+                  label={translate(
+                    'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.followUpNotes.followUpNotes'
+                  )}
                   multiline
                   rows={3}
                   fullWidth
@@ -255,7 +290,9 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
                 <TextField
                   multiline
                   rows={3}
-                  label="Follow up notes"
+                  label={translate(
+                    'ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.stagesRating.followUpNotes.followUpNotes'
+                  )}
                   value={values.followUpNotes}
                   fullWidth
                   {...getFieldProps('followUpNotes')}
@@ -275,7 +312,7 @@ function FollowBackCall({ ticketDetailsState, setTicketLogs, ticketDevices }) {
                 disabled={!dirty}
                 onClick={handleSubmit}
               >
-                {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.ticketFollowbackCall.actionButton')}
+                {translate('ticketDetailsPage.ticketTimelineTab.ticketStepper.followUp.actionButton')}
               </LoadingButton>
             </Grid>
           </Grid>

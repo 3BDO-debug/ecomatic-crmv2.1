@@ -45,6 +45,7 @@ import Autocomplete from './Autocomplete';
 import ToggleButton from './ToggleButton';
 import ControlLabel from './ControlLabel';
 import LoadingButton from './LoadingButton';
+import MUIDatatable from './MUIDatatable';
 
 // ----------------------------------------------------------------------
 
@@ -95,6 +96,7 @@ export default function ComponentsOverrides(theme) {
     Autocomplete(theme),
     ControlLabel(theme),
     ToggleButton(theme),
-    LoadingButton(theme)
+    LoadingButton(theme),
+    MUIDatatable(theme)
   );
 }

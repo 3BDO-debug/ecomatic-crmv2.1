@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack5';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -7,12 +7,17 @@ import { useFormik } from 'formik';
 // material
 import { Dialog, DialogTitle, DialogContent, DialogActions, Grid, Box, Button, TextField } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+// hooks
+import useLocales from '../../../hooks/useLocales';
+// APIs
+import { mainUrl } from '../../../APIs/axios';
 // context
 import { AuthContext } from '../../../contexts/AuthContext';
 // utils
 import { ticketDevicesUpdater } from '../../../APIs/customerService/tickets';
 // components
 import { MIconButton } from '../../@material-extend';
+import { UploadSingleFile } from '../../upload';
 
 DeviceNotes.propTypes = {
   triggerHandler: PropTypes.func,
@@ -23,13 +28,15 @@ DeviceNotes.propTypes = {
 };
 
 function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetails, setTicketDevices }) {
+  const { translate } = useLocales();
   const userRole = useContext(AuthContext).userState[0];
-
+  const [agentAttachment, setAgentAttachment] = useState({});
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
       agentNotes: '',
+      agentAttachment: null,
       technicalSupportNotes: '',
       techniciansSupervisorNotes: ''
     },
@@ -38,6 +45,7 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
 
       data.append('ticketDeviceId', triggeredDevice.id);
       data.append('agentNotes', values.agentNotes);
+      data.append('agentAttachment', agentAttachment);
       data.append('technicalSupportNotes', values.technicalSupportNotes);
       data.append('techniciansSupervisorNotes', values.techniciansSupervisorNotes);
 
@@ -70,17 +78,29 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
 
   const { values, setFieldValue, isSubmitting, handleSubmit } = formik;
 
-  console.log('hello', triggeredDevice);
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setFieldValue('agentAttachment', {
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+        setAgentAttachment(file);
+      }
+    },
+    [setFieldValue]
+  );
 
   return (
     <Dialog onClose={triggerHandler} open={isTriggered} fullWidth maxWidth="sm">
-      <DialogTitle>Device notes</DialogTitle>
+      <DialogTitle>{translate('ticketDetailsPage.deviceNotes.title')}</DialogTitle>
       <DialogContent>
         <Box marginTop="30px">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <TextField
-                label="Customer service agent notes"
+                label={translate('ticketDetailsPage.deviceNotes.agentNotes')}
                 value={triggeredDevice.agent_notes ? triggeredDevice.agent_notes : values.agentNotes}
                 onChange={(event) => setFieldValue('agentNotes', event.target.value)}
                 multiline
@@ -88,6 +108,19 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
                 fullWidth
                 disabled={triggeredDevice.agent_notes && true}
               />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              {triggeredDevice.agent_notes ? (
+                <Button
+                  onClick={() => (window.location.href = `${mainUrl}/${triggeredDevice.agent_attachment}`)}
+                  fullWidth
+                  startIcon={<Icon icon="et:documents" />}
+                >
+                  View attachment
+                </Button>
+              ) : (
+                <UploadSingleFile file={values.agentAttachment} onDrop={handleDrop} />
+              )}
             </Grid>
             {ticketDetails &&
               [
@@ -98,7 +131,7 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
               ].includes(ticketDetails.current_stage) && (
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <TextField
-                    label="Technical support notes"
+                    label={translate('ticketDetailsPage.deviceNotes.technicialSupportNotes')}
                     value={
                       triggeredDevice.technical_support_notes
                         ? triggeredDevice.technical_support_notes
@@ -118,7 +151,7 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
               ) && (
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <TextField
-                    label="Technicians supervisor notes"
+                    label={translate('ticketDetailsPage.deviceNotes.techniciansSupervisorNotes')}
                     value={
                       triggeredDevice.technicans_supervisor_notes
                         ? triggeredDevice.technicans_supervisor_notes
@@ -138,12 +171,12 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
       <DialogActions>
         {userRole === 'technician' ? (
           <Button variant="contained" onClick={triggerHandler}>
-            Okay
+            {translate('ticketDetailsPage.deviceNotes.actionButtons.okay')}
           </Button>
         ) : (
           <>
             <Button variant="outlined" color="error" onClick={triggerHandler}>
-              Cancel
+              {translate('ticketDetailsPage.deviceNotes.actionButtons.cancelButton')}
             </Button>
             <LoadingButton
               variant="contained"
@@ -152,7 +185,7 @@ function DeviceNotes({ triggerHandler, isTriggered, triggeredDevice, ticketDetai
               disabled={isSubmitting}
               onClick={handleSubmit}
             >
-              Save
+              {translate('ticketDetailsPage.deviceNotes.actionButtons.saveButton')}
             </LoadingButton>
           </>
         )}

@@ -2,7 +2,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
-import { Container, Grid, Card, CardHeader, Box, Button, Rating } from '@material-ui/core';
+import { Container, Grid, Box, Button, Rating } from '@material-ui/core';
+import MUIDataTable from 'mui-datatables';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
@@ -14,7 +15,6 @@ import { ticketsDataCreator } from '../../utils/mock-data/customerService/ticket
 import Page from '../../components/Page';
 import AppWelcome from '../../components/_overview-page/AppWelcome';
 import OverviewCard from '../../components/_overview-page/OverviewCard';
-import DataGridCustom from '../../components/DataGridCustom';
 import Label from '../../components/Label';
 // ----------------------------------------------------------------------
 
@@ -85,134 +85,147 @@ function Overview() {
           )}
 
           <Grid item xs={12} md={12} lg={12} xl={12}>
-            <Card>
-              <CardHeader title={translate('overviewPage.ticketsOverview.title')} />
-              <Box component="div" height="600px" width="100%" marginTop="30px">
-                <DataGridCustom
-                  rows={ticketsTableRows}
-                  columns={[
-                    {
-                      field: 'ticketNumber',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
-                      flex: 1,
-                      minWidth: 200
-                    },
-                    { field: 'id', headerName: 'ID', hide: true },
-                    {
-                      field: 'clientFullname',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
-                      flex: 1,
-                      minWidth: 200
-                    },
-                    {
-                      field: 'region',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
-                      flex: 1,
-                      minWidth: 200
-                    },
-                    {
-                      field: 'phoneNumber',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
-                      flex: 1,
-                      minWidth: 200
-                    },
-                    {
-                      field: 'ticketStatus',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) => {
+            <Box component="div" height="400px" width="100%" marginTop="30px">
+              <MUIDataTable
+                title={translate('overviewPage.ticketsOverview.title')}
+                options={{ selectableRowsHideCheckboxes: true }}
+                data={ticketsTableRows}
+                columns={[
+                  {
+                    name: 'ticketNumber',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
+                    options: { filter: true }
+                  },
+                  {
+                    name: 'id',
+                    label: 'ID',
+                    options: {
+                      filter: false,
+                      display: false
+                    }
+                  },
+                  {
+                    name: 'clientFullname',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
+                    options: {
+                      filter: true
+                    }
+                  },
+                  {
+                    name: 'region',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
+                    options: {
+                      filter: true
+                    }
+                  },
+                  {
+                    name: 'phoneNumber',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
+                    options: {
+                      filter: true
+                    }
+                  },
+                  {
+                    name: 'ticketStatus',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) => {
                         let labelColor;
-                        if (cellValues.value === 'Pending') {
+                        if (value === 'Pending') {
                           labelColor = 'warning';
-                        } else if (cellValues.value === 'Closed') {
+                        } else if (value === 'Closed') {
                           labelColor = 'error';
                         } else {
                           labelColor = 'info';
                         }
                         return (
                           <Label variant="ghost" color={labelColor}>
-                            {cellValues.value}
+                            {value}
                           </Label>
                         );
                       }
-                    },
-                    {
-                      field: 'ticketStage',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) => (
+                    }
+                  },
+                  {
+                    name: 'ticketStage',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) => (
                         <Label variant="ghost" color="primary">
-                          {cellValues.value}
+                          {value}
                         </Label>
                       )
-                    },
-                    {
-                      field: 'technicianName',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) =>
-                        cellValues.value === 'Technician Not Selected Yet' ? (
+                    }
+                  },
+                  {
+                    name: 'technicianName',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) =>
+                        value === 'Technician Not Selected Yet' ? (
                           <Label variant="ghost" color="error">
-                            {cellValues.value}
+                            {value}
                           </Label>
                         ) : (
                           <Label variant="ghost" color="info">
-                            {cellValues.value}
+                            {value}
                           </Label>
                         )
-                    },
-                    {
-                      field: 'routeName',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.routeName'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) =>
-                        cellValues.value === 'Route not yet selected' ? (
+                    }
+                  },
+                  {
+                    name: 'routeName',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.routeName'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) =>
+                        value === 'Route not yet selected' ? (
                           <Label variant="ghost" color="error">
-                            {cellValues.value}
+                            {value}
                           </Label>
                         ) : (
                           <Label variant="ghost" color="info">
-                            {cellValues.value}
+                            {value}
                           </Label>
                         )
-                    },
-                    {
-                      field: 'overallRating',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.overallRating'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) =>
-                        cellValues.value ? (
-                          <Rating value={parseInt(cellValues.value, 10)} max={10} readOnly />
+                    }
+                  },
+                  {
+                    name: 'overallRating',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.overallRating'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) =>
+                        value ? (
+                          <Rating value={parseInt(value, 10)} max={10} readOnly />
                         ) : (
                           <Label variant="ghost" color="error">
                             Rating is not available yet
                           </Label>
                         )
-                    },
-                    {
-                      field: 'action',
-                      headerName: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
-                      flex: 1,
-                      minWidth: 200,
-                      renderCell: (cellValues) => (
+                    }
+                  },
+                  {
+                    name: 'action',
+                    label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
+                    options: {
+                      filter: true,
+                      customBodyRender: (value) => (
                         <Button
                           color="primary"
                           startIcon={<Icon icon="carbon:view" />}
                           component={Link}
-                          to={`/dashboard/tickets/ticket-details/${cellValues.value}`}
+                          to={`/dashboard/tickets/ticket-details/${value}`}
                         />
                       )
                     }
-                  ]}
-                  checkboxSelection={false}
-                />
-              </Box>
-            </Card>
+                  }
+                ]}
+              />
+            </Box>
           </Grid>
         </Grid>
       </Container>

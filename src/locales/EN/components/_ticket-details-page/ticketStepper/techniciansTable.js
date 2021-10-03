@@ -5,5 +5,8 @@ export const techniciansTableTranslation = {
     role: 'Role',
     action: 'Action'
   },
-  searchPlaceholder: 'Search technicians..'
+  searchPlaceholder: 'Search technicians..',
+  rowsActions: {
+    assignTechnician: 'Assign'
+  }
 };

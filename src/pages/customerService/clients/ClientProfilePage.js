@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { capitalCase } from 'change-case';
 import { useParams } from 'react-router';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
@@ -50,14 +49,16 @@ function ClientProfilePage() {
 
   const TABS = [
     {
-      value: translate('clientProfilePage.navTabs.info'),
+      label: translate('clientProfilePage.navTabs.info'),
+      value: 'info',
       icon: <Icon icon="akar-icons:info" width={20} height={20} />,
       component: (
         <ClientInfo setClientLogs={setClientLogs} clientId={clientId} clientDataState={[clientData, setClientData]} />
       )
     },
     {
-      value: translate('clientProfilePage.navTabs.devices'),
+      label: translate('clientProfilePage.navTabs.devices'),
+      value: 'devices',
       icon: <Icon icon="carbon:block-storage-alt" width={20} height={20} />,
       component: (
         <ClientDevices
@@ -68,12 +69,14 @@ function ClientProfilePage() {
       )
     },
     {
-      value: translate('clientProfilePage.navTabs.tickets'),
+      label: translate('clientProfilePage.navTabs.tickets'),
+      value: 'tickets',
       icon: <Icon icon="akar-icons:ticket" width={20} height={20} />,
       component: <ClientTickets clientId={clientId} />
     },
     {
-      value: translate('clientProfilePage.navTabs.logs'),
+      label: translate('clientProfilePage.navTabs.logs'),
+      value: 'logs',
       icon: <Icon icon="cil:history" width={20} height={20} />,
       component: <ClientLogs clientLogsState={[clientLogs, setClientLogs]} />
     }
@@ -118,7 +121,7 @@ function ClientProfilePage() {
             onChange={handleChangeTab}
           >
             {TABS.map((tab) => (
-              <Tab disableRipple key={tab.value} label={capitalCase(tab.value)} icon={tab.icon} value={tab.value} />
+              <Tab disableRipple key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
             ))}
           </Tabs>
           {TABS.map((tab) => {

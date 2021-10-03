@@ -12,5 +12,11 @@ export const ticketDevicesTableTranslation = {
     qty: 'QTY',
     price: 'Price',
     sum: 'Sum'
+  },
+  actionButtons: {
+    viewNotes: 'View notes',
+    addSparepartsServices: 'Add spareparts & services',
+    markCompleted: 'Completed',
+    markNotCompleted: 'Not completed'
   }
 };

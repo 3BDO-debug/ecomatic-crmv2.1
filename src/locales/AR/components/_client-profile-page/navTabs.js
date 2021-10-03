@@ -1,8 +1,8 @@
 const navTabsTranslation = {
-  info: 'info',
-  devices: 'devices',
-  tickets: 'tickets',
-  logs: 'logs'
+  info: 'البيانات',
+  devices: 'الاجهزة',
+  tickets: 'التيكتس',
+  logs: 'التسجيلات'
 };
 
 export default navTabsTranslation;

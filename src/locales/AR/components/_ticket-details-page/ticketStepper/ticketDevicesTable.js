@@ -12,5 +12,11 @@ export const ticketDevicesTableTranslation = {
     qty: 'الكمية',
     price: 'السعر',
     sum: 'الاجمالي'
+  },
+  actionButtons: {
+    viewNotes: 'عرض الملاحظات',
+    addSparepartsServices: 'اضافة قطع غيار او خدمات',
+    markCompleted: 'تم الاكمال',
+    markNotCompleted: 'لم تكتمل'
   }
 };

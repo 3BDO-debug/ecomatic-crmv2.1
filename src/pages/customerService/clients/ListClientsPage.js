@@ -3,7 +3,8 @@ import { Icon } from '@iconify/react';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
-import { Container, Button, Card, Box } from '@material-ui/core';
+import { Container, Button, Box } from '@material-ui/core';
+import MUIDataTable from 'mui-datatables';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -16,7 +17,6 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
-import DataGridCustom from '../../../components/DataGridCustom';
 import Label from '../../../components/Label';
 
 function ListClientsPage() {
@@ -55,70 +55,77 @@ function ListClientsPage() {
             </Button>
           }
         />
-        <Card>
-          <Box component="div" width="100%" height="600px">
-            <DataGridCustom
-              columns={[
-                { field: 'id', headerName: 'ID', hide: true },
-                {
-                  field: 'fullName',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.fullName'),
-                  flex: 1,
-                  minWidth: 200
-                },
-                {
-                  field: 'phoneNumber1',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber1'),
-                  flex: 1,
-                  minWidth: 200
-                },
-                {
-                  field: 'phoneNumber2',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber2'),
-                  flex: 1,
-                  minWidth: 200
-                },
-                {
-                  field: 'region',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.region'),
-                  minWidth: 100,
-                  flex: 1
-                },
-                {
-                  field: 'category',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.category'),
-                  minWidth: 100,
-                  flex: 1,
-                  renderCell: (cellValues) => (
+        <Box component="div" width="100%" height="600px">
+          <MUIDataTable
+            title={translate('clientsPages.listClientPage.headerBreadcrumb.header')}
+            options={{ selectableRowsHideCheckboxes: true }}
+            columns={[
+              { name: 'id', label: 'ID', options: { display: false, filter: true } },
+              {
+                name: 'fullName',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.fullName'),
+                options: {
+                  filter: true
+                }
+              },
+              {
+                name: 'phoneNumber1',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber1'),
+                options: {
+                  filter: true
+                }
+              },
+              {
+                name: 'phoneNumber2',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.phoneNumber2'),
+                options: {
+                  filter: true
+                }
+              },
+              {
+                name: 'region',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.region'),
+
+                options: {
+                  filter: true
+                }
+              },
+              {
+                name: 'category',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.category'),
+                minWidth: 100,
+                options: {
+                  filter: true,
+                  customBodyRender: (value) => (
                     <Label variant="ghost" color="info">
-                      {cellValues.value}
+                      {value}
                     </Label>
                   )
-                },
-                {
-                  field: 'createdAt',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.createdAt'),
-                  minWidth: 200,
-                  flex: 1
-                },
-                {
-                  field: 'action',
-                  headerName: translate('clientsPages.listClientPage.clientsTable.tableColumns.action'),
-                  minWidth: 100,
-                  flex: 1,
-                  renderCell: (cellValues) => (
+                }
+              },
+              {
+                name: 'createdAt',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.createdAt')
+              },
+              {
+                name: 'action',
+                label: translate('clientsPages.listClientPage.clientsTable.tableColumns.action'),
+                minWidth: 100,
+                options: {
+                  filter: true,
+                  customBodyRender: (value) => (
                     <Button
                       component={RouterLink}
-                      to={`/dashboard/clients/client-profile/${cellValues.value}`}
+                      to={`/dashboard/clients/client-profile/${value}`}
                       startIcon={<Icon icon="carbon:view" />}
                     />
                   )
                 }
-              ]}
-              rows={clientsTableRows}
-            />
-          </Box>
-        </Card>
+              }
+            ]}
+            data={clientsTableRows}
+          />
+        </Box>
       </Container>
     </Page>
   );

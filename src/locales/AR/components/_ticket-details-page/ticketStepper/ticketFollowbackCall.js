@@ -1,5 +1,5 @@
 export const ticketFollowbackCallTranslation = {
-  title: 'المتابعة',
-  notes: 'ملاحاظات',
-  actionButton: 'حفظ'
+  title: 'Follow up call',
+  notes: 'Notes',
+  actionButton: 'Save'
 };

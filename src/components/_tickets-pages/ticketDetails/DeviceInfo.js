@@ -22,6 +22,8 @@ import {
   Tooltip
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
+// hooks
+import useLocales from '../../../hooks/useLocales';
 // context
 import { ConfigurationsContext } from '../../../contexts';
 import { AuthContext } from '../../../contexts/AuthContext';
@@ -54,6 +56,7 @@ function DeviceInfo({
   isEditable,
   setTicketLogs
 }) {
+  const { translate } = useLocales();
   const ticketDetails = ticketState[0];
   const userRole = useContext(AuthContext).userState[0].role;
   const [ticketDevices, setTicketDevices] = ticketDevicesState;
@@ -196,7 +199,7 @@ function DeviceInfo({
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                   <TextField
-                    label="Device feeding source"
+                    label={translate('ticketDetailsPage.deviceInfo.feedingSource')}
                     fullWidth
                     value={ticketDeviceFinder().device_feeding_source}
                   />
@@ -206,7 +209,7 @@ function DeviceInfo({
                     <TextField
                       type="date"
                       value={ticketDeviceFinder().purchasing_date}
-                      label="Purchasing date"
+                      label={translate('ticketDetailsPage.deviceInfo.purchasingDate')}
                       fullWidth
                     />
                   </Grid>
@@ -216,7 +219,7 @@ function DeviceInfo({
                     <TextField
                       type="date"
                       value={ticketDeviceFinder().manufacturing_date}
-                      label="Manufacturing date"
+                      label={translate('ticketDetailsPage.deviceInfo.manufacturingDate')}
                       fullWidth
                     />
                   </Grid>
@@ -227,7 +230,7 @@ function DeviceInfo({
                     <TextField
                       type="date"
                       value={ticketDeviceFinder().expected_warranty_start_date}
-                      label="Expected warranty start date"
+                      label={translate('ticketDetailsPage.deviceInfo.expectedWarrantyStartDate')}
                       fullWidth
                     />
                   </Grid>
@@ -237,7 +240,7 @@ function DeviceInfo({
                     <TextField
                       type="date"
                       value={ticketDeviceFinder().installation_date}
-                      label="Installation date"
+                      label={translate('ticketDetailsPage.deviceInfo.installationDate')}
                       fullWidth
                     />
                   </Grid>
@@ -247,7 +250,7 @@ function DeviceInfo({
                     <TextField
                       type="date"
                       value={ticketDeviceFinder().warranty_start_date}
-                      label="Warranty start date"
+                      label={translate('ticketDetailsPage.deviceInfo.warrantyStartDate')}
                       fullWidth
                     />
                   </Grid>
@@ -265,7 +268,7 @@ function DeviceInfo({
                       <TextField
                         {...getFieldProps('ticketType')}
                         {...params}
-                        label="Ticket type"
+                        label={translate('ticketDetailsPage.deviceInfo.ticketType')}
                         margin="none"
                         error={Boolean(touched.ticketType && errors.ticketType)}
                         helperText={touched.ticketType && errors.ticketType}
@@ -286,7 +289,7 @@ function DeviceInfo({
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Common diagnostics"
+                          label={translate('ticketDetailsPage.deviceInfo.commonDiagnostics')}
                           margin="none"
                           error={Boolean(touched.commonDiagnostics && errors.commonDiagnostics)}
                           helperText={touched.commonDiagnostics && errors.commonDiagnostics}
@@ -299,7 +302,7 @@ function DeviceInfo({
                   <TextField
                     multiline
                     rows={5}
-                    label="Extra notes"
+                    label={translate('ticketDetailsPage.deviceInfo.extraNotes')}
                     value={values.extraNotes !== '' ? ticketDeviceFinder().extra_notes : values.extraNotes}
                     onChange={(event) => setFieldValue('extraNotes', event.target.value)}
                     fullWidth
@@ -310,7 +313,7 @@ function DeviceInfo({
                     <TextField
                       multiline
                       rows={3}
-                      label="Not completed notes"
+                      label={translate('ticketDetailsPage.deviceInfo.notCompletedNotes')}
                       value={ticketDeviceFinder().not_completed_notes}
                       fullWidth
                     />
@@ -321,7 +324,7 @@ function DeviceInfo({
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" color="secondary" onClick={triggerHandler}>
-              Cancel
+              {translate('ticketDetailsPage.deviceInfo.cancelButton')}
             </Button>
             {isEditable && userRole !== 'technician' && (
               <LoadingButton
@@ -332,7 +335,7 @@ function DeviceInfo({
                 disabled={!dirty}
                 onClick={handleSubmit}
               >
-                Update
+                {translate('ticketDetailsPage.deviceInfo.actionButton')}
               </LoadingButton>
             )}
           </DialogActions>
