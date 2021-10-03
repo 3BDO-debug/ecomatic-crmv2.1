@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react';
 import { useNavigate, useParams } from 'react-router';
 // material
 import { Box, Fab, Slide, Tooltip, Badge, Button, Skeleton } from '@material-ui/core';
-import MUIDataTable from 'mui-datatables';
 // hooks
 import useLocales from '../../../hooks/useLocales';
 // utils
@@ -19,6 +18,7 @@ import { TicketsContext } from '../../../contexts';
 import { MIconButton } from '../../@material-extend';
 import ClientDeviceDetails from './ClientDeviceDetails';
 import Label from '../../Label';
+import MUIDataTable from '../../mui-datatable/MUIDataTable';
 
 ClientDevices.propTypes = {
   clientDevicesState: PropTypes.array,

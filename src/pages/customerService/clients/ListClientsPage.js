@@ -4,7 +4,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
 import { Container, Button, Box } from '@material-ui/core';
-import MUIDataTable from 'mui-datatables';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -18,6 +17,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import Label from '../../../components/Label';
+import MUIDataTable from '../../../components/mui-datatable/MUIDataTable';
 
 function ListClientsPage() {
   const { translate } = useLocales();

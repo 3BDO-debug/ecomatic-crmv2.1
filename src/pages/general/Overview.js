@@ -3,7 +3,6 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
 import { Container, Grid, Box, Button, Rating } from '@material-ui/core';
-import MUIDataTable from 'mui-datatables';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
@@ -16,6 +15,8 @@ import Page from '../../components/Page';
 import AppWelcome from '../../components/_overview-page/AppWelcome';
 import OverviewCard from '../../components/_overview-page/OverviewCard';
 import Label from '../../components/Label';
+import MUIDataTable from '../../components/mui-datatable/MUIDataTable';
+
 // ----------------------------------------------------------------------
 
 function Overview() {

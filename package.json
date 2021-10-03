@@ -3,6 +3,19 @@
   "author": "Code Hustle",
   "version": "2.1",
   "private": true,
+  "eslintIgnore": [
+    "MUIDataTable.js",
+    "ExpandButton.js",
+    "JumpToPage.js",
+    "TableBody.js",
+    "TableBodyCell.js",
+    "TableBodyRow.js",
+    "TableFilter.js",
+    "TableFilterList.js",
+    "TableFooter.js",
+    "TableHead.js",
+    "TableHeadCell.js"
+  ],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

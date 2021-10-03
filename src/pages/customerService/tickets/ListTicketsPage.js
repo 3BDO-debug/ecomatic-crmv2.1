@@ -5,7 +5,6 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
 import { Container, Box, Button, Rating } from '@material-ui/core';
-import MUIDataTable from 'mui-datatables';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -21,6 +20,7 @@ import Page from '../../../components/Page';
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs';
 import { MIconButton } from '../../../components/@material-extend';
 import Label from '../../../components/Label';
+import MUIDataTable from '../../../components/mui-datatable/MUIDataTable';
 
 function ListTicketsPage() {
   const { themeStretch } = useSettings();
