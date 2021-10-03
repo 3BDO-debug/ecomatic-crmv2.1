@@ -24,7 +24,8 @@ export default function MUIDatatable() {
     MUIDataTableSearch: {
       styleOverrides: {
         main: {
-          alignItems: 'center'
+          alignItems: 'center',
+          marginTop: '20px'
         }
       }
     }
