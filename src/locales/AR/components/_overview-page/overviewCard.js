@@ -1,7 +1,7 @@
 const overviewCardTranslation = {
   activeTickets: 'التيكتس الفعالة',
   closedTickets: 'التيكتس المغلقة',
-  reopenedTickets: 'التيكتس التي تم تفعيلها'
+  reopenedTickets: 'التيكتس المعلقة'
 };
 
 export default overviewCardTranslation;

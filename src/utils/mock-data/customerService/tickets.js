@@ -21,6 +21,7 @@ export const ticketsDataCreator = (tickets) => {
       technicianName: ticket.technician_name,
       routeName: ticket.route_name,
       overallRating: ticket.overall_rating,
+
       action: ticket.id
     })
   );

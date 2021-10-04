@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // material
-import { Container, Button, Box } from '@material-ui/core';
+import { Container, Button, Skeleton } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -55,7 +55,7 @@ function ListClientsPage() {
             </Button>
           }
         />
-        <Box component="div" width="100%" height="600px">
+        {clientsTableRows.length !== 0 ? (
           <MUIDataTable
             title={translate('clientsPages.listClientPage.headerBreadcrumb.header')}
             options={{ selectableRowsHideCheckboxes: true }}
@@ -125,7 +125,9 @@ function ListClientsPage() {
             ]}
             data={clientsTableRows}
           />
-        </Box>
+        ) : (
+          <Skeleton height={500} />
+        )}
       </Container>
     </Page>
   );

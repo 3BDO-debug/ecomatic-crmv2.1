@@ -25,17 +25,19 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const PERCENT = 2.6;
-const TOTAL_USER = 18765;
 const CHART_DATA = [{ data: [20, 41, 63, 33, 28, 35, 50, 46, 11, 26] }];
 
 OverviewCard.propTypes = {
   title: PropTypes.string,
-  colorVariant: PropTypes.string
+  colorVariant: PropTypes.string,
+  value: PropTypes.number,
+  total: PropTypes.number
 };
 
-function OverviewCard({ title, colorVariant }) {
+function OverviewCard({ title, colorVariant, total, value }) {
   const theme = useTheme();
+  const PERCENT = (value / total) * 100;
+
   let color;
   if (colorVariant === 'main') {
     color = theme.palette.primary.main;
@@ -82,7 +84,7 @@ function OverviewCard({ title, colorVariant }) {
           </Typography>
         </Stack>
 
-        <Typography variant="h3">{fNumber(TOTAL_USER)}</Typography>
+        <Typography variant="h3">{fNumber(value)}</Typography>
       </Box>
 
       <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} width={60} height={36} />

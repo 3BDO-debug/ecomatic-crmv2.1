@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 // material
-import { Box, Button, Rating } from '@material-ui/core';
+import { Button, Rating } from '@material-ui/core';
 // utils
 import { ticketsDataCreator } from '../../../utils/mock-data/customerService/tickets';
 import { ticketsDeleter } from '../../../APIs/customerService/tickets';
@@ -60,148 +60,146 @@ function ClientTickets({ clientId }) {
     );
   }, [tickets, clientId]);
   return (
-    <Box component="div" height="600px" width="100%">
-      <MUIDataTable
-        title={translate('ticketsPages.listTicketsPage.headerBreadcrumb.header')}
-        options={{ selectableRowsHideCheckboxes: true }}
-        data={ticketsTableRows}
-        columns={[
-          {
-            name: 'ticketNumber',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
-            options: { filter: true }
-          },
-          {
-            name: 'id',
-            label: 'ID',
-            options: {
-              filter: false,
-              display: false
-            }
-          },
-          {
-            name: 'clientFullname',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
-            options: {
-              filter: true
-            }
-          },
-          {
-            name: 'region',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
-            options: {
-              filter: true
-            }
-          },
-          {
-            name: 'phoneNumber',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
-            options: {
-              filter: true
-            }
-          },
-          {
-            name: 'ticketStatus',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
-            options: {
-              filter: true,
-              customBodyRender: (value) => {
-                let labelColor;
-                if (value === 'Pending') {
-                  labelColor = 'warning';
-                } else if (value === 'Closed') {
-                  labelColor = 'error';
-                } else {
-                  labelColor = 'info';
-                }
-                return (
-                  <Label variant="ghost" color={labelColor}>
-                    {value}
-                  </Label>
-                );
+    <MUIDataTable
+      title={translate('ticketsPages.listTicketsPage.headerBreadcrumb.header')}
+      options={{ selectableRowsHideCheckboxes: true }}
+      data={ticketsTableRows}
+      columns={[
+        {
+          name: 'ticketNumber',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketNumber'),
+          options: { filter: true }
+        },
+        {
+          name: 'id',
+          label: 'ID',
+          options: {
+            filter: false,
+            display: false
+          }
+        },
+        {
+          name: 'clientFullname',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.clientFullname'),
+          options: {
+            filter: true
+          }
+        },
+        {
+          name: 'region',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.region'),
+          options: {
+            filter: true
+          }
+        },
+        {
+          name: 'phoneNumber',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.phoneNumber'),
+          options: {
+            filter: true
+          }
+        },
+        {
+          name: 'ticketStatus',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStatus'),
+          options: {
+            filter: true,
+            customBodyRender: (value) => {
+              let labelColor;
+              if (value === 'Pending') {
+                labelColor = 'warning';
+              } else if (value === 'Closed') {
+                labelColor = 'error';
+              } else {
+                labelColor = 'info';
               }
+              return (
+                <Label variant="ghost" color={labelColor}>
+                  {value}
+                </Label>
+              );
             }
-          },
-          {
-            name: 'ticketStage',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
-            options: {
-              filter: true,
-              customBodyRender: (value) => (
-                <Label variant="ghost" color="primary">
+          }
+        },
+        {
+          name: 'ticketStage',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.ticketStage'),
+          options: {
+            filter: true,
+            customBodyRender: (value) => (
+              <Label variant="ghost" color="primary">
+                {value}
+              </Label>
+            )
+          }
+        },
+        {
+          name: 'technicianName',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName'),
+          options: {
+            filter: true,
+            customBodyRender: (value) =>
+              value === 'Technician Not Selected Yet' ? (
+                <Label variant="ghost" color="error">
+                  {value}
+                </Label>
+              ) : (
+                <Label variant="ghost" color="info">
                   {value}
                 </Label>
               )
-            }
-          },
-          {
-            name: 'technicianName',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.technicianName'),
-            options: {
-              filter: true,
-              customBodyRender: (value) =>
-                value === 'Technician Not Selected Yet' ? (
-                  <Label variant="ghost" color="error">
-                    {value}
-                  </Label>
-                ) : (
-                  <Label variant="ghost" color="info">
-                    {value}
-                  </Label>
-                )
-            }
-          },
-          {
-            name: 'routeName',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.routeName'),
-            options: {
-              filter: true,
-              customBodyRender: (value) =>
-                value === 'Route not yet selected' ? (
-                  <Label variant="ghost" color="error">
-                    {value}
-                  </Label>
-                ) : (
-                  <Label variant="ghost" color="info">
-                    {value}
-                  </Label>
-                )
-            }
-          },
-          {
-            name: 'overallRating',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.overallRating'),
-            options: {
-              filter: true,
-              customBodyRender: (value) =>
-                value ? (
-                  <Rating value={parseInt(value, 10)} max={10} readOnly />
-                ) : (
-                  <Label variant="ghost" color="error">
-                    Rating is not available yet
-                  </Label>
-                )
-            }
-          },
-          {
-            name: 'action',
-            label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
-            options: {
-              filter: true,
-              customBodyRender: (value) => (
-                <Button
-                  color="primary"
-                  startIcon={<Icon icon="carbon:view" />}
-                  component={Link}
-                  to={`/dashboard/tickets/ticket-details/${value}`}
-                />
-              )
-            }
           }
-        ]}
-        onSelectionModelChange={ticketsDeleterHandler}
-      />
-    </Box>
+        },
+        {
+          name: 'routeName',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.routeName'),
+          options: {
+            filter: true,
+            customBodyRender: (value) =>
+              value === 'Route not yet selected' ? (
+                <Label variant="ghost" color="error">
+                  {value}
+                </Label>
+              ) : (
+                <Label variant="ghost" color="info">
+                  {value}
+                </Label>
+              )
+          }
+        },
+        {
+          name: 'overallRating',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.overallRating'),
+          options: {
+            filter: true,
+            customBodyRender: (value) =>
+              value ? (
+                <Rating value={parseInt(value, 10)} max={10} readOnly />
+              ) : (
+                <Label variant="ghost" color="error">
+                  Rating is not available yet
+                </Label>
+              )
+          }
+        },
+        {
+          name: 'action',
+          label: translate('ticketsPages.listTicketsPage.ticketsTable.tableColumns.action'),
+          options: {
+            filter: true,
+            customBodyRender: (value) => (
+              <Button
+                color="primary"
+                startIcon={<Icon icon="carbon:view" />}
+                component={Link}
+                to={`/dashboard/tickets/ticket-details/${value}`}
+              />
+            )
+          }
+        }
+      ]}
+      onSelectionModelChange={ticketsDeleterHandler}
+    />
   );
 }
 

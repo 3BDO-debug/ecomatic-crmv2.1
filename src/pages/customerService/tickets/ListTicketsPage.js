@@ -4,7 +4,7 @@ import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
-import { Container, Box, Button, Rating } from '@material-ui/core';
+import { Container, Button, Rating, Skeleton } from '@material-ui/core';
 // hooks
 import useSettings from '../../../hooks/useSettings';
 import useLocales from '../../../hooks/useLocales';
@@ -71,7 +71,7 @@ function ListTicketsPage() {
             { name: translate('ticketsPages.listTicketsPage.headerBreadcrumb.links.current') }
           ]}
         />
-        <Box component="div" height="600px" width="100%">
+        {ticketsTableRows.length !== 0 ? (
           <MUIDataTable
             title={translate('ticketsPages.listTicketsPage.headerBreadcrumb.header')}
             options={{ selectableRowsHideCheckboxes: true }}
@@ -212,7 +212,9 @@ function ListTicketsPage() {
             ]}
             onSelectionModelChange={ticketsDeleterHandler}
           />
-        </Box>
+        ) : (
+          <Skeleton height={500} />
+        )}
       </Container>
     </Page>
   );

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 // material
-import { Container, Grid, Box, Button, Rating } from '@material-ui/core';
+import { Container, Grid, Button, Rating, Skeleton } from '@material-ui/core';
 // hooks
 import useLocales from '../../hooks/useLocales';
 import useSettings from '../../hooks/useSettings';
@@ -28,24 +28,28 @@ function Overview() {
   const [ticketsTableRows, setTicketsTableRows] = useState([]);
 
   const ticketsFilter = useCallback(() => {
+    const today = new Date();
+    const lastWeek = new Date(today.getDate() - 7 * 24 * 60 * 60 * 1000);
+    const filtteredTickets = tickets.filter((ticket) => new Date(ticket.created_at) >= lastWeek);
+
     if (user.role === 'technician') {
-      const userTickets = tickets.filter((ticket) => ticket.related_technician === user.id);
+      const userTickets = filtteredTickets.filter((ticket) => ticket.related_technician === user.id);
       return userTickets;
     }
     if (user.role === 'technical_support') {
-      const userTickets = tickets.filter((ticket) => ticket.current_stage === 'technical-support-stage');
+      const userTickets = filtteredTickets.filter((ticket) => ticket.current_stage === 'technical-support-stage');
       return userTickets;
     }
     if (user.role === 'customer_service_agent') {
-      const userTickets = tickets.filter((ticket) => ticket.current_stage === 'agent-stage');
+      const userTickets = filtteredTickets.filter((ticket) => ticket.current_stage === 'agent-stage');
       return userTickets;
     }
     if (user.role === 'follow_up_agent') {
-      const userTickets = tickets.filter((ticket) => ticket.current_stage === 'follow-up-stage');
+      const userTickets = filtteredTickets.filter((ticket) => ticket.current_stage === 'follow-up-stage');
       return userTickets;
     }
     if (user.role === 'technician_supervisor') {
-      const userTickets = tickets.filter((ticket) => ticket.current_stage === 'technicians-supervisor-stage');
+      const userTickets = filtteredTickets.filter((ticket) => ticket.current_stage === 'technicians-supervisor-stage');
       return userTickets;
     }
 
@@ -74,19 +78,46 @@ function Overview() {
           {user.role !== 'technician' && (
             <>
               <Grid item xs={12} md={4} lg={4} xl={4}>
-                <OverviewCard title={translate('overviewPage.overviewCard.activeTickets')} colorVariant="main" />
+                {ticketsTableRows.length !== 0 ? (
+                  <OverviewCard
+                    title={translate('overviewPage.overviewCard.activeTickets')}
+                    colorVariant="main"
+                    total={ticketsTableRows.length}
+                    value={ticketsTableRows.filter((ticket) => ticket.ticketStatus === 'In progress').length}
+                  />
+                ) : (
+                  <Skeleton sx={{ height: '166px' }} />
+                )}
               </Grid>
               <Grid item xs={12} md={4} lg={4} xl={4}>
-                <OverviewCard title={translate('overviewPage.overviewCard.closedTickets')} colorVariant="secondary" />
+                {ticketsTableRows.length !== 0 ? (
+                  <OverviewCard
+                    title={translate('overviewPage.overviewCard.closedTickets')}
+                    colorVariant="secondary"
+                    value={ticketsTableRows.filter((ticket) => ticket.ticketStatus === 'Closed').length}
+                    total={ticketsTableRows.length}
+                  />
+                ) : (
+                  <Skeleton sx={{ height: '166px' }} />
+                )}
               </Grid>
               <Grid item xs={12} md={4} lg={4} xl={4}>
-                <OverviewCard title={translate('overviewPage.overviewCard.reopenedTickets')} colorVariant="info" />
+                {ticketsTableRows.length !== 0 ? (
+                  <OverviewCard
+                    title={translate('overviewPage.overviewCard.pendingTickets')}
+                    colorVariant="info"
+                    total={ticketsTableRows.length}
+                    value={ticketsTableRows.filter((ticket) => ticket.ticketStatus === 'Pending').length}
+                  />
+                ) : (
+                  <Skeleton sx={{ height: '166px' }} />
+                )}
               </Grid>
             </>
           )}
 
           <Grid item xs={12} md={12} lg={12} xl={12}>
-            <Box component="div" height="400px" width="100%" marginTop="30px">
+            {ticketsTableRows.length !== 0 ? (
               <MUIDataTable
                 title={translate('overviewPage.ticketsOverview.title')}
                 options={{ selectableRowsHideCheckboxes: true }}
@@ -226,7 +257,9 @@ function Overview() {
                   }
                 ]}
               />
-            </Box>
+            ) : (
+              <Skeleton height={400} />
+            )}
           </Grid>
         </Grid>
       </Container>
